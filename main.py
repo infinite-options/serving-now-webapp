@@ -59,8 +59,8 @@ s3 = boto3.client('s3')
 # aws s3 bucket where the image is stored
 BUCKET_NAME = 'servingnow'
 
-# API_BASE_URL = 'https://phaqvwjbw6.execute-api.us-west-1.amazonaws.com/dev'
-API_BASE_URL = 'http://localhost:5000'
+API_BASE_URL = 'https://phaqvwjbw6.execute-api.us-west-1.amazonaws.com/dev'
+# API_BASE_URL = 'http://localhost:5000'
 
 # allowed extensions for uploading a profile photo file
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
