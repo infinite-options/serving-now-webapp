@@ -45,7 +45,7 @@
       {% endif %}
       {% for order in orders %}
       {% set outer_loop = loop %}
-        <div class="border border-light p-2">
+        <div class="border border-light p-2" >
           <table class='table table-borderless mb-0'>
             <tbody>
               <tr>
@@ -66,38 +66,27 @@
           </table>
           <div class="order-details">
             <div class="collapse" id="collapseExample{{outer_loop.index}}">
-              <table class="table">
-                <thead class="thead-light">
-                  <tr>
-                    <span class="align-middle text-center">
-                      <th class="align-middle text-center" scope="col">Meal</th>
-                      <th class="align-middle text-center" scope="col">Name</th>
-                      <th class="align-middle text-center" scope="col">Quantity</th>
-                      <th class="align-middle text-center" scope="col">Revenue</th>
-                    </span>
-                  </tr>
-                </thead>
-                {% for item in order.order_items.L %}
-                  {% if item.name %}
-                    <tbody>
-                      <tr>
-                        <td class="align-middle text-center">
-                          <img src={{item.photo.S}} class="card-img-top" style="max-width:290px; height:174px">
-                        </td>
-                        <td class="align-middle text-center">{{ item.name }}</td>
-                        <td class="align-middle text-center">{{ item.qty }}</td>
-                        <td class="align-middle text-center">${{ item.revenue }}</td>
-                      </tr>
-                    </tbody>
-                  {% else %}
-                    {% if not item.photo %}
-                      <div class="alert alert-danger" role="alert">
-                        <p> Meal with id: <strong>{{item.M.meal_id.S}}</strong> is no longer available or has been removed. </p>
-                      </div>
-                    {% endif %}
+              {% for item in order.order_items.L %}
+                {% if item.name %}
+                  <div class="border border-light mb-2 mt-2 order-item-box">
+                    <img src={{item.photo.S}} class="card-img-top float-left" style="max-width:190px; height:120px">
+                      <span class="align-top list-inline-item float-left ml-2">
+                        <p class="display-4"> {{ item.name }} </p>
+                        <p class="text-left"> Quantity: {{ item.qty }} </p>
+                        <p class="text-left"> Revenue: ${{ item.revenue }} </p>
+                      </span>
+                      <!-- <div class="form-group align-middle float-right m-1">
+                        <textarea class="form-control notes-box" rows="7" id="order_notes"></textarea>
+                      </div> -->
+                  </div>
+                {% else %}
+                  {% if not item.photo %}
+                    <div class="alert alert-danger" role="alert">
+                      <p> Meal with id: <strong>{{item.M.meal_id.S}}</strong> is no longer available or has been removed. </p>
+                    </div>
                   {% endif %}
-                {% endfor %}
-              </table>
+                {% endif %}
+              {% endfor %}
             </div>
           </div>
         </div>

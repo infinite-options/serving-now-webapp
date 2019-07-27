@@ -11,6 +11,15 @@
   border-top: 0 ! important;
 }
 
+.notes-box {
+  width: 300px;
+  height: 168px !important;
+}
+
+.order-item-box {
+  overflow: auto;
+}
+
 .time-col {
   width: 80px;
 }

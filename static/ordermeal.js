@@ -12,7 +12,7 @@
 // 	var totalcost = 0;
 // 	var totalOptionOne = 0;
 // 	var totalOptionTwo = 0;
-// 	for (i = 0; i < num_orders; i++) { 
+// 	for (i = 0; i < num_orders; i++) {
 // 		totalOptionOne += parseInt(orders[i].mealOption1["N"]);
 //  		totalOptionTwo += parseInt(orders[i].mealOption2["N"]);
 //  		totalcost += parseInt(orders[i].totalAmount["N"]);
