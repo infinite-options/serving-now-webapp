@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- jquery script -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <!-- JavaScript  -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js " integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1 " crossorigin="anonymous ">
+    </script>
+    <!-- semantic-css -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <!-- semantic-js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.js"></script>
+    <!-- new-bootstrap-js -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+    <!-- new-bootstrap-css -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <!-- local css -->
+    <link href="{{ url_for('.static', filename='style-new.css') }}" rel="stylesheet" />
+
+    <title>Meal Ordering</title>
+</head>
+
+<body class="backgroundImgSetting">
+    <div class="container container-class">
+        <div class="row whole-view">
+            <div class="col-4 login-class">
+                <div class="form-class">
+                    {% with messages = get_flashed_messages() %} {% if messages %}
+                    <ul class=flashes style="color: white">
+                        {% for message in messages %}
+                        <li>{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %} {% endwith %}
+                    <form method="POST" action="{{ url_for('login')}}">
+                        <div class="form-group">
+                            <div class="ui left icon input" style="width:315px">
+                                <input style="background: transparent; border: 2px solid #ECEAEA; border-radius: 25px; text-align: center; color:#ECEAEA" type="text" class="form-control form-control-class" name="email" id="email" aria-describedby="emailHelp" placeholder="Enter your email">
+                                <i class="user icon" style="color:#ECEAEA"></i>
+                            </div>
+                            <!-- <input type="text" class="form-control form-control-class" name="email" id="email" aria-describedby="emailHelp" placeholder="email"> -->
+                        </div>
+                        <div class="form-group">
+                            <!-- <input type="password" class="form-control form-control-class" name="password" id="password" placeholder="Password"> -->
+                            <div class="ui left icon input" style="width:315px">
+                                <input style="background: transparent; border: 2px solid #ECEAEA; border-radius: 25px; text-align: center; color:#ECEAEA" type="password" class="form-control form-control-class" name="password" id="password" placeholder="Enter your password">
+                                <i class="user secret icon" style="color:#ECEAEA"></i>
+                            </div>
+                        </div>
+                        <div class="button-class">
+                            <button class="button btn btn-primary login-btn" type="submit">Login</button>
+                        </div>
+                    </form>
+                    <div class="reset-class">
+                        <a href="{{ url_for('register') }}" style="height:0px">
+                            Click to reset password
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class=" col-4 image">
+                <img src="{{ url_for('.static', filename='ServingNowLogo.png') }}" class="center-img">
+            </div>
+            <div class="col-4">
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

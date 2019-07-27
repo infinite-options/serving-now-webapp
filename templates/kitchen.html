@@ -1,0 +1,749 @@
+{% extends "main.html" %} {% block content%}
+
+<script src="{{ url_for('.static', filename='script.js') }}">
+</script>
+<!-- References scripts for web interaction -->
+<script src="{{ url_for('.static', filename='addMeal.js') }}"></script>
+<script src="{{ url_for('.static', filename='editMeal.js') }}"></script>
+<script src="{{ url_for('.static', filename='updateMeal.js') }}"></script>
+<script src="{{ url_for('.static', filename='deleteMeal.js') }}"></script>
+<script src="{{ url_for('.static', filename='favMeal.js') }}"></script>
+<link href="{{ url_for('.static', filename='style.css') }}" rel="stylesheet" />
+<!-- References style sheet -->
+
+<!DOCTYPE html>
+
+<head>
+    <title>
+        Kitchen Home Page
+    </title>
+</head>
+
+<script>
+    $(document).ready(function() {
+        $('.special.cards .image').dimmer({
+            on: 'hover'
+        });
+    })
+</script>
+
+<style>
+    .serving-now-logo {
+        width: 130px;
+        height: 130px;
+    }
+
+    .grid-container {
+        display: grid;
+        grid-template-areas: 'logo right-content''logo addmealbtn ''current-meal current-meal''currentmeal-card currentmeal-card''pastmeal pastmeal''pastmeal-card pastmeal-card';
+        grid-template-columns: repeat(auto-fit);
+        grid-row-gap: 5px;
+    }
+
+    #logo {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        grid-area: logo;
+        grid-column-gap: 10px;
+        padding: 40px;
+    }
+
+    #kitchen-name {
+        grid-area: kitchen-name;
+    }
+
+    #currentmeal {
+        grid-area: current-meal;
+        margin-left: 40px;
+        margin-top: 10px;
+    }
+
+    #currentmeal-card {
+        display: grid;
+        grid-area: currentmeal-card;
+        grid-auto-rows: minmax(100px, auto);
+        /* grid-column-gap: none; */
+        margin-top: 10px;
+        margin-left: 40px;
+        margin-right: none;
+    }
+
+    #pastmeal {
+        grid-area: pastmeal;
+        margin: 40px;
+    }
+
+    /* #pastmeal-card {
+        grid-area: pastmeal-card;
+        display: grid;
+        padding: 15px;
+        margin: 40px;
+        background-color: #cccccc;
+        grid-auto-rows: minmax(100px, auto);
+    } */
+
+    #pastmeal-card {
+        display: grid;
+        grid-area: pastmeal-card;
+        grid-auto-rows: minmax(100px, auto);
+        /* grid-column-gap: none; */
+        margin-top: 10px;
+        margin-left: 40px;
+        margin-right: none;
+    }
+
+    .add-meal-btn,
+    .kitchen-username-btn {
+        background: #a0050f;
+        border-radius: 25px;
+        border: 2px solid #ECEAEA;
+        color: #ECEAEA;
+    }
+
+    .add-meal-btn-div {
+        margin-left: 42%;
+    }
+
+    .kitchen-username {
+        cursor: text !important;
+        width: 150px;
+        height: 40px;
+    }
+
+    .quantity-no {
+        background-color: #a0050f;
+        border-radius: 25px;
+        border: 3px solid #ECEAEA;
+        min-width: 40px;
+        margin-top: -173px;
+        pointer-events: none;
+    }
+
+    .form-control,
+    .name-of-meal input[type=text] {
+        color: rgb(104, 103, 103);
+        background: transparent;
+        font-style: italic;
+        text-align: center;
+    }
+
+    #option-items,
+    #edit-option-items,
+    #edit_meal_option1_qty,
+    #edit_meal_option2_qty,
+    #edit_meal_option3_qty,
+    #edit_meal_option4_qty,
+    #edit_meal_option5_qty,
+    #add_meal_option1_qty,
+    #add_meal_option2_qty,
+    #add_meal_option3_qty,
+    #add_meal_option4_qty,
+    #add_meal_option5_qty {
+        background: transparent;
+        border-radius: 25px;
+        border: 2px solid #ECEAEA;
+    }
+
+    #popup-mealname .ui .input {
+        min-width: 325px;
+        margin-left: 17%;
+    }
+
+    #popup-mealname .ui .input>input {
+        background: transparent;
+        border: 2px solid #ECEAEA;
+        border-radius: 25px;
+    }
+</style>
+
+<body style="background-color:#ECEAEA">
+    <div class="grid-container">
+        <div id="logo">
+            <div> <img src="{{ url_for('.static', filename='ServingNowLogo.png') }}" class="serving-now-logo"></div>
+            <div>
+                <strong><i><h4>{{ kitchen_name }}</h4></i></strong>
+                <br>
+                <p><i>{{ description }}</p></i>
+                    <!-- <div class="add-meal-btn-div"> -->
+                    <button type="button" class="btn mt-5 btn-primary add-meal-btn" data-toggle="modal" data-target="#addMeal">
+                    <i>Add Meal</i>
+                </button>
+            </div>
+        </div>
+        <div id="currentmeal">
+            <strong><i>Current Meal:</i></strong>
+        </div>
+        <div id="currentmeal-card">
+            <div class="row">
+                {% for meal in todaysMeals %}
+                <!-- % beginning of JS logic -->
+                <div class="col-md-2 parent-class" style="padding-bottom: 2rem;" data-meal_id="{{meal.meal_id.S}}">
+                    <div class="ui special cards">
+                        <div class="card">
+                            <div class="blurring dimmable image">
+                                <div class="ui dimmer">
+                                    <div class="content">
+                                        <!-- <span>
+                                                <input onclick="deleteMeal('{{meal.meal_id.S}}');" type="image" class="ui inverted" width="40" height="40" src="{{ url_for('.static', filename='TrashIcon.png') }}" id="delete-meal-btn">
+                                        </span>
+                                        <span>
+                                                <input style="margin-left:-200px; margin-top:120px" type="image" class="ui inverted" width="40" height="40" src="{{ url_for('.static', filename='EditIcon.png') }}" data-meal_id="{{meal.meal_id.S}}" data-toggle="modal" id="edit-meal-btn" data-meal_name="{{meal.meal_name.S}}" data-meal_photo="{{meal.photo.S}}"
+                                                data-meal_price="{{meal.price.S}}" data-meal_description="{{meal.description.S}}" data-target="#editMeal">
+                                        </span> -->
+                                        <div class="row">
+                                            <div class="col">
+                                                <input type="image" class="ui inverted" width="40" height="40" src="{{ url_for('.static', filename='EditIcon.png') }}" data-meal_id="{{meal.meal_id.S}}" data-toggle="modal" id="edit-meal-btn" data-meal_name="{{meal.meal_name.S}}"
+                                                    data-meal_photo="{{meal.photo.S}}" data-meal_price="{{meal.price.S}}" data-meal_description="{{meal.description.S}}" data-target="#editMeal">
+                                            </div>
+                                            <div class="col">
+                                                <input onclick="deleteMeal('{{meal.meal_id.S}}');" type="image" class="ui inverted" width="40" height="40" src="{{ url_for('.static', filename='TrashIcon.png') }}" id="delete-meal-btn">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <img src={{meal.photo.S}} class="card-img-top" style="max-width:290px; height:174px">
+                                </div>
+                                <div style="position:absolute" class="btn btn-primary quantity-no">{{ meal.count_today.N }}</div>
+                            </div>
+                            <div class="content">
+                                <a class="header"><i>{{meal.meal_name.S}}</i></a>
+                                <div class="meta">
+                                    <span class="date"><i>{{meal.description.S}}</i></span>
+                                </div>
+                            </div>
+                            <div class="extra content">
+                                <span class="right floated">
+                                        <a onclick="favMeal('{{meal.meal_id.S}}')">
+                                                {% if meal.favorite.BOOL %}
+                                                    <i class="star icon" style="color:#f7d305"></i>
+                                                {% else %}
+                                                    <i class="star outline icon" style="color:black"></i>
+                                                {% endif %}
+                                            </a>
+                                </span>
+                                <span style="color:black">
+                                        <i class="dollar sign icon" style="color:black"></i>{{meal.price.S}}
+                                      </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div id="pastmeal">
+            <strong><i>Past Meals: </i></strong>
+        </div>
+        <div id="pastmeal-card">
+          <div class="row">
+            {% for meal in pastMenu %}
+            <!-- % beginning of JS logic -->
+              <div class="col-md-2 parent-class" style="padding-bottom: 2rem;" data-meal_id="{{meal.meal_id.S}}">
+                  <div class="ui special cards">
+                      <div class="card">
+                          <div class="blurring dimmable image">
+                              <div class="ui dimmer">
+                                  <div class="content">
+                                      <!-- <span>
+                                              <input onclick="deleteMeal('{{meal.meal_id.S}}');" type="image" class="ui inverted" width="40" height="40" src="{{ url_for('.static', filename='TrashIcon.png') }}" id="delete-meal-btn">
+                                      </span>
+                                      <span>
+                                              <input style="margin-left:-200px; margin-top:120px" type="image" class="ui inverted" width="40" height="40" src="{{ url_for('.static', filename='EditIcon.png') }}" data-meal_id="{{meal.meal_id.S}}" data-toggle="modal" id="edit-meal-btn" data-meal_name="{{meal.meal_name.S}}" data-meal_photo="{{meal.photo.S}}"
+                                              data-meal_price="{{meal.price.S}}" data-meal_description="{{meal.description.S}}" data-target="#editMeal">
+                                      </span> -->
+                                      <div class="row">
+                                          <div class="col">
+                                              <input style="margin-top:110px" type="image" class="ui inverted" width="40" height="40" src="{{ url_for('.static', filename='EditIcon.png') }}" data-meal_id="{{meal.meal_id.S}}" data-toggle="modal" id="edit-meal-btn" data-meal_name="{{meal.meal_name.S}}"
+                                                  data-meal_photo="{{meal.photo.S}}" data-meal_price="{{meal.price.S}}" data-meal_description="{{meal.description.S}}" data-target="#editMeal">
+                                          </div>
+                                          <div class="col" style="margin-left:75px">
+                                              <input style="margin-top:110px" onclick="deleteMeal('{{meal.meal_id.S}}');" type="image" class="ui inverted" width="40" height="40" src="{{ url_for('.static', filename='TrashIcon.png') }}" id="delete-meal-btn">
+                                          </div>
+                                      </div>
+                                  </div>
+                              </div>
+                              <div>
+                                  <img src={{meal.photo.S}} class="card-img-top" style="max-width:290px; height:174px">
+                              </div>
+                              <div style="position:absolute" class="btn btn-primary quantity-no">{{ meal.count_today.N }}</div>
+                          </div>
+                          <div class="content">
+                              <a class="header"><i>{{meal.meal_name.S}}</i></a>
+                              <div class="meta">
+                                  <span class="date"><i>{{meal.description.S}}</i></span>
+                              </div>
+                          </div>
+                          <div class="extra content">
+                              <span class="right floated">
+                                      <a onclick="favMeal('{{meal.meal_id.S}}')">
+                                              {% if meal.favorite.BOOL %}
+                                                  <i class="star icon" style="color:#f7d305"></i>
+                                              {% else %}
+                                                  <i class="star outline icon" style="color:black"></i>
+                                              {% endif %}
+                                          </a>
+                              </span>
+                              <span style="color:black">
+                                      <i class="dollar sign icon" style="color:black"></i>{{meal.price.S}}
+                                    </span>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+        <div class="modal fade" id="addMeal" tabindex="-1" role="dialog" aria-labelledby="addMealLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content" id="form-bg">
+                    <form class="add_meal_form">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addMealLabel">Post Meal</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                        </div>
+                        <div class="modal-body">
+                            <div>
+                                <div class="row">
+                                    <div class="col-2"></div>
+                                    <div class="col-8">
+                                        <div class="row">
+                                            <div class="col">
+                                                <br>
+                                                <img class="img-bg" style="border: 2px solid #ECEAEA; border-radius: 4px; " src="" width="299" height="194">
+                                            </div>
+                                        </div>
+                                        <div class="row add-meal-img-btn">
+
+                                            <div class="file btn btn-lg btn-primary">
+                                                Add photo
+                                                <input style="width:300px; height:36.4px; " type="file" name="photo" id="add_meal_image" onchange="previewFile()" /><br>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row ">
+                                <!-- <div class="col "> -->
+                                <div class="ui left icon input" style="min-width: 325px; margin-left:17%">
+                                    <input style="background: transparent; border: 2px solid #ECEAEA; border-radius: 25px; text-align: center" type="text" class="form-control form-control-class" id="add_meal_mealname" placeholder="Name of the Meal">
+                                    <i class="shopping basket icon"></i>
+                                </div>
+                                <!-- </div> -->
+                                <!-- <div class="col name-of-meal">
+                                    <i><input type="text" class="form-control form-control-class" id="add_meal_mealname"
+                                    placeholder="Name of the meal"></i>
+                                </div> -->
+                            </div>
+                            <div>
+                                <div class="form-row">
+                                    <table id="option-setup">
+                                        <tr>
+                                            <td>
+                                                <span class="left-content"><strong><i>Items in this meal</i></strong></span>
+                                            </td>
+                                            <td>
+                                                <span>
+                                          <select id="option-items">
+                                              <option value="1">1</option>
+                                              <option value="2">2</option>
+                                              <option value="3">3</option>
+                                              <option value="4">4</option>
+                                              <option value="5">5</option>
+                                          </select>
+                                      </span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <span style="padding-left:30%"><strong><i>Item name</i></strong></span>
+                                            </td>
+                                            <td>
+                                                <span style="padding-left: 40px"><strong><i>Item Quantity</i></strong></span>
+                                            </td>
+                                        </tr>
+                                        <br>
+                                        <tr id="option-item1">
+                                            <td>
+                                                <div class="ui left icon input">
+                                                    <input style="background: transparent; border: 2px solid #ECEAEA; border-radius: 25px; text-align: center" type="text" class="form-control form-control-class" id="add_meal_option1_name" placeholder="(15 characters limit)" maxlength="15">
+                                                    <i class="cart arrow down icon"></i>
+                                                </div>
+                                                <!-- <input style="background: transparent" type="text" class="form-control form-control-class" placeholder="(15 characters limit)" id="add_meal_option1_name" maxlength="15"> -->
+                                            </td>
+                                            <td>
+                                                <span style="padding-left:45%">
+                                          <select id="add_meal_option1_qty">
+                                              <option value="1">1</option>
+                                              <option value="2">2</option>
+                                              <option value="3">3</option>
+                                              <option value="4">4</option>
+                                              <option value="5">5</option>
+                                              <option value="6">6</option>
+                                              <option value="7">7</option>
+                                              <option value="8">8</option>
+                                              <option value="9">9</option>
+                                              <option value="10">10</option>
+                                          </select>
+                                      </span>
+                                            </td>
+                                        </tr>
+                                        <tr id="option-item2">
+
+                                            <td>
+                                                <div class="ui left icon input">
+                                                    <input style="background: transparent; border: 2px solid #ECEAEA; border-radius: 25px; text-align: center" type="text" class="form-control form-control-class" id="add_meal_option2_name" placeholder="(15 characters limit)" maxlength="15">
+                                                    <i class="cart arrow down icon"></i>
+                                                </div>
+                                                <!-- <input style="background: transparent" type="text" class="form-control form-control-class" placeholder="(15 characters limit)" id="add_meal_option2_name" maxlength="15"> -->
+                                            </td>
+                                            <td>
+                                                <span style="padding-left:45%">
+                                          <select id="add_meal_option2_qty">
+                                              <option value="1">1</option>
+                                              <option value="2">2</option>
+                                              <option value="3">3</option>
+                                              <option value="4">4</option>
+                                              <option value="5">5</option>
+                                              <option value="6">6</option>
+                                              <option value="7">7</option>
+                                              <option value="8">8</option>
+                                              <option value="9">9</option>
+                                              <option value="10">10</option>
+                                          </select>
+                                      </span>
+                                            </td>
+                                        </tr>
+                                        <tr id="option-item3">
+
+                                            <td>
+                                                <div class="ui left icon input">
+                                                    <input style="background: transparent; border: 2px solid #ECEAEA; border-radius: 25px; text-align: center" type="text" class="form-control form-control-class" id="add_meal_option3_name" placeholder="(15 characters limit)" maxlength="15">
+                                                    <i class="cart arrow down icon"></i>
+                                                </div>
+                                                <!-- <input style="background: transparent" type="text" class="form-control form-control-class" placeholder="(15 characters limit)" id="add_meal_option3_name" maxlength="15"> -->
+                                            </td>
+                                            <td>
+                                                <span style="padding-left:45%">
+                                          <select id="add_meal_option3_qty">
+                                              <option value="1">1</option>
+                                              <option value="2">2</option>
+                                              <option value="3">3</option>
+                                              <option value="4">4</option>
+                                              <option value="5">5</option>
+                                              <option value="6">6</option>
+                                              <option value="7">7</option>
+                                              <option value="8">8</option>
+                                              <option value="9">9</option>
+                                              <option value="10">10</option>
+                                          </select>
+                                      </span>
+                                            </td>
+                                        </tr>
+                                        <tr id="option-item4">
+
+                                            <td>
+                                                <div class="ui left icon input">
+                                                    <input style="background: transparent; border: 2px solid #ECEAEA; border-radius: 25px; text-align: center" type="text" class="form-control form-control-class" id="add_meal_option4_name" placeholder="(15 characters limit)" maxlength="15">
+                                                    <i class="cart arrow down icon"></i>
+                                                </div>
+                                                <!-- <input style="background: transparent" type="text" class="form-control form-control-class" placeholder="(15 characters limit)" id="add_meal_option4_name" maxlength="15"> -->
+                                            </td>
+                                            <td>
+                                                <span style="padding-left:45%">
+                                          <select id="add_meal_option4_qty">
+                                              <option value="1">1</option>
+                                              <option value="2">2</option>
+                                              <option value="3">3</option>
+                                              <option value="4">4</option>
+                                              <option value="5">5</option>
+                                              <option value="6">6</option>
+                                              <option value="7">7</option>
+                                              <option value="8">8</option>
+                                              <option value="9">9</option>
+                                              <option value="10">10</option>
+                                          </select>
+                                      </span>
+                                            </td>
+                                        </tr>
+                                        <tr id="option-item5">
+
+                                            <td>
+                                                <div class="ui left icon input">
+                                                    <input style="background: transparent; border: 2px solid #ECEAEA; border-radius: 25px; text-align: center" type="text" class="form-control form-control-class" id="add_meal_option5_name" placeholder="(15 characters limit)" maxlength="15">
+                                                    <i class="cart arrow down icon"></i>
+                                                </div>
+                                                <!-- <input style="background: transparent" type="text" class="form-control form-control-class" placeholder="(15 characters limit)" id="add_meal_option5_name" maxlength="15"> -->
+                                            </td>
+                                            <td>
+                                                <span style="padding-left:45%">
+                                          <select id="add_meal_option5_qty">
+                                              <option value="1">1</option>
+                                              <option value="2">2</option>
+                                              <option value="3">3</option>
+                                              <option value="4">4</option>
+                                              <option value="5">5</option>
+                                              <option value="6">6</option>
+                                              <option value="7">7</option>
+                                              <option value="8">8</option>
+                                              <option value="9">9</option>
+                                              <option value="10">10</option>
+                                          </select>
+                                      </span>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="form-row">
+                                    <div class="left-content" id="meal-id">
+                                        <strong><i>Meal Price</i></strong>
+                                    </div>
+                                    <div class="right-content">
+                                        <input style="background: transparent" type="number" name="price" class="right-content form-control form-control-class" id="add_meal_price" placeholder="price">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button value="submit" onclick="postMeal();" class="btn btn-primary post-meal-btn">Save</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="editMeal" tabindex="-1" role="dialog" aria-labelledby="editMealLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content" id="form-bg">
+                    <form class="edit_meal_form">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="editMealLabel">Edit Meal</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                        </div>
+                        <div class="modal-body">
+                            <div>
+                                <div class="form-row">
+                                    <div class="edit-img-meal">
+                                        <img class="img-fluid img-thumbnail rounded" id="edit_img_preview" />
+                                        <div class="file btn btn-lg btn-primary">
+                                            Change Meal Photo
+                                            <input style="height:36.4px; width:260.5px" type="file" name="photo" id="edit_meal_image" onclick="uploadButton(this)" onchange="uploadNewPhoto(this.files)" accept="image/png, image/jpeg" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- use this to retrieve the meal id from edit meal -->
+                                <div class="row">
+                                    <div class="col id-of-meal">
+                                        <i><p hidden
+                                           type="text"
+                                           class="form-control form-control-class"
+                                           id="edit_meal_mealid">
+                                     </i>
+                                    </div>
+                                </div>
+
+
+                                <div class="row">
+                                    <div class="ui left icon input" style="min-width: 325px; margin-left:17%">
+                                        <input style="background: transparent; border: 2px solid #ECEAEA; border-radius: 25px; text-align: center" type="text" class="form-control form-control-class" id="edit_meal_mealname" placeholder="Name of the Meal">
+                                        <i class="shopping basket icon"></i>
+                                    </div>
+                                    <!-- <div class="col name-of-meal">
+                                        <i><input type="text" class="form-control form-control-class" id="edit_meal_mealname"
+                                        placeholder="Name of the meal"></i>
+                                    </div> -->
+                                </div>
+
+
+                                <div class="form-row">
+                                    <table id="edit-option-setup">
+                                        <tr>
+                                            <td>
+                                                <span><strong><i>Items in this meal</i></strong></span>
+                                            </td>
+                                            <td>
+                                                <select id="edit-option-items">
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4</option>
+                                            <option value="5">5</option>
+                                        </select>
+                                            </td>
+                                        </tr>
+                                        <tr>
+
+                                            <td>
+                                                <span style="padding-left: 30%"><strong><i>Item name</i></strong></span>
+                                            </td>
+                                            <td>
+                                                <span style="padding-left: 40px"><strong><i>Item Quantity</i></strong></span>
+                                            </td>
+                                        </tr>
+                                        <tr id="edit-option-item1">
+
+                                            <td>
+                                                <div class="ui left icon input">
+                                                    <input style="background: transparent; border: 2px solid #ECEAEA; border-radius: 25px; text-align: center" type="text" class="form-control form-control-class" id="edit_meal_option1_name" placeholder="(15 characters limit)" maxlength="15">
+                                                    <i class="cart arrow down icon"></i>
+                                                </div>
+                                                <!-- <input style="background: transparent" type="text" class="form-control form-control-class" placeholder="(15 characters limit)" id="edit_meal_option1_name" maxlength="15"> -->
+                                            </td>
+                                            <td>
+                                                <span style="padding-left:45%">
+                                            <select id="edit_meal_option1_qty">
+                                                <option value="1">1</option>
+                                                <option value="2">2</option>
+                                                <option value="3">3</option>
+                                                <option value="4">4</option>
+                                                <option value="5">5</option>
+                                                <option value="6">6</option>
+                                                <option value="7">7</option>
+                                                <option value="8">8</option>
+                                                <option value="9">9</option>
+                                                <option value="10">10</option>
+                                            </select>
+                                        </span>
+                                            </td>
+                                        </tr>
+                                        <tr id="edit-option-item2">
+
+                                            <td>
+                                                <div class="ui left icon input">
+                                                    <input style="background: transparent; border: 2px solid #ECEAEA; border-radius: 25px; text-align: center" type="text" class="form-control form-control-class" id="edit_meal_option2_name" placeholder="(15 characters limit)" maxlength="15">
+                                                    <i class="cart arrow down icon"></i>
+                                                </div>
+                                                <!-- <input style="background: transparent" type="text" class="form-control form-control-class" placeholder="(15 characters limit)" id="edit_meal_option2_name" maxlength="15"> -->
+                                            </td>
+                                            <td>
+                                                <span style="padding-left:45%">
+                                            <select id="edit_meal_option2_qty">
+                                                <option value="1">1</option>
+                                                <option value="2">2</option>
+                                                <option value="3">3</option>
+                                                <option value="4">4</option>
+                                                <option value="5">5</option>
+                                                <option value="6">6</option>
+                                                <option value="7">7</option>
+                                                <option value="8">8</option>
+                                                <option value="9">9</option>
+                                                <option value="10">10</option>
+                                            </select>
+                                        </span>
+                                            </td>
+                                        </tr>
+                                        <tr id="edit-option-item3">
+
+                                            <td>
+                                                <div class="ui left icon input">
+                                                    <input style="background: transparent; border: 2px solid #ECEAEA; border-radius: 25px; text-align: center" type="text" class="form-control form-control-class" id="edit_meal_option3_name" placeholder="(15 characters limit)" maxlength="15">
+                                                    <i class="cart arrow down icon"></i>
+                                                </div>
+                                                <!-- <input style="background: transparent" type="text" class="form-control form-control-class" placeholder="(15 characters limit)" id="edit_meal_option3_name" maxlength="15"> -->
+                                            </td>
+                                            <td>
+                                                <span style="padding-left:45%">
+                                            <select id="edit_meal_option3_qty">
+                                                <option value="1">1</option>
+                                                <option value="2">2</option>
+                                                <option value="3">3</option>
+                                                <option value="4">4</option>
+                                                <option value="5">5</option>
+                                                <option value="6">6</option>
+                                                <option value="7">7</option>
+                                                <option value="8">8</option>
+                                                <option value="9">9</option>
+                                                <option value="10">10</option>
+                                            </select>
+                                        </span>
+                                            </td>
+                                        </tr>
+                                        <tr id="edit-option-item4">
+
+                                            <td>
+                                                <div class="ui left icon input">
+                                                    <input style="background: transparent; border: 2px solid #ECEAEA; border-radius: 25px; text-align: center" type="text" class="form-control form-control-class" id="edit_meal_option4_name" placeholder="(15 characters limit)" maxlength="15">
+                                                    <i class="cart arrow down icon"></i>
+                                                </div>
+                                                <!-- <input style="background: transparent" type="text" class="form-control form-control-class" placeholder="(15 characters limit)" id="edit_meal_option4_name" maxlength="15"> -->
+                                            </td>
+                                            <td>
+                                                <span style="padding-left:45%">
+                                            <select id="edit_meal_option4_qty">
+                                                <option value="1">1</option>
+                                                <option value="2">2</option>
+                                                <option value="3">3</option>
+                                                <option value="4">4</option>
+                                                <option value="5">5</option>
+                                                <option value="6">6</option>
+                                                <option value="7">7</option>
+                                                <option value="8">8</option>
+                                                <option value="9">9</option>
+                                                <option value="10">10</option>
+                                            </select>
+                                        </span>
+                                            </td>
+                                        </tr>
+                                        <tr id="edit-option-item5">
+
+                                            <td>
+                                                <div class="ui left icon input">
+                                                    <input style="background: transparent; border: 2px solid #ECEAEA; border-radius: 25px; text-align: center" type="text" class="form-control form-control-class" id="edit_meal_option5_name" placeholder="(15 characters limit)" maxlength="15">
+                                                    <i class="cart arrow down icon"></i>
+                                                </div>
+                                                <!-- <input style="background: transparent" type="text" class="form-control form-control-class" placeholder="(15 characters limit)" id="edit_meal_option5_name" maxlength="15"> -->
+                                            </td>
+                                            <td>
+                                                <span style="padding-left:45%">
+                                            <select id="edit_meal_option5_qty">
+                                                <option value="1">1</option>
+                                                <option value="2">2</option>
+                                                <option value="3">3</option>
+                                                <option value="4">4</option>
+                                                <option value="5">5</option>
+                                                <option value="6">6</option>
+                                                <option value="7">7</option>
+                                                <option value="8">8</option>
+                                                <option value="9">9</option>
+                                                <option value="10">10</option>
+                                            </select>
+                                        </span>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="form-row">
+                                    <div class="left-content" id="meal-id">
+                                        <strong><i>Meal Price</i></strong>
+                                    </div>
+                                    <div class="right-content">
+                                        <input style="background: transparent" type="number" name="price" class="right-content form-control form-control-class" id="edit_meal_price">
+                                    </div>
+                                    <!-- <div class="col-md-6" id="meal-id">
+                                        <strong><i>Meal Price</i></strong>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <input type="number" name="price" class="form-control form-control-class" id="edit_meal_price">
+                                    </div> -->
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button value="submit" onclick="updateMeal();" class="btn btn-primary post-meal-btn">Update
+                        Meal</button>
+                            <!-- update button, calls update meal javascript -->
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+{% endblock %}

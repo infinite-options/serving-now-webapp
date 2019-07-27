@@ -1,0 +1,212 @@
+body,
+html {
+    height: 80%;
+}
+
+.backgroundImgSetting {
+    background-color: #a0050f;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.container.container-class {
+    margin-top: 10%;
+    margin-left: 5%;
+}
+
+.row .whole-view {
+    position: center;
+    margin-top: 20%;
+    margin-left: none;
+}
+
+div.col-4.login-class {
+    /* display: flex; */
+    margin: none;
+}
+
+.form-class {
+    position: absolute;
+    z-index: 2;
+    float: right;
+    width: 314px;
+    height: 51px;
+    display: block;
+    margin-top: 60%;
+    margin-left: 48%;
+}
+
+.login-screen-control {
+    margin-top: 103px;
+}
+
+.init-login-btn {
+    margin-left: 25%;
+}
+
+.form-group ::placeholder {
+    text-align: center;
+    font-style: italic;
+    color: #ECEAEA;
+}
+
+div .reset-class {
+    margin-top: 5%;
+    margin-left: none;
+    margin-right: 1%;
+}
+
+div .col-4 image {
+    display: flex;
+    justify-items: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.center-img {
+    flex-shrink: 0;
+    margin-top: -25%;
+    margin-left: 5%;
+    width: 550px;
+    height: 550px;
+}
+
+.col-4 .register-btn {
+    display: block;
+    margin-top: 20%;
+}
+
+.button {
+    Width: 166px;
+    height: 38px;
+    border-radius: 100px;
+    background: transparent;
+    border: 2px solid #ECEAEA;
+    color: #ECEAEA;
+    font-style: italic;
+}
+
+button.button.login-btn {
+    margin-left: 23%;
+}
+
+a {
+    display: block;
+    height: 115px;
+    color: #ECEAEA;
+    text-decoration: none !important;
+    text-align: center;
+    font-style: italic;
+    margin: none;
+}
+
+.form-control-class {
+    border-radius: 100px;
+    background: transparent;
+    border: 2px solid #ECEAEA;
+}
+
+.form-class input[type=password] {
+    color: #ECEAEA;
+    background-color: #a0050f;
+}
+
+.form-class input[type=text] {
+    color: #ECEAEA;
+    background-color: #a0050f;
+    font-style: italic;
+}
+
+.button.regbtn {
+    margin-top: 106%;
+    margin-left: 55%;
+}
+
+row::after {
+    display: block;
+}
+
+
+/* ################# kitchen Home Page CSS ################## */
+
+.kitchen-logo {
+    height: 100px;
+    width: 100px;
+    margin-top: none;
+    margin-left: none;
+}
+
+.kitchen-container-first {
+    margin-top: 5%;
+}
+
+.kitchen-name-tag {
+    margin-left: 7%;
+    margin-top: 1%;
+}
+
+.kitchen-addmeal-btn {
+    background: #a0050f;
+    width: 110px;
+    margin-top: 2.7%;
+}
+
+.kitchen-name-bar {
+    margin-top: 8px;
+}
+
+#name {
+    background-color: #a0050f;
+    color: white;
+    border-radius: 10px;
+}
+
+
+/* ############### mobile #################### */
+
+@media (max-width: 1200px) {
+    .center-img {
+        /* margin-top: 15%; */
+        margin-left: auto;
+    }
+    .form-class {
+        margin-top: 85%;
+    }
+    .button.regbtn {
+        margin-top: 140%;
+        margin-left: 55%;
+    }
+}
+
+@media (max-width: 1000px) {
+    .center-img {
+        margin-left: auto;
+    }
+    .form-class {
+        margin-top: 112%;
+    }
+    .button.regbtn {
+        margin-top: 192%;
+        margin-left: 97%;
+    }
+}
+
+@media (max-width: 800px) {
+    .center-img {
+        margin-left: auto;
+    }
+}
+
+@media (max-width: 770px) {
+    .button.regbtn {
+        margin-top: 258%;
+        margin-left: -136%;
+    }
+}
+
+@media (max-width: 600px) {
+    .button.regbtn {
+        margin-top: 278%;
+        margin-left: -133%;
+    }
+}

@@ -1,0 +1,4 @@
+cron:
+- description: 'hourly kitchen check'
+  url: /kitchens/hours
+  schedule: every 30 minutes synchronized

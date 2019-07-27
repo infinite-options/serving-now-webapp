@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Kitchen Register Form</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+	<link href="{{ url_for('.static', filename='style.css') }}" rel="stylesheet"/>
+	<script src="{{ url_for('.static', filename='register.js') }}"></script>
+
+	<script>
+		// Example starter JavaScript for disabling form submissions if there are invalid fields
+		(function() {
+			'use strict';
+			window.addEventListener('load', function() {
+				// Fetch all the forms we want to apply custom Bootstrap validation styles to
+				var forms = document.getElementsByClassName('needs-validation');
+				// Loop over them and prevent submission
+				var validation = Array.prototype.filter.call(forms, function(form) {
+					form.addEventListener('submit', function(event) {
+						if (form.checkValidity() === false) {
+							event.preventDefault();
+							event.stopPropagation();
+						}
+						form.classList.add('was-validated');
+					}, false);
+				});
+			}, false);
+		})();
+	</script>
+</head>
+<body>
+<div class="container">
+	<div class="card">
+		<div class="card-header">
+			<h3 class="card-title">Kitchen Registration Form</h3>
+		</div>
+		<form class="needs-validation" novalidate>
+			{% with messages = get_flashed_messages() %}
+			    {% if messages %}
+			        <ul class=flashes style="color: red">
+			        {% for message in messages %}
+			            <li>{{ message }}</li>
+			        {% endfor %}
+			        </ul>
+			    {% endif %}
+			{% endwith %}
+			<div class="card-body">
+				<div class="col-md-12 col-sm-12">
+
+					<div class="form-row">
+						<div class="col-md-12 col-sm-12">
+							<input type="email" class="form-control" id="email" placeholder="Email" required/>
+							<div class="invalid-feedback">
+								Please provide a valid email ID.
+							</div>
+						</div>
+					</div>
+
+					<div class="form-row">
+						<div class="col-md-12 col-sm-12">
+							<input type="text" class="form-control" id="username" placeholder="username" required/>
+							<div class="invalid-feedback">
+								Please provide a username.
+							</div>
+						</div>
+					</div>
+
+					<div class="form-row">
+						<div class="col-md-12 col-sm-12">
+							<input type="password" class="form-control" id="password" placeholder="password" required/>
+							<div class="invalid-feedback">
+								Please provide a password.
+							</div>
+						</div>
+					</div>
+
+					<div class="form-row">
+						<div class="col-md-12 col-sm-12">
+							<input type="password" class="form-control" id="verify-password" placeholder="verify password" required/>
+							<div class="invalid-feedback">
+								Please enter password again.
+							</div>
+						</div>
+					</div>
+
+					<div class="form-row">
+						<div class="col-md-12 col-sm-12">
+							<input type="text" class="form-control" id="name" placeholder="Kitchen Name" required/>
+							<div class="invalid-feedback">
+								Please provide a Kitchen name.
+							</div>
+						</div>
+					</div>
+
+
+					<div class="form-row">
+						<div class="col-md-12 col-sm-12">
+							<lable for="kitchendescription" class="col-form-label"> Kitchen Description</lable>
+							<textarea rows="2" class="form-control" id="description"> </textarea>
+						</div>
+					</div>
+
+					<div class="form-row">
+						<div class="col-md-12 col-sm-12">
+							<input type="text" class="form-control" id="first_name" placeholder="First Name" required/>
+							<div class="invalid-feedback">
+								Please provide a First Name.
+							</div>
+
+							<input type="text" class="form-control" id="last_name" placeholder="Last Name" required/>
+							<div class="invalid-feedback">
+								Please provide a Last Name.
+							</div>
+						</div>
+					</div>
+
+					<div class="form-row">
+						<div class="col-md-12 col-sm-12">
+							<input type="text" class="form-control" id="street" placeholder="Address" required/>
+							<div class="invalid-feedback">
+								Please provide Address of Kitchen.
+							</div>
+						</div>
+					</div>
+
+					<div class="form-row">
+						<div class="col-md-12 col-sm-12">
+							<input type="text" class="form-control" id="city" placeholder="City" required/>
+							<div class="invalid-feedback">
+								Please provide a valid City.
+							</div>
+						</div>
+					</div>
+
+					<div class="form-row">
+						<div class="col-md-12 col-sm-12">
+							<input type="text" class="form-control" id="state" placeholder="State" required/>
+							<div class="invalid-feedback">
+								Please provide a valid State.
+							</div>
+						</div>
+					</div>
+
+					<div class="form-row">
+						<div class="col-md-12 col-sm-12">
+							<input type="number" class="form-control" id="zipCode" placeholder="Zip Code" required/>
+							<div class="invalid-feedback">
+								Please provide a valid Zip Code.
+							</div>
+						</div>
+					</div>
+
+					<div class="form-row">
+						<div class="col-md-12 col-sm-12">
+							<input type="tel" class="form-control" id="phone_number" placeholder="Phone Number" required/>
+							<div class="invalid-feedback">
+								Please provide a valid Phone Number.
+							</div>
+						</div>
+					</div>
+
+					<div class="form-row">
+						<div class="col-md-12 col-sm-12">
+							<label for="OpenTime" class="col-form-label">Kitchen Open Time</label>
+							<input type="time" class="form-control" placeholder="Kitchen Open Time" id="open_time" required/>
+							<div class="invalid-feedback">
+								Please provide Kitchen's Open Time.
+							</div>
+						</div>
+					</div>
+
+					<div class="form-row">
+						<div class="col-md-12 col-sm-12">
+							<label for="CloseTime" class="col-form-label">Kitchen Close Time</label>
+							<input type="time" class="form-control" placeholder="Kitchen Close Time" id="close_time" required/>
+							<div class="invalid-feedback">
+								Please provide Kitchen's Close Time.
+							</div>
+						</div>
+					</div>
+
+					<!-- <div class="form-row">
+						<div class="col-md-12 col-sm-12">
+								<label>Do you Deliver?</label>
+							<input type="checkbox"/>
+						</div>
+					</div> -->
+
+					<!-- <div class="form-row">
+						<div class="col-md-12 col-sm-12">
+							<label for="PickUpTime" class="col-form-label">Pick Up Time </label>
+							<input type="time" class="form-control" placeholder="Pick Up Time" id="pickup_time"/>
+						</div>
+					</div> -->
+
+					<div class="form-row">
+						<div class="col-md-12 col-sm-12">
+							<button class="btn btn-primary btn-block" value="submit" onclick="registerKitchen();">Register</button>
+						</div>
+					</div>
+
+					<div class="form-row">
+						<div class="col-md-12 col-sm-12">
+							<a class="btn btn-light btn-block" href="{{url_for('login')}}">Cancel</a>
+						</div>
+					</div>
+			</div>
+		</form>
+		</div>
+
+	</div>
+</div>
+</body>
+</html>

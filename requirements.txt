@@ -1,0 +1,9 @@
+flask-restful
+flask-cors
+flask
+jinja2
+requests
+boto3
+flask-login
+pytz
+Flask-Mail

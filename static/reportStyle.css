@@ -1,0 +1,32 @@
+/*
+* @Author: Japan Parikh
+* @Date:   2019-05-29 17:03:11
+* @Last Modified by:   Japan Parikh
+* @Last Modified time: 2019-05-29 17:09:41
+*/
+
+.table-borderless td,
+.table-borderless th {
+  border: 0;
+  border-top: 0 ! important;
+}
+
+.time-col {
+  width: 80px;
+}
+
+.name-col {
+  width: 150px;
+}
+
+.address-col {
+  width: 200px;
+}
+
+.phone-col {
+  width: 100px;
+}
+
+.orderbtn-col {
+  width: 100px;
+}

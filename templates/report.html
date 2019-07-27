@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Order Report</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="ordermeal.js"></script>
+</head>
+<body>
+
+  {% extends "main.html" %}
+
+  {% block content %}
+
+  <script src="ordermeal.js"></script>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('.static', filename='reportStyle.css' )}}">
+
+  <br>
+  <br>
+  <!-- <p> Today's Meal: </p>
+  {% for meal in mealsToCook %}
+  <div class="meal-img">
+  <img src="{{ meal.photo.S }}">
+</div>
+<div class="meal-name">
+{{ meal.meal_name.S }}
+</div>
+<div class="meal-description">
+{{ meal.description.S }}
+</div>
+{% endfor %} -->
+<!-- <div id="inventory">
+<h4><i>Inventory Report</i></h4>
+<strong><p id="num_orders"></p></strong>
+{% for meal in mealsToCook %}
+<p>{{ meal.meal_name.S }}: {{ meal.qty}}</p>
+{% endfor %}
+</div> -->
+
+<main role="main" class="container-fluid">
+  <div class="row">
+    <div class="col-md-8">
+      <h1>Delivery Report</h1>
+      {% if not orders %}
+        <h4 class="text-secondary">You currently have no orders placed.</h4>
+      {% endif %}
+      {% for order in orders %}
+      {% set outer_loop = loop %}
+        <div class="border border-light p-2">
+          <table class='table table-borderless mb-0'>
+            <tbody>
+              <tr>
+                <td class="time-col align-middle table-borderless" scope="col">{{ order.created_at.S }}</td>
+                <th class="name-col align-middle table-borderless" scope="col">{{ order.name.S }}</th>
+                <td class="address-col align-middle table-borderless" >
+                  <div> {{ order.street.S }} </div>
+                  <div> {{ order.city.S }}, {{ order.state.S }} {{ order.zipCode.N }} </div>
+                </td>
+                <td class="phone-col align-middle table-borderless" >{{ order.phone.S }}</td>
+                <td class="orderbtn-col align-middle table-borderless">
+                  <button class="btn btn-outline-primary btn-sm right-content" type=x"button" data-toggle="collapse" data-target="#collapseExample{{loop.index}}" aria-expanded="false" aria-controls="collapseExample">
+                    Orders
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="order-details">
+            <div class="collapse" id="collapseExample{{outer_loop.index}}">
+              <table class="table">
+                <thead class="thead-light">
+                  <tr>
+                    <span class="align-middle text-center">
+                      <th class="align-middle text-center" scope="col">Meal</th>
+                      <th class="align-middle text-center" scope="col">Name</th>
+                      <th class="align-middle text-center" scope="col">Quantity</th>
+                      <th class="align-middle text-center" scope="col">Revenue</th>
+                    </span>
+                  </tr>
+                </thead>
+                {% for item in order.order_items.L %}
+                  {% if item.name %}
+                    <tbody>
+                      <tr>
+                        <td class="align-middle text-center">
+                          <img src={{item.photo.S}} class="card-img-top" style="max-width:290px; height:174px">
+                        </td>
+                        <td class="align-middle text-center">{{ item.name }}</td>
+                        <td class="align-middle text-center">{{ item.qty }}</td>
+                        <td class="align-middle text-center">${{ item.revenue }}</td>
+                      </tr>
+                    </tbody>
+                  {% else %}
+                    {% if not item.photo %}
+                      <div class="alert alert-danger" role="alert">
+                        <p> Meal with id: <strong>{{item.M.meal_id.S}}</strong> is no longer available or has been removed. </p>
+                      </div>
+                    {% endif %}
+                  {% endif %}
+                {% endfor %}
+              </table>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+    <div class="col-md-4">
+      <div class="content-section">
+        <h1>Current Statistics</h1>
+        <table class="table">
+          <tbody>
+            <tr>
+              <th> Total Revenue for Today: </th>
+              <th class="text-center"> ${{ totalRevenue }} </th>
+            </tr>
+          </tbody>
+          <tbody>
+            <tr class="table-active">
+              <th> Meal </th>
+              <th class="text-center" > Quantity Totals </th>
+            </tr>
+          </tbody>
+          {% for meal in todaysMeals %}
+            <tbody>
+              <tr>
+                <td class="text-muted"> {{ meal.meal_name.S }} </td>
+                {% if totalMealQuantity[meal.meal_id.S] %}
+                  <td class="text-center text-muted"> {{ totalMealQuantity[meal.meal_id.S] }} </td>
+                {% else %}
+                  <td class="text-center text-muted"> 0 </td>
+                {% endif %}
+              </tr>
+            </tbody>
+          {% endfor %}
+        </table>
+        {% if not todaysMeals %}
+          <h4 class="text-secondary">You currently have no meals made.</h4>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</main>
+
+{% endblock %}
+<!--
+</body>
+</html>
