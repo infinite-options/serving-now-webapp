@@ -355,14 +355,14 @@ def kitchen(id):
     apiURL = API_BASE_URL +'/api/v1/meals/' + current_user.get_id()
     # apiURL = 'http://localhost:5000/api/v1/meals/' + current_user.get_id()
 
-    print("API URL: " + str(apiURL))
+    # print("API URL: " + str(apiURL))
     # apiURL = API_BASE_URL + '/api/v1/meals/' + '5d114cb5c4f54c94a8bb4d955a576fca'
     response = requests.get(apiURL)
     #
-    todaysMenu = response.json().get('result')
-    print("\n\n kitchen id:" + str(id) + "\n\n")
+    allMeals = response.json().get('result')
+    # print("\n\n kitchen id:" + str(id) + "\n\n")
     #
-    # todays_date = datetime.now(tz=timezone('US/Pacific')).strftime("%Y-%m-%d")
+    todays_date = datetime.now(tz=timezone('US/Pacific')).strftime("%Y-%m-%d")
 
     # allMeals = db.scan(
     #     TableName='meals',
@@ -372,19 +372,25 @@ def kitchen(id):
     #     }
     # )
 
-    # meals = {}
-    # previousMeals = {}
-    # mealItems = []
-    # previousMealsItems = []
-    #
-    # for meal in allMeals['Items']:
-    #     if todays_date in meal['created_at']['S']:
-    #         mealItems.append(meal)
-    #     else:
-    #         previousMealsItems.append(meal)
-    #
-    # meals['Items'] = mealItems
-    # previousMeals['Items'] = previousMealsItems
+    meals = {}
+    previousMeals = {}
+    mealItems = []
+    previousMealsItems = []
+
+    for meal in allMeals:
+        if todays_date in meal['created_at']['S']:
+            mealItems.append(meal)
+        else:
+            previousMealsItems.append(meal)
+
+    meals['Items'] = mealItems
+    previousMeals['Items'] = previousMealsItems
+
+    print("\n\n" + str(meals) + "\n\n")
+    print("\n\n" + str(previousMeals) + "\n\n")
+
+    todaysMenu = meals["Items"]
+    pastMenu = previousMeals["Items"]
     #
     # print("\n\n" + str(meals) + "\n\n")
     # print("\n\n" + str(previousMeals) + "\n\n")
@@ -411,7 +417,7 @@ def kitchen(id):
                             kitchen_name=login_session['kitchen_name'],
                             id=login_session['user_id'],
                             todaysMeals=todaysMenu,
-                            #pastMenu = pastMenu
+                            pastMenu = pastMenu
                             )
 
 
@@ -558,6 +564,30 @@ def postMeal():
     # except:
     #     raise BadRequest('Request failed. Please try again later.')
 
+@app.route('/kitchens/meals/renew')
+@login_required
+def renewPastMeals():
+
+    todays_date = datetime.now(tz=timezone('US/Pacific')).strftime("%Y-%m-%dT%H:%M:%S")
+
+    allMeals = db.scan(
+        TableName='meals',
+        FilterExpression='kitchen_id = :val',
+        ExpressionAttributeValues={
+            ':val': {'S': login_session['user_id']},
+        }
+    )
+
+    for meal in allMeals['Items']:
+
+        renewedMeal = db.update_item(TableName='meals',
+                                     Key={'meal_id': {'S': str(meal['meal_id']['S'])}},
+                                     UpdateExpression='SET created_at = :val',
+                                     ExpressionAttributeValues={
+                                        ':val': {'S':todays_date}}
+                                     )
+
+    return redirect(url_for('kitchen', id=login_session['user_id']))
 
 @app.route('/kitchens/meals/<string:meal_id>', methods=['POST'])
 @login_required

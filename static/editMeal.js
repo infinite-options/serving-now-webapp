@@ -22,7 +22,7 @@ $(document).ready(function() {
         //        console.log(meal_options_old);
         //        console.log(meal_options_old.length);
 
-        var mealOptionsSelected = meal_options_old.length - 1;
+        var mealOptionsSelected = meal_options_old.length;
         var mealOptions = [];
 
         $('#edit-option-items').val(mealOptionsSelected);

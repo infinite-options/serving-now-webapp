@@ -165,13 +165,14 @@
                 <br>
                 <p><i>{{ description }}</p></i>
                     <!-- <div class="add-meal-btn-div"> -->
-                    <button type="button" class="btn mt-5 btn-primary add-meal-btn" data-toggle="modal" data-target="#addMeal">
-                    <i>Add Meal</i>
-                </button>
             </div>
         </div>
         <div id="currentmeal">
-            <strong><i>Current Meal:</i></strong>
+            <strong><i>Current Meals:</i></strong>
+            <br>
+            <button type="button" style="margin-left: -13px;"class="btn btn-primary add-meal-btn" data-toggle="modal" data-target="#addMeal">
+            <i>Add Meal</i>
+        </button>
         </div>
         <div id="currentmeal-card">
             <div class="row">
@@ -234,6 +235,10 @@
         </div>
         <div id="pastmeal">
             <strong><i>Past Meals: </i></strong>
+            <br>
+            <button type="button" style="margin-left: -13px;" class="btn btn-primary add-meal-btn">
+                <a class="text-light" href="{{ url_for('renewPastMeals') }}"><i>Renew Meals</i></a>
+            </button>
         </div>
         <div id="pastmeal-card">
           <div class="row">
@@ -254,11 +259,11 @@
                                       </span> -->
                                       <div class="row">
                                           <div class="col">
-                                              <input style="margin-top:110px" type="image" class="ui inverted" width="40" height="40" src="{{ url_for('.static', filename='EditIcon.png') }}" data-meal_id="{{meal.meal_id.S}}" data-toggle="modal" id="edit-meal-btn" data-meal_name="{{meal.meal_name.S}}"
+                                              <input type="image" class="ui inverted" width="40" height="40" src="{{ url_for('.static', filename='EditIcon.png') }}" data-meal_id="{{meal.meal_id.S}}" data-toggle="modal" id="edit-meal-btn" data-meal_name="{{meal.meal_name.S}}"
                                                   data-meal_photo="{{meal.photo.S}}" data-meal_price="{{meal.price.S}}" data-meal_description="{{meal.description.S}}" data-target="#editMeal">
                                           </div>
-                                          <div class="col" style="margin-left:75px">
-                                              <input style="margin-top:110px" onclick="deleteMeal('{{meal.meal_id.S}}');" type="image" class="ui inverted" width="40" height="40" src="{{ url_for('.static', filename='TrashIcon.png') }}" id="delete-meal-btn">
+                                          <div class="col">
+                                              <input onclick="deleteMeal('{{meal.meal_id.S}}');" type="image" class="ui inverted" width="40" height="40" src="{{ url_for('.static', filename='TrashIcon.png') }}" id="delete-meal-btn">
                                           </div>
                                       </div>
                                   </div>
