@@ -64,63 +64,63 @@
             <div class= "wrap">
                 <div class="option-container">
                     <div class= "info1">
-                            <div class="row whole-view">
-                                <div class="col-4 login-class">
-                                        <div class="header-conteiner">
-                                            <div class="logo-img">
-                                                <img src="{{ url_for('.static', filename='PersonIcon.png') }}" style="width:50px">
-                                            </div>
-                                            <div class="form-group Kitchen-Registration">
-                                                <input type="text" class="form-control form-control-class" id="first_name" style="height:51px; width:390" placeholder="First Name" required>
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <input type="text" class="form-control form-control-class" id="last_name" style="margin-left:50px; height:51px; width:390" placeholder="Last Name" required>
-                                        </div>
-                                    <div class="header-conteiner">
-                                        <div class="logo-img">
-                                            <img src="{{ url_for('.static', filename='PhoneIcon.png') }}" style="width:50px">
-                                        </div>
-                                        <div class="form-group">
-                                            <input type="text" class="form-control form-control-class" id="phone_number" style="height:51px; width:390" placeholder="Phone Number" required>
-                                        </div>
+                        <div class="row whole-view">
+                            <div class="login-class">
+                                <div class="header-conteiner">
+                                    <div class="logo-img">
+                                        <img src="{{ url_for('.static', filename='PersonIcon.png') }}" style="width:50px">
                                     </div>
-                                    <div class="header-conteiner">
-                                        <div class="logo-img">
-                                            <img src="{{ url_for('.static', filename='MailIcon.png') }}" style="width:50px">
-                                        </div>
-                                        <div class="form-group">
-                                                <input type="text" class="form-control form-control-class" id="email" style="height:51px; width:390" placeholder="Email" required>
-                                            </div>
+                                    <div class="form-group Kitchen-Registration">
+                                        <input type="text" class="form-control form-control-class" id="first_name" style="height:51px; width:390" placeholder="First Name" required>
                                     </div>
                                 </div>
-                            </div>
-                    </div>
-
-                    <div class= "info2">
-                            <div class="row whole-view">
-                                <div class="col-4 login-class">
-                                    <div class="header-conteiner">
-                                        <div class="logo-img">
-                                            <img src="{{ url_for('.static', filename='HomeIcon.png') }}" style="width:50px">
-                                        </div>
-                                        <div class="form-group">
-                                            <input type="text" class="form-control form-control-class" id="street" style="height:51px; width:390" placeholder="street" required>
-                                        </div>
+                                <div class="form-group">
+                                    <input type="text" class="form-control form-control-class" id="last_name" style="margin-left:50px; height:51px; width:390" placeholder="Last Name" required>
+                                </div>
+                                <div class="header-conteiner">
+                                    <div class="logo-img">
+                                        <img src="{{ url_for('.static', filename='PhoneIcon.png') }}" style="width:50px">
                                     </div>
                                     <div class="form-group">
-                                        <input type="text" class="form-control form-control-class" id="city" style="margin-left:50px; height:51px; width:390" placeholder="City" required>
+                                        <input type="text" class="form-control form-control-class" id="phone_number" style="height:51px; width:390" placeholder="Phone Number" required>
                                     </div>
-                                    <div class="address-container">
-                                        <div class="form-group state">
-                                            <input type="text" class="form-control form-control-class" id="state" style="margin-left:50px; height:51px; width:189; display:inline" placeholder="State" required>
-                                        </div>
-                                        <div class="form-group zipCode">
-                                            <input type="text" class="form-control form-control-class" id="zip_code" style="margin-left:10px; height:51px; width:189" placeholder="ZipCode" required>
-                                        </div>
+                                </div>
+                                <div class="header-conteiner">
+                                    <div class="logo-img">
+                                        <img src="{{ url_for('.static', filename='MailIcon.png') }}" style="width:50px">
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="text" class="form-control form-control-class" id="email" style="height:51px; width:390" placeholder="Email" required>
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                    
+                    <div class= "info2">
+                        <div class="row whole-view">
+                            <div class="login-class">
+                                <div class="header-conteiner">
+                                    <div class="logo-img">
+                                        <img src="{{ url_for('.static', filename='HomeIcon.png') }}" style="width:50px">
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="text" class="form-control form-control-class" id="street" style="height:51px; width:390" placeholder="street" required>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" class="form-control form-control-class" id="city" style="margin-left:50px; height:51px; width:390" placeholder="City" required>
+                                </div>
+                                <div class="address-container">
+                                    <div class="form-group state">
+                                        <input type="text" class="form-control form-control-class" id="state" style="margin-left:50px; height:51px; width:189; display:inline" placeholder="State" required>
+                                    </div>
+                                    <div class="form-group zipCode">
+                                        <input type="text" class="form-control form-control-class" id="zip_code" style="margin-left:10px; height:51px; width:189" placeholder="ZipCode" required>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
             </div>
         </div>
@@ -216,7 +216,7 @@
             </div>
         </div>
         <div class="center-wrapper">
-            <div class="col-4 register-btn">
+            <div class="register-btn">
                 <button type="button" class="button regbtn" value="submit" onclick="registerKitchen();">Submit</button>
             </div>
         </div>

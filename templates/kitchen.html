@@ -1,7 +1,6 @@
 {% extends "main.html" %} {% block content%}
 
-<script src="{{ url_for('.static', filename='script.js') }}">
-</script>
+<script src="{{ url_for('.static', filename='script.js') }}"></script>
 <!-- References scripts for web interaction -->
 <script src="{{ url_for('.static', filename='addMeal.js') }}"></script>
 <script src="{{ url_for('.static', filename='editMeal.js') }}"></script>
@@ -104,6 +103,14 @@
         margin-left: 42%;
     }
 
+    .meal-card {
+      min-height: 327px !important;
+    }
+
+    .meal-info {
+      min-height: 47px !important;
+    }
+
     .kitchen-username {
         cursor: text !important;
         width: 150px;
@@ -180,7 +187,7 @@
                 <!-- % beginning of JS logic -->
                 <div class="col-md-2 parent-class" style="padding-bottom: 2rem;" data-meal_id="{{meal.meal_id.S}}">
                     <div class="ui special cards">
-                        <div class="card">
+                        <div class="card meal-card">
                             <div class="blurring dimmable image">
                                 <div class="ui dimmer">
                                     <div class="content">
@@ -208,7 +215,7 @@
                                 <div style="position:absolute" class="btn btn-primary quantity-no">{{ meal.count_today.N }}</div>
                             </div>
                             <div class="content">
-                                <a class="header"><i>{{meal.meal_name.S}}</i></a>
+                                <div class="header meal-info"><i>{{meal.meal_name.S}}</i></div>
                                 <div class="meta">
                                     <span class="date"><i>{{meal.description.S}}</i></span>
                                 </div>
@@ -245,8 +252,8 @@
             {% for meal in pastMenu %}
             <!-- % beginning of JS logic -->
               <div class="col-md-2 parent-class" style="padding-bottom: 2rem;" data-meal_id="{{meal.meal_id.S}}">
-                  <div class="ui special cards">
-                      <div class="card">
+                  <div class="ui special cards meal-card ">
+                      <div class="card meal-card">
                           <div class="blurring dimmable image">
                               <div class="ui dimmer">
                                   <div class="content">
@@ -274,10 +281,10 @@
                               <div style="position:absolute" class="btn btn-primary quantity-no">{{ meal.count_today.N }}</div>
                           </div>
                           <div class="content">
-                              <a class="header"><i>{{meal.meal_name.S}}</i></a>
-                              <div class="meta">
-                                  <span class="date"><i>{{meal.description.S}}</i></span>
-                              </div>
+                            <div class="header meal-info"><i>{{meal.meal_name.S}}</i></div>
+                            <div class="meta">
+                                <span class="date"><i>{{meal.description.S}}</i></span>
+                            </div>
                           </div>
                           <div class="extra content">
                               <span class="right floated">
