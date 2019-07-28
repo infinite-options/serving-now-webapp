@@ -485,12 +485,15 @@ def kitchenSettings(id):
                                     )
 
     kitchen = db.scan(TableName='kitchens',
-                   FilterExpression='kitchen_id = :value',
-                   ExpressionAttributeValues={
-                       ':value': {'S': id}
-                   })
+                      FilterExpression='kitchen_id = :value',
+                      ExpressionAttributeValues={
+                          ':value': {'S': id}
+                      })
 
-    return render_template('kitchenSettings.html', id=id, kitchen=kitchen['Items'][0])
+    return render_template('kitchenSettings.html',
+                            id=id,
+                            kitchen=kitchen['Items'][0],
+                            kitchen_name=login_session['kitchen_name'])
 
 
 @app.route('/kitchens/meals/create', methods=['POST'])
@@ -759,10 +762,11 @@ def report():
                 item['photo'] = mealInfo['photo']
                 item['qty'] = int(item['M']['qty']['N'])
                 item['revenue'] = int(mealInfo['price']['S']) * item['qty']
+                item['price'] = int(mealInfo['price']['S'])
+                totalRevenue += float(item['revenue'])
                 #totalRevenue += item['revenue']
                 if order_id_str in totalMealQuantity:
                     totalMealQuantity[order_id_str] += item['qty']
-                    totalRevenue += float(totalMealQuantity[order_id_str])
                 else:
                     totalMealQuantity[order_id_str] = item['qty']
                 if item['qty'] > 0:
