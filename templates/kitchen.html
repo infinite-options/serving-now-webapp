@@ -176,18 +176,17 @@
         <div id="logo">
             <div> <img src="{{ url_for('.static', filename='ServingNowLogo.png') }}" class="serving-now-logo"></div>
             <div>
-                <strong><i><h4>{{ kitchen_name }}</h4></i></strong>
-                <br>
+                <h1><strong><i>{{ kitchen_name }}</i></strong></h1>
                 <p><i>{{ description }}</p></i>
                     <!-- <div class="add-meal-btn-div"> -->
             </div>
         </div>
-        <div id="currentmeal">
+        <h2 id="currentmeal">
             <strong><i>Current Meals:</i></strong>
             <br>
-            <button type="button" style="margin-left: -13px;"class="btn btn-primary add-meal-btn" data-toggle="modal" data-target="#addMeal">
+            <button type="button" class="btn btn-primary add-meal-btn" data-toggle="modal" data-target="#addMeal">
             <i>Add Meal</i>
-        </button>
+        </h2>
         </div>
         <div id="currentmeal-card">
             <div class="row">
@@ -242,13 +241,13 @@
                 {% endfor %}
             </div>
         </div>
-        <div id="pastmeal">
+        <h2 id="pastmeal">
             <strong><i>Past Meals: </i></strong>
             <br>
-            <button type="button" style="margin-left: -13px;" class="btn btn-primary add-meal-btn">
+            <button type="button" class="btn btn-primary add-meal-btn">
                 <a class="text-light" href="{{ url_for('renewPastMeals') }}"><i>Renew Meals</i></a>
             </button>
-        </div>
+        </h2>
         <div id="pastmeal-card">
           <div class="row">
             {% for meal in pastMenu %}

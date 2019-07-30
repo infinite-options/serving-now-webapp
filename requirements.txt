@@ -1,5 +1,7 @@
 flask-restful
+flask_login
 flask-cors
+wtforms
 flask
 jinja2
 requests

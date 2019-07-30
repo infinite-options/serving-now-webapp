@@ -1,228 +1,296 @@
-<!-- Written by Risako on 2019-07-12 @20:00 -->
-
-<html lang="en">
-
-<head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-    <!-- jquery script -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-
-    <!-- JavaScript  -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js " integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1 " crossorigin="anonymous "></script>
-
-    <!-- Bootstrap CSS -->
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{{ kitchen_name }}</title>
+    <!-- bootstrap-css -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <link rel="stylesheet" href="{{ url_for('.static', filename='kitchenStyle.css') }}" >
-    <script src="{{ url_for('.static', filename='register.js') }}"></script>
-    <title>Meal Ordering</title>
+    <!-- semantic-css -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css">
+    <!-- new bootstrap-css -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <!-- style sheet -->
+    <link rel="stylesheet" href="{{ url_for('.static', filename='register.css') }}">
+    <!-- jquery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <!-- semantic-js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.js"></script>
 
-    <!--  Pretty Radio Button template  -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretty-checkbox@3.0/dist/pretty-checkbox.min.css" >
-    <link rel="stylesheet" href="dist/pretty-checkbox.min.css" >
-
-
-</head>
-
-<body class="backgroundSetting">
-    <!-- Kitchen Registration -->
-    <div class="container container-class">
-        <div class="header-conteiner">
-            <div class="logo-img">
-                <img src="{{ url_for('.static', filename='landing-logo.png') }}" style="width:100px">
-            </div>
-            <div class="Kitchen-Registration">
-                <font face="Rozha One" color="white"><h2>Kitchen Registration</h2></font>
-            </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <!-- bootstrap-js -->
+    <!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script> -->
+    <!-- new-bootstrap-js -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+  </head>
+  </body>
+    <div class="content-section">
+      <nav class="navbar navbar-expand-lg navbar-light">
+      </nav>
+      <div class="container">
+        <div class="border-bottom mb-4">  <!-- this is spacing below Join Today text -->
+          <span class="display-4">Registration</span>
+          <span class="test-muted float-right pt-3 mt-3">
+            Already have an account? <a class="ml-2" href="{{ url_for('login') }}"> Sign In</a>  <!--pass in name of function -->
+          </span>
         </div>
-            <div class= "center-wrapper">
-                <div class="row whole-view">
-                    <div class="login-class">
-                        <div class="form-group">
-                            <input type="text" class="form-control form-control-class"  id="username" style="height:51px; width:314" placeholder="Create a Username" required>
-                        </div>
-                        <div class="form-group">
-                            <input type="password" class="form-control form-control-class" id="password" style="height:51px; width:314" placeholder="Create a Password" required>
-                        </div>
-                        <div class="form-group">
-                            <input type="password" class="form-control form-control-class" id="verify-password" style="height:51px; width:314" placeholder="Confirm Password" required>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Personal Information -->
-            <div class="header-conteiner">
-                <div class="logo-img">
-                    <img src="{{ url_for('.static', filename='ChefHatIcon.png') }}" style="width:100px">
-                </div>
-                <div class="Kitchen-Registration">
-                    <font face="Rozha One" color="white"><h2>Personal Information</h2></font>
-                </div>
-            </div>
-            <div class= "wrap">
-                <div class="option-container">
-                    <div class= "info1">
-                        <div class="row whole-view">
-                            <div class="login-class">
-                                <div class="header-conteiner">
-                                    <div class="logo-img">
-                                        <img src="{{ url_for('.static', filename='PersonIcon.png') }}" style="width:50px">
-                                    </div>
-                                    <div class="form-group Kitchen-Registration">
-                                        <input type="text" class="form-control form-control-class" id="first_name" style="height:51px; width:390" placeholder="First Name" required>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <input type="text" class="form-control form-control-class" id="last_name" style="margin-left:50px; height:51px; width:390" placeholder="Last Name" required>
-                                </div>
-                                <div class="header-conteiner">
-                                    <div class="logo-img">
-                                        <img src="{{ url_for('.static', filename='PhoneIcon.png') }}" style="width:50px">
-                                    </div>
-                                    <div class="form-group">
-                                        <input type="text" class="form-control form-control-class" id="phone_number" style="height:51px; width:390" placeholder="Phone Number" required>
-                                    </div>
-                                </div>
-                                <div class="header-conteiner">
-                                    <div class="logo-img">
-                                        <img src="{{ url_for('.static', filename='MailIcon.png') }}" style="width:50px">
-                                    </div>
-                                    <div class="form-group">
-                                        <input type="text" class="form-control form-control-class" id="email" style="height:51px; width:390" placeholder="Email" required>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class= "info2">
-                        <div class="row whole-view">
-                            <div class="login-class">
-                                <div class="header-conteiner">
-                                    <div class="logo-img">
-                                        <img src="{{ url_for('.static', filename='HomeIcon.png') }}" style="width:50px">
-                                    </div>
-                                    <div class="form-group">
-                                        <input type="text" class="form-control form-control-class" id="street" style="height:51px; width:390" placeholder="street" required>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <input type="text" class="form-control form-control-class" id="city" style="margin-left:50px; height:51px; width:390" placeholder="City" required>
-                                </div>
-                                <div class="address-container">
-                                    <div class="form-group state">
-                                        <input type="text" class="form-control form-control-class" id="state" style="margin-left:50px; height:51px; width:189; display:inline" placeholder="State" required>
-                                    </div>
-                                    <div class="form-group zipCode">
-                                        <input type="text" class="form-control form-control-class" id="zip_code" style="margin-left:10px; height:51px; width:189" placeholder="ZipCode" required>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-            </div>
-        </div>
-            <!-- Kitchen Information -->
-            <div class="header-conteiner">
-                <div class="logo-img">
-                    <img src="{{ url_for('.static', filename='UtensilIcon.png') }}" style="width:100px">
-                </div>
-                <div class="Kitchen-Registration">
-                    <font face="Rozha One" color="white"><h2>Kitchen Information</h2></font>
-                </div>
-            </div>
-            <div class= "wrap">
-            <div class="kitchen-info">
-                <div class="form-group" align="center">
-                    <input type="text" class="form-control form-control-class" id="name" style="height:51px; width:314px" placeholder="Kitchen Name" required>
-                </div>
-                <div class="form-group" align="center">
-                    <input type="text" class="form-control form-control-class" id="description" style="height:81px; width:680px" placeholder="Description" required>
-                </div>
-            </div>
-        </div>
-            <!-- Kitchen Options -->
-            <div class= "wrap">
-                <div class="hours">
-                    <div class="hours-item">
-                      Accept Hours:
-                        <input type="time" class="form-control form-control-class" id="open_time" style="margin-left:30px; height:41px; width:140px; display:inline" required>
-                        <input type="time" class="form-control form-control-class" id="close_time" style="margin-left:30px; height:41px; width:140px; display:inline" required>
-                    </div>
-                </div>
-                <div class="hours">
-                    <div class="hours-item">
-                        Delivery Hours:
-                        <input type="time" class="form-control form-control-class" id="delivery_open_time" style="margin-left:20px; height:41px; width:140px; display:inline" required>
-                        <input type="time" class="form-control form-control-class" id="delivery_close_time" style="margin-left:30px; height:41px; width:140px; display:inline" required>
-                    </div>
-                    <br>
-                </div>
-                <div class= "wrap">
-                    <div class="option-container">
-                        <div class="option1">
-                            Delivery Options<br><br>
-                            <div class="pretty p-default p-round">
-                                <input type="radio" value="pickup" name="radio1" id="pickup">
-                                <div class="state">
-                                    <label>Pickup</label>
-                                </div>
-                            </div>
-                            <br><br>
-                            <div class="pretty p-default p-round">
-                                <input type="radio" value="delivery" name="radio1" id="delivery">
-                                <div class="state">
-                                    <label>Delivery</label>
-                                </div>
-                            </div>
+        <div class="row">
+          <div class="col-sm">                  <!-- this is a style section in main.css -->
+            <form method = "POST" action="">        <!-- posts the information to the same route in came in on -->
+              {{ form.hidden_tag() }}           <!-- for security reasons -->
+              <fieldset class="form-group">      <!-- adding other form fields.  This is Bootstrap -->
+                <div class="form-group">   <!-- form group where we use the fields from the form we passed in -->
+                  {{ form.username.label(class="form-control-label") }}  <!-- prints out the label from the username field.  Pass in form argument-->
 
-                        </div>
-                        <div class="option2">
-                            Container Options<br><br>
-                            <div class="pretty p-default p-round">
-                                <input type="radio" value="reusable" name="radio2" id="reusable">
-                                <div class="state">
-                                    <label>with reusable container</label>
-                                </div>
-                            </div>
-                            <br><br>
-                            <div class="pretty p-default p-round">
-                                <input type="radio" value="disposable" name="radio2" id="disposable">
-                                <div class="state">
-                                    <label>with disposable container</label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="option3">
-                            Cancellation Options<br><br>
-                            <div class="pretty p-default p-round">
-                                <input type="radio" value="can_cancel" name="radio3" id="can_cancel">
-                                <div class="state">
-                                    <label>Cancel only within ordering hours</label>
-                                </div>
-                            </div>
-                            <br><br>
-                            <div class="pretty p-default p-round">
-                                <input type="radio" value="cannot_cancel" name="radio3" id="cannot_cancel">
-                                <div class="state">
-                                    <label>Cancellations not allowed</label>
-                                </div>
-                            </div>
-
+                  {% if form.username.errors %}
+                    {{ form.username(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                      {% for error in form.username.errors %}
+                        <span>{{ error }}</span>
+                      {% endfor %}
                     </div>
+                  {% else %}
+                    {{ form.username(class="form-control form-control-lg") }}  <!-- passes in the username -->
+                  {% endif %}
+                </div>
+                <div class="form-group">
+                  {{ form.email.label(class="form-control-label") }}
+
+                  {% if form.email.errors %}
+                    {{ form.email(class="form-control form-control-lg is-invalid") }}
+                      <div class="invalid-feedback">
+                        {% for error in form.email.errors %}
+                          <span>{{ error }}</span>
+                        {% endfor %}
+                      </div>
+                  {% else %}
+                  {{ form.email(class="form-control form-control-lg") }}
+                  {% endif %}
+
+                </div>
+                <div class="form-group">
+                  {{ form.password.label(class="form-control-label") }}
+                  {% if form.password.errors %}
+                    {{ form.password(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                      {% for error in form.password.errors %}
+                        <span>{{ error }}</span>
+                      {% endfor %}
+                    </div>
+                  {% else %}
+                    {{ form.password(class="form-control form-control-lg") }}
+                  {% endif %}
+                </div>
+                <div class="form-group">
+                  {{ form.verifyPassword.label(class="form-control-label") }}
+                  {% if form.verifyPassword.errors %}
+                    {{ form.verifyPassword(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                      {% for error in form.verifyPassword.errors %}
+                        <span>{{ error }}</span>
+                      {% endfor %}
+                    </div>
+                  {% else %}
+                    {{ form.verifyPassword(class="form-control form-control-lg") }}
+                  {% endif %}
+                </div>
+              </fieldset>
+              <div class="form-group">
+                {{ form.submit(class="btn btn-outline-info") }}
+              </div>
+            </form>
+          </div>
+          <div class="col-sm">
+            <form method = "POST" action="">        <!-- posts the information to the same route in came in on -->
+              {{ form.hidden_tag() }}            <!-- for security reasons -->
+              <fieldset class="form-group">      <!-- adding other form fields.  This is Bootstrap -->
+                <div class="form-group">   <!-- form group where we use the fields from the form we passed in -->
+                  {{ form.firstName.label(class="form-control-label") }}  <!-- prints out the label from the username field.  Pass in form argument-->
+
+                  {% if form.firstName.errors %}
+                    {{ form.firstName(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                      {% for error in form.firstName.errors %}
+                        <span>{{ error }}</span>
+                      {% endfor %}
+                    </div>
+                  {% else %}
+                    {{ form.firstName(class="form-control form-control-lg") }}  <!-- passes in the username -->
+                  {% endif %}
+                </div>
+                <div class="form-group">
+                  {{ form.lastName.label(class="form-control-label") }}
+
+                  {% if form.lastName.errors %}
+                    {{ form.lastName(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                      {% for error in form.lastName.errors %}
+                        <span>{{ error }}</span>
+                      {% endfor %}
+                    </div>
+                  {% else %}
+                    {{ form.lastName(class="form-control form-control-lg") }}
+                  {% endif %}
+
+                </div>
+                <div class="form-group">
+                  {{ form.phoneNumber.label(class="form-control-label") }}
+                  {% if form.phoneNumber.errors %}
+                    {{ form.phoneNumber(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                      {% for error in form.phoneNumber.errors %}
+                        <span>{{ error }}</span>
+                      {% endfor %}
+                    </div>
+                  {% else %}
+                    {{ form.phoneNumber(class="form-control form-control-lg") }}
+                  {% endif %}
+                </div>
+                <div class="form-group">
+                  {{ form.street.label(class="form-control-label") }}
+                  {% if form.street.errors %}
+                    {{ form.street(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                      {% for error in form.street.errors %}
+                        <span>{{ error }}</span>
+                      {% endfor %}
+                    </div>
+                  {% else %}
+                    {{ form.street(class="form-control form-control-lg") }}
+                  {% endif %}
+                </div>
+                <div class="row">
+                  <div class="col-5">
+                    <div class="form-group">
+                      {{ form.city.label(class="form-control-label") }}
+                      {% if form.city.errors %}
+                        {{ form.city(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                          {% for error in form.city.errors %}
+                            <span>{{ error }}</span>
+                          {% endfor %}
+                        </div>
+                      {% else %}
+                        {{ form.city(class="form-control form-control-lg") }}
+                      {% endif %}
+                    </div>
+                  </div>
+                  <div class="col-3">
+                    <div class="form-group">
+                      {{ form.state.label(class="form-control-label") }}
+                      {% if form.state.errors %}
+                        {{ form.state(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                          {% for error in form.state.errors %}
+                            <span>{{ error }}</span>
+                          {% endfor %}
+                        </div>
+                      {% else %}
+                        {{ form.state(class="form-control form-control-lg") }}
+                      {% endif %}
+                    </div>
+                  </div>
+                  <div class="col-4">
+                    <div class="form-group">
+                      {{ form.zipcode.label(class="form-control-label") }}
+                      {% if form.zipcode.errors %}
+                        {{ form.zipcode(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                          {% for error in form.zipcode.errors %}
+                            <span>{{ error }}</span>
+                          {% endfor %}
+                        </div>
+                      {% else %}
+                        {{ form.zipcode(class="form-control form-control-lg") }}
+                      {% endif %}
+                    </div>
+                  </div>
+                </div>
+              </fieldset>
+              <div class="form-group">
+                {{ form.submit(class="btn btn-outline-info") }}
+              </div>
+            </form>
+          </div>
+          <div class="col-sm">
+            <div class="form-group">
+              {{ form.kitchenName.label(class="form-control-label") }}
+
+              {% if form.kitchenName.errors %}
+                {{ form.kitchenName(class="form-control form-control-lg is-invalid") }}
+                <div class="invalid-feedback">
+                  {% for error in form.kitchenName.errors %}
+                    <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+              {% else %}
+                {{ form.kitchenName(class="form-control form-control-lg") }}
+              {% endif %}
+            </div>
+            <div class="form-group">   <!-- form group where we use the fields from the form we passed in -->
+              {{ form.description.label(class="form-control-label") }}  <!-- prints out the label from the username field.  Pass in form argument-->
+
+              {% if form.description.errors %}
+                {{ form.description(class="description-input-box input-lg form-control form-control-lg is-invalid") }}
+                <div class="invalid-feedback">
+                  {% for error in form.description.errors %}
+                    <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+              {% else %}
+                {{ form.description(class="description-input-box form-control form-control-lg") }}  <!-- passes in the username -->
+              {% endif %}
+            </div>
+            <label> Accpeting Hours </label>
+            <div class="d-flex justify-content-between">
+              <form method="post">
+                {{ form.hidden_tag() }}
+                {{ form.openTime(type="time")}}
+              </form>
+              <span>
+                to
+              </span>
+              <form method="post">
+                {{ form.hidden_tag() }}
+                {{ form.closeTime(type="time")}}
+              </form>
+            </div>
+            <label> Delivering Hours </label>
+            <div class="d-flex justify-content-between mb-4">
+              <form method="post">
+                {{ form.hidden_tag() }}
+                {{ form.deliveryOpenTime(type="time")}}
+              </form>
+              <span>
+                to
+              </span>
+              <form method="post">
+                {{ form.hidden_tag() }}
+                {{ form.deliveryCloseTime(type="time")}}
+              </form>
+            </div>
+            <div class="row">
+              <div class="col-6">
+                <form method="post">
+                  {{ form.transport.label() }}
+                  {{ form.transport(class="pl-0", style="list-style: none;") }}
+                </form>
+              </div>
+              <div class="col-6">
+                <form method="post">
+                  {{ form.storage.label() }}
+                  {{ form.storage(class="pl-0", style="list-style: none; font-weight: normal;") }}
+                </form>
+              </div>
+                <div class="ml-4">
+                  <form method="post">
+                    {{ form.cancellation.label() }}
+                    {{ form.cancellation(class="pl-0", style="list-style: none;") }}
+                  </form>
                 </div>
             </div>
+          </div>
         </div>
-        <div class="center-wrapper">
-            <div class="register-btn">
-                <button type="button" class="button regbtn" value="submit" onclick="registerKitchen();">Submit</button>
-            </div>
-        </div>
-
-
+      </div>
     </div>
-</body>
-
+  </body>
 </html>

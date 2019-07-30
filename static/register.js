@@ -25,8 +25,8 @@ function registerKitchen() {
 	var closeTime = document.getElementById("close_time").value;
 	var openTime = document.getElementById("open_time").value;
   var email = document.getElementById("email").value;
-  var delivery_open_time = document.getElementById("delivery_open_time").value;
-  var delivery_close_time = document.getElementById("delivery_close_time").value;
+  var deliveryOpenTime = document.getElementById("delivery_open_time").value;
+  var deliveryCloseTime = document.getElementById("delivery_close_time").value;
   var pickup = false;
   if (document.getElementById("pickup").checked) {
     pickup = true;
@@ -46,6 +46,16 @@ function registerKitchen() {
   var can_cancel = false;
   if (document.getElementById("can_cancel").checked) {
     can_cancel = true;
+  }
+
+  if (Date.parse(closeTime) < Date.parse(openTime)) {
+    window.alert("Please enter vaild accepting hours")
+    return false;
+  }
+
+  if (Date.parse(deliveryCloseTime) < Date.parse(deliveryOpenTime)) {
+    window.alert("Please enter vaild delivery hours")
+    return false;
   }
 
 
@@ -75,7 +85,7 @@ function registerKitchen() {
 	formData.append("open_time", openTime);
 	formData.append("email", email);
 	formData.append("delivery_open_time", delivery_open_time);
-	formData.append("delivery_close_time", delivery_close_time);
+	formData.append("delivery_open_time", delivery_close_time);
 	formData.append("pickup", pickup);
 	formData.append("delivery", delivery);
 	formData.append("reusable", reusable);
@@ -86,6 +96,9 @@ function registerKitchen() {
 
   request.onload = function() {
       if (request.readyState === request.DONE) {
+          if (request.status === 400) {
+              window.location = "register"
+          }
           if (request.status === 200) {
               window.location = "login"
           }
