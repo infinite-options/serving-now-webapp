@@ -3,11 +3,13 @@
 #  Most everything is available in wt forms
 #  Could go into main application file but better to break out
 #  Write python class that will automatically be converted into html form in the template (1:55)
+import phonenumbers
+import datetime
 
 from flask_wtf import FlaskForm # imports to
 from flask_wtf.file import FileField, FileAllowed
 from flask_login import current_user
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, TimeField, RadioField # imports these classes
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, TimeField, RadioField, TextAreaField # imports these classes
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
 
 class RegistrationForm(FlaskForm): # create a Registration Form class.  Below are the form fields
@@ -23,20 +25,36 @@ class RegistrationForm(FlaskForm): # create a Registration Form class.  Below ar
     city = StringField('City', validators=[DataRequired()])
     street = StringField('Street', validators=[DataRequired()])
     kitchenName = StringField('Kitchen Name', validators=[DataRequired()])
-    description = StringField('Description', validators=[DataRequired()])
+    description = TextAreaField('Description', validators=[DataRequired()])
     closeTime = TimeField('Close Time', validators=[DataRequired()])
     openTime = TimeField('Open Time', validators=[DataRequired()])
     deliveryOpenTime = TimeField('Delivery Open Time', validators=[DataRequired()])
     deliveryCloseTime = TimeField('Delivery Close Time', validators=[DataRequired()])
     transport = RadioField('Transport', choices=[('pickup','Pickup'),('delivery','Delivery')], validators=[DataRequired()])
     storage = RadioField('Storage', choices=[('Reusable','reusable'),('Disposable','Disposable')], validators=[DataRequired()])
-    cancellation = RadioField('Cancellation', choices=[('canCancel','Cancel only within ordering hours'),('cannotCancel','Cancellations not allowed')], validators=[DataRequired()])
+    cancellation = RadioField('Cancellation', choices=[('canCancel','Allow cancellation within ordering hours'),('cannotCancel','Cancellations not allowed')], validators=[DataRequired()])
     # pickup = BooleanField('Pickup', validators=[DataRequired()])
     # delivery = BooleanField('Delivery', validators=[DataRequired()])
     # reusable = BooleanField('Reusable', validators=[DataRequired()])
     # disposable = BooleanField('Disposable', validators=[DataRequired()])
     # canCancel = BooleanField('Can Cancel', validators=[DataRequired()])
     submit = SubmitField('Sign Up') # SubmitField must allow Signup as its button Label.  Not sure yet where the action goes
+
+    def validate_openTime(self, openTime):
+        if self.openTime.data >= self.closeTime.data:
+            raise ValidationError('Please choose valid times.')
+
+    def validate_closeTime(self, closeTime):
+        if self.openTime.data >= self.closeTime.data:
+            raise ValidationError('Please choose valid times.')
+
+    def validate_deliveryOpenTime(self, deliveryOpenTime):
+        if self.deliveryOpenTime.data >= self.deliveryCloseTime.data:
+            raise ValidationError('Please choose valid times.')
+
+    def validate_deliveryCloseTime(self, deliveryCloseTime):
+        if self.deliveryOpenTime.data >= self.deliveryCloseTime.data:
+            raise ValidationError('Please choose valid times.')
 
     def validate_username(self, username):
         username = db.scan(TableName="kitchens",
@@ -45,7 +63,7 @@ class RegistrationForm(FlaskForm): # create a Registration Form class.  Below ar
                     '#name': 'username'
                 },
                 ExpressionAttributeValues={
-                    ':val': {'S': username}
+                    ':val': {'S': username.data}
                 }
             )
         if username.get('Items') != []:
@@ -58,37 +76,70 @@ class RegistrationForm(FlaskForm): # create a Registration Form class.  Below ar
                     '#name': 'email'
                 },
                 ExpressionAttributeValues={
-                    ':val': {'S': email}
+                    ':val': {'S': email.data}
                 }
             )
         if email.get('Items') != []:
             raise ValidationError('That email is taken. Please choose another one.')
 
-    def validate_kitchen(self, kitchen):
+    def validate_kitchenName(self, kitchenName):
         kitchen = db.scan(TableName="kitchens",
                 FilterExpression='#name = :val',
                 ExpressionAttributeNames={
                     '#name': 'kitchen_name'
                 },
                 ExpressionAttributeValues={
-                    ':val': {'S': kitchen_name}
+                    ':val': {'S': kitchenName.data}
                 }
             )
         if kitchen.get('Items') != []:
             raise ValidationError('That kitchen name is taken. Please choose another one.')
 
     # https://stackoverflow.com/questions/36251149/validating-us-phone-number-in-wtfforms
-    def validate_phone(form, field):
-        if len(field.data) > 16:
+    def validate_phoneNumber(self, phoneNumber):
+        if len(phoneNumber.data) > 16:
             raise ValidationError('Invalid phone number.')
         try:
-            input_number = phonenumbers.parse(field.data)
-            if not (phonenumbers.is_valid_number(phoneNumber)):
+            input_number = phonenumbers.parse(phoneNumber.data)
+            if not (phonenumbers.is_valid_number(input_number)):
                 raise ValidationError('Invalid phone number.')
         except:
-            input_number = phonenumbers.parse("+1"+field.data)
-            if not (phonenumbers.is_valid_number(phoneNumber)):
+            input_number = phonenumbers.parse("+1"+phoneNumber.data)
+            if not (phonenumbers.is_valid_number(input_number)):
                 raise ValidationError('Invalid phone number.')
+
+    # https://stackoverflow.com/questions/21815067/how-do-i-validate-wtforms-fields-against-one-another
+    # def validate(self):
+    #     result = True
+    #
+    #     OTerrors = list(self.openTime.errors)
+    #     CTerrors = list(self.closeTime.errors)
+    #     DOTerrors = list(self.deliveryOpenTime.errors)
+    #     DCTerrors = list(self.deliveryCloseTime.errors)
+    #
+    #     print(self.openTime.data)
+    #     print(self.closeTime.data)
+    #
+    #     if self.openTime.data > self.closeTime.data:
+    #         OTerrors.append('Please choose valid times.')
+    #         CTerrors.append('Please choose valid times.')
+    #         result = False
+    #
+    #     if self.deliveryOpenTime.data > self.deliveryCloseTime.data:
+    #         DOTerrors.append('Please choose valid times.')
+    #         DCTerrors.append('Please choose valid times.')
+    #         result = False
+    #
+    #     self.openTime.errors = OTerrors
+    #     print(self.openTime.errors)
+    #     self.closeTime.errors = CTerrors
+    #     self.deliveryOpenTime.errors = DOTerrors
+    #     self.deliveryCloseTime.errors = DCTerrors
+    #
+    #     if not FlaskForm.validate(self):
+    #         return False
+    #
+    #     return result
 
 
 class LoginForm(FlaskForm):

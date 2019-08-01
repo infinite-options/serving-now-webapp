@@ -1,6 +1,7 @@
 flask-restful
 flask_login
 flask-cors
+phonenumbers
 wtforms
 flask
 jinja2

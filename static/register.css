@@ -4,6 +4,10 @@
   height: 108px;
 }
 
+.time-input-box {
+  width: 120px;
+}
+
 body {
  color: #00000080;
 }

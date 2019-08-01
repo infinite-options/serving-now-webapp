@@ -27,80 +27,115 @@
       <nav class="navbar navbar-expand-lg navbar-light">
       </nav>
       <div class="container">
-        <div class="border-bottom mb-4">  <!-- this is spacing below Join Today text -->
+        <div class="border-bottom mb-4 d-flex justify-content-between">  <!-- this is spacing below Join Today text -->
           <span class="display-4">Registration</span>
           <span class="test-muted float-right pt-3 mt-3">
             Already have an account? <a class="ml-2" href="{{ url_for('login') }}"> Sign In</a>  <!--pass in name of function -->
           </span>
         </div>
-        <div class="row">
-          <div class="col-sm">                  <!-- this is a style section in main.css -->
-            <form method = "POST" action="">        <!-- posts the information to the same route in came in on -->
-              {{ form.hidden_tag() }}           <!-- for security reasons -->
-              <fieldset class="form-group">      <!-- adding other form fields.  This is Bootstrap -->
-                <div class="form-group">   <!-- form group where we use the fields from the form we passed in -->
-                  {{ form.username.label(class="form-control-label") }}  <!-- prints out the label from the username field.  Pass in form argument-->
-
-                  {% if form.username.errors %}
-                    {{ form.username(class="form-control form-control-lg is-invalid") }}
-                    <div class="invalid-feedback">
-                      {% for error in form.username.errors %}
-                        <span>{{ error }}</span>
-                      {% endfor %}
-                    </div>
-                  {% else %}
-                    {{ form.username(class="form-control form-control-lg") }}  <!-- passes in the username -->
-                  {% endif %}
-                </div>
-                <div class="form-group">
-                  {{ form.email.label(class="form-control-label") }}
-
-                  {% if form.email.errors %}
-                    {{ form.email(class="form-control form-control-lg is-invalid") }}
-                      <div class="invalid-feedback">
-                        {% for error in form.email.errors %}
-                          <span>{{ error }}</span>
-                        {% endfor %}
-                      </div>
-                  {% else %}
-                  {{ form.email(class="form-control form-control-lg") }}
-                  {% endif %}
-
-                </div>
-                <div class="form-group">
-                  {{ form.password.label(class="form-control-label") }}
-                  {% if form.password.errors %}
-                    {{ form.password(class="form-control form-control-lg is-invalid") }}
-                    <div class="invalid-feedback">
-                      {% for error in form.password.errors %}
-                        <span>{{ error }}</span>
-                      {% endfor %}
-                    </div>
-                  {% else %}
-                    {{ form.password(class="form-control form-control-lg") }}
-                  {% endif %}
-                </div>
-                <div class="form-group">
-                  {{ form.verifyPassword.label(class="form-control-label") }}
-                  {% if form.verifyPassword.errors %}
-                    {{ form.verifyPassword(class="form-control form-control-lg is-invalid") }}
-                    <div class="invalid-feedback">
-                      {% for error in form.verifyPassword.errors %}
-                        <span>{{ error }}</span>
-                      {% endfor %}
-                    </div>
-                  {% else %}
-                    {{ form.verifyPassword(class="form-control form-control-lg") }}
-                  {% endif %}
-                </div>
-              </fieldset>
+        <form method = "POST" action="">
+          <div class="row">
+            <div class="col-sm">
               <div class="form-group">
-                {{ form.submit(class="btn btn-outline-info") }}
+                {{ form.kitchenName.label(class="form-control-label") }}
+
+                {% if form.kitchenName.errors %}
+                  {{ form.kitchenName(class="form-control form-control-lg is-invalid") }}
+                  <div class="invalid-feedback">
+                    {% for error in form.kitchenName.errors %}
+                      <span>{{ error }}</span>
+                    {% endfor %}
+                  </div>
+                {% else %}
+                  {{ form.kitchenName(class="form-control form-control-lg") }}
+                {% endif %}
               </div>
-            </form>
-          </div>
-          <div class="col-sm">
-            <form method = "POST" action="">        <!-- posts the information to the same route in came in on -->
+              <div class="form-group">   <!-- form group where we use the fields from the form we passed in -->
+                {{ form.description.label(class="form-control-label") }}  <!-- prints out the label from the username field.  Pass in form argument-->
+
+                {% if form.description.errors %}
+                  {{ form.description(cols="40", rows="5", class="description-input-box input-lg form-control form-control-lg is-invalid") }}
+                  <div class="invalid-feedback">
+                    {% for error in form.description.errors %}
+                      <span>{{ error }}</span>
+                    {% endfor %}
+                  </div>
+                {% else %}
+                  {{ form.description(cols="40", rows="5", class="description-input-box form-control form-control-lg") }}  <!-- passes in the username -->
+                {% endif %}
+              </div>
+              <label> Accepting Hours </label>
+              <div class="d-flex justify-content-between">
+                {{ form.hidden_tag() }}
+
+                {% if form.openTime.errors %}
+                  {{ form.openTime(type="time", class="pr-0 form-control form-control-lg time-input-box is-invalid") }}
+                {% else %}
+                  {{ form.openTime(type="time", class="pr-0 form-control form-control-lg time-input-box")}}
+                {% endif %}
+              <span class="mt-2">
+                to
+              </span>
+                {{ form.hidden_tag() }}
+                {% if form.closeTime.errors %}
+                  {{ form.closeTime(type="time", class="pr-0 form-control form-control-lg time-input-box is-invalid")}}
+                {% else %}
+                  {{ form.closeTime(type="time", class="pr-0 form-control form-control-lg time-input-box")}}
+                {% endif %}
+              </div>
+              <div style="display: block;" class="invalid-feedback">
+                {% for error in form.openTime.errors %}
+                  <span>{{ error }}</span>
+                {% endfor %}
+              </div>
+              <label class="mt-4"> Delivering Hours </label>
+              <div class="d-flex justify-content-between">
+                {{ form.hidden_tag() }}
+                {% if form.deliveryOpenTime.errors %}
+                  {{ form.deliveryOpenTime(type="time", class="pr-0 form-control form-control-lg time-input-box is-invalid")}}
+                {% else %}
+                  {{ form.deliveryOpenTime(type="time", class="pr-0 form-control form-control-lg time-input-box")}}
+                {% endif %}
+              <span class="mt-2">
+                to
+              </span>
+                {{ form.hidden_tag() }}
+                {% if form.deliveryCloseTime.errors %}
+                  {{ form.deliveryCloseTime(type="time", class="pr-0 form-control form-control-lg time-input-box is-invalid")}}
+                {% else %}
+                  {{ form.deliveryCloseTime(type="time", class="pr-0 form-control form-control-lg time-input-box")}}
+                {% endif %}
+              </div>
+              <div style="display: block;" class="invalid-feedback">
+                {% for error in form.deliveryOpenTime.errors %}
+                  <span>{{ error }}</span>
+                {% endfor %}
+              </div>
+              <div class="row mt-4">
+                <div class="col-6">
+                  {{ form.transport.label() }}
+                  {% if form.transport.errors %}
+                    {{ form.transport(class="pl-0 is-invalid", style="list-style: none;") }}
+                    <div class="invalid-feedback">
+                      {% for error in form.transport.errors %}
+                        <span>{{ error }}</span>
+                      {% endfor %}
+                    </div>
+                  {% else %}
+                    {{ form.transport(class="pl-0", style="list-style: none;") }}
+                  {% endif %}
+                </div>
+                <div class="col-6">
+                  {{ form.storage.label() }}
+                  {{ form.storage(class="pl-0", style="list-style: none; font-weight: normal;") }}
+                </div>
+                <div class="ml-4">
+                  {{ form.cancellation.label() }}
+                  {{ form.cancellation(class="pl-0", style="list-style: none;") }}
+                </div>
+              </div>
+            </div>
+            <div class="col-sm">        <!-- posts the information to the same route in came in on -->
               {{ form.hidden_tag() }}            <!-- for security reasons -->
               <fieldset class="form-group">      <!-- adding other form fields.  This is Bootstrap -->
                 <div class="form-group">   <!-- form group where we use the fields from the form we passed in -->
@@ -206,90 +241,72 @@
                   </div>
                 </div>
               </fieldset>
-              <div class="form-group">
-                {{ form.submit(class="btn btn-outline-info") }}
-              </div>
-            </form>
-          </div>
-          <div class="col-sm">
-            <div class="form-group">
-              {{ form.kitchenName.label(class="form-control-label") }}
+            </div>
+            <div class="col-sm">                  <!-- this is a style section in main.css -->
+              {{ form.hidden_tag() }}           <!-- for security reasons -->
+              <fieldset class="form-group">      <!-- adding other form fields.  This is Bootstrap -->
+                <div class="form-group">   <!-- form group where we use the fields from the form we passed in -->
+                  {{ form.username.label(class="form-control-label") }}  <!-- prints out the label from the username field.  Pass in form argument-->
 
-              {% if form.kitchenName.errors %}
-                {{ form.kitchenName(class="form-control form-control-lg is-invalid") }}
-                <div class="invalid-feedback">
-                  {% for error in form.kitchenName.errors %}
-                    <span>{{ error }}</span>
-                  {% endfor %}
+                  {% if form.username.errors %}
+                    {{ form.username(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                      {% for error in form.username.errors %}
+                        <span>{{ error }}</span>
+                      {% endfor %}
+                    </div>
+                  {% else %}
+                    {{ form.username(class="form-control form-control-lg") }}  <!-- passes in the username -->
+                  {% endif %}
                 </div>
-              {% else %}
-                {{ form.kitchenName(class="form-control form-control-lg") }}
-              {% endif %}
-            </div>
-            <div class="form-group">   <!-- form group where we use the fields from the form we passed in -->
-              {{ form.description.label(class="form-control-label") }}  <!-- prints out the label from the username field.  Pass in form argument-->
+                <div class="form-group">
+                  {{ form.email.label(class="form-control-label") }}
 
-              {% if form.description.errors %}
-                {{ form.description(class="description-input-box input-lg form-control form-control-lg is-invalid") }}
-                <div class="invalid-feedback">
-                  {% for error in form.description.errors %}
-                    <span>{{ error }}</span>
-                  {% endfor %}
+                  {% if form.email.errors %}
+                    {{ form.email(class="form-control form-control-lg is-invalid") }}
+                      <div class="invalid-feedback">
+                        {% for error in form.email.errors %}
+                          <span>{{ error }}</span>
+                        {% endfor %}
+                      </div>
+                  {% else %}
+                  {{ form.email(class="form-control form-control-lg") }}
+                  {% endif %}
+
                 </div>
-              {% else %}
-                {{ form.description(class="description-input-box form-control form-control-lg") }}  <!-- passes in the username -->
-              {% endif %}
-            </div>
-            <label> Accpeting Hours </label>
-            <div class="d-flex justify-content-between">
-              <form method="post">
-                {{ form.hidden_tag() }}
-                {{ form.openTime(type="time")}}
-              </form>
-              <span>
-                to
-              </span>
-              <form method="post">
-                {{ form.hidden_tag() }}
-                {{ form.closeTime(type="time")}}
-              </form>
-            </div>
-            <label> Delivering Hours </label>
-            <div class="d-flex justify-content-between mb-4">
-              <form method="post">
-                {{ form.hidden_tag() }}
-                {{ form.deliveryOpenTime(type="time")}}
-              </form>
-              <span>
-                to
-              </span>
-              <form method="post">
-                {{ form.hidden_tag() }}
-                {{ form.deliveryCloseTime(type="time")}}
-              </form>
-            </div>
-            <div class="row">
-              <div class="col-6">
-                <form method="post">
-                  {{ form.transport.label() }}
-                  {{ form.transport(class="pl-0", style="list-style: none;") }}
-                </form>
-              </div>
-              <div class="col-6">
-                <form method="post">
-                  {{ form.storage.label() }}
-                  {{ form.storage(class="pl-0", style="list-style: none; font-weight: normal;") }}
-                </form>
-              </div>
-                <div class="ml-4">
-                  <form method="post">
-                    {{ form.cancellation.label() }}
-                    {{ form.cancellation(class="pl-0", style="list-style: none;") }}
-                  </form>
+                <div class="form-group">
+                  {{ form.password.label(class="form-control-label") }}
+                  {% if form.password.errors %}
+                    {{ form.password(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                      {% for error in form.password.errors %}
+                        <span>{{ error }}</span>
+                      {% endfor %}
+                    </div>
+                  {% else %}
+                    {{ form.password(class="form-control form-control-lg") }}
+                  {% endif %}
                 </div>
+                <div class="form-group">
+                  {{ form.verifyPassword.label(class="form-control-label") }}
+                  {% if form.verifyPassword.errors %}
+                    {{ form.verifyPassword(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                      {% for error in form.verifyPassword.errors %}
+                        <span>{{ error }}</span>
+                      {% endfor %}
+                    </div>
+                  {% else %}
+                    {{ form.verifyPassword(class="form-control form-control-lg") }}
+                  {% endif %}
+                </div>
+              </fieldset>
+              <div class="mt-2 float-right form-group">
+                {{ form.submit(class="btn btn-info") }}
+              </div>
             </div>
           </div>
-        </div>
+        </form>
       </div>
     </div>
   </body>

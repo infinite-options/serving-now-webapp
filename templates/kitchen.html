@@ -176,16 +176,16 @@
         <div id="logo">
             <div> <img src="{{ url_for('.static', filename='ServingNowLogo.png') }}" class="serving-now-logo"></div>
             <div>
-                <h1><strong><i>{{ kitchen_name }}</i></strong></h1>
-                <p><i>{{ description }}</p></i>
+                <h1><strong>{{ kitchen_name }}</strong></h1>
+                <p>{{ description }}</p>
                     <!-- <div class="add-meal-btn-div"> -->
             </div>
         </div>
         <h2 id="currentmeal">
-            <strong><i>Current Meals:</i></strong>
+            <strong>Current Meals:</strong>
             <br>
             <button type="button" class="btn btn-primary add-meal-btn" data-toggle="modal" data-target="#addMeal">
-            <i>Add Meal</i>
+            Add Meal
         </h2>
         </div>
         <div id="currentmeal-card">
@@ -242,10 +242,10 @@
             </div>
         </div>
         <h2 id="pastmeal">
-            <strong><i>Past Meals: </i></strong>
+            <strong>Past Meals: </strong>
             <br>
             <button type="button" class="btn btn-primary add-meal-btn">
-                <a class="text-light" href="{{ url_for('renewPastMeals') }}"><i>Renew Meals</i></a>
+                <a class="text-light" href="{{ url_for('renewPastMeals') }}">Renew Meals</i></a>
             </button>
         </h2>
         <div id="pastmeal-card">
@@ -282,9 +282,9 @@
                               <div style="position:absolute" class="btn btn-primary quantity-no">{{ meal.count_today.N }}</div>
                           </div>
                           <div class="content">
-                            <div class="header meal-info"><i>{{meal.meal_name.S}}</i></div>
+                            <div class="header meal-info">{{meal.meal_name.S}}</i></div>
                             <div class="meta">
-                                <span class="date"><i>{{meal.description.S}}</i></span>
+                                <span class="date">{{meal.description.S}}</i></span>
                             </div>
                           </div>
                           <div class="extra content">
@@ -347,7 +347,7 @@
                                 </div>
                                 <!-- </div> -->
                                 <!-- <div class="col name-of-meal">
-                                    <i><input type="text" class="form-control form-control-class" id="add_meal_mealname"
+                                    <input type="text" class="form-control form-control-class" id="add_meal_mealname"
                                     placeholder="Name of the meal"></i>
                                 </div> -->
                             </div>
@@ -356,7 +356,7 @@
                                     <table id="option-setup">
                                         <tr>
                                             <td>
-                                                <span class="left-content"><strong><i>Items in this meal</i></strong></span>
+                                                <span class="left-content"><strong>Items in this meal</i></strong></span>
                                             </td>
                                             <td>
                                                 <span>
@@ -372,10 +372,10 @@
                                         </tr>
                                         <tr>
                                             <td>
-                                                <span style="padding-left:30%"><strong><i>Item name</i></strong></span>
+                                                <span style="padding-left:30%"><strong>Item name</i></strong></span>
                                             </td>
                                             <td>
-                                                <span style="padding-left: 40px"><strong><i>Item Quantity</i></strong></span>
+                                                <span style="padding-left: 40px"><strong>Item Quantity</i></strong></span>
                                             </td>
                                         </tr>
                                         <br>
@@ -512,7 +512,7 @@
                                 </div>
                                 <div class="form-row">
                                     <div class="left-content" id="meal-id">
-                                        <strong><i>Meal Price</i></strong>
+                                        <strong>Meal Price</i></strong>
                                     </div>
                                     <div class="right-content">
                                         <input style="background: transparent" type="number" name="price" class="right-content form-control form-control-class" id="add_meal_price" placeholder="price">
@@ -554,7 +554,7 @@
                                 <!-- use this to retrieve the meal id from edit meal -->
                                 <div class="row">
                                     <div class="col id-of-meal">
-                                        <i><p hidden
+                                        <p hidden
                                            type="text"
                                            class="form-control form-control-class"
                                            id="edit_meal_mealid">
@@ -569,7 +569,7 @@
                                         <i class="shopping basket icon"></i>
                                     </div>
                                     <!-- <div class="col name-of-meal">
-                                        <i><input type="text" class="form-control form-control-class" id="edit_meal_mealname"
+                                        <input type="text" class="form-control form-control-class" id="edit_meal_mealname"
                                         placeholder="Name of the meal"></i>
                                     </div> -->
                                 </div>
@@ -579,7 +579,7 @@
                                     <table id="edit-option-setup">
                                         <tr>
                                             <td>
-                                                <span><strong><i>Items in this meal</i></strong></span>
+                                                <span><strong>Items in this meal</i></strong></span>
                                             </td>
                                             <td>
                                                 <select id="edit-option-items">
@@ -594,10 +594,10 @@
                                         <tr>
 
                                             <td>
-                                                <span style="padding-left: 30%"><strong><i>Item name</i></strong></span>
+                                                <span style="padding-left: 30%"><strong>Item name</i></strong></span>
                                             </td>
                                             <td>
-                                                <span style="padding-left: 40px"><strong><i>Item Quantity</i></strong></span>
+                                                <span style="padding-left: 40px"><strong>Item Quantity</i></strong></span>
                                             </td>
                                         </tr>
                                         <tr id="edit-option-item1">
@@ -734,13 +734,13 @@
                                 </div>
                                 <div class="form-row">
                                     <div class="left-content" id="meal-id">
-                                        <strong><i>Meal Price</i></strong>
+                                        <strong>Meal Price</i></strong>
                                     </div>
                                     <div class="right-content">
                                         <input style="background: transparent" type="number" name="price" class="right-content form-control form-control-class" id="edit_meal_price">
                                     </div>
                                     <!-- <div class="col-md-6" id="meal-id">
-                                        <strong><i>Meal Price</i></strong>
+                                        <strong>Meal Price</i></strong>
                                     </div>
                                     <div class="col-md-3">
                                         <input type="number" name="price" class="form-control form-control-class" id="edit_meal_price">
