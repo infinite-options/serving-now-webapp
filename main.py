@@ -130,9 +130,12 @@ class User(UserMixin):
 def _login_manager_load_user(user_id):
     return User.get(user_id)
 
+@app.route('/index')
+def index():
+    return render_template('index.html')
 
 @app.route('/')
-def index():
+def landing():
     return render_template('landing.html')
 
 
