@@ -31,7 +31,7 @@ class RegistrationForm(FlaskForm): # create a Registration Form class.  Below ar
     deliveryOpenTime = TimeField('Delivery Open Time', validators=[DataRequired()])
     deliveryCloseTime = TimeField('Delivery Close Time', validators=[DataRequired()])
     transport = RadioField('Transport', choices=[('pickup','Pickup'),('delivery','Delivery')], validators=[DataRequired()])
-    storage = RadioField('Storage', choices=[('Reusable','reusable'),('Disposable','Disposable')], validators=[DataRequired()])
+    storage = RadioField('Storage', choices=[('reusable','Reusable'),('disposable','Disposable')], validators=[DataRequired()])
     cancellation = RadioField('Cancellation', choices=[('canCancel','Allow cancellation within ordering hours'),('cannotCancel','Cancellations not allowed')], validators=[DataRequired()])
     # pickup = BooleanField('Pickup', validators=[DataRequired()])
     # delivery = BooleanField('Delivery', validators=[DataRequired()])
@@ -39,6 +39,18 @@ class RegistrationForm(FlaskForm): # create a Registration Form class.  Below ar
     # disposable = BooleanField('Disposable', validators=[DataRequired()])
     # canCancel = BooleanField('Can Cancel', validators=[DataRequired()])
     submit = SubmitField('Sign Up') # SubmitField must allow Signup as its button Label.  Not sure yet where the action goes
+
+    def validate_transport(self, transport):
+        if self.transport.data == 'None':
+            raise ValidationError('Please pick either Pickup or Delivery')
+
+    def validate_storage(self, storage):
+        if self.storage.data == 'None':
+            raise ValidationError('Please pick either Reusable or Disposale')
+
+    def validate_cancellation(self, cancellation):
+        if self.cancellation.data == 'None':
+            raise ValidationError('Please pick a cancellation option')
 
     def validate_openTime(self, openTime):
         if self.openTime.data >= self.closeTime.data:

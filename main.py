@@ -200,6 +200,22 @@ def register():
         return redirect(url_for('login'))
     form = RegistrationForm(request.form)
     if form.validate_on_submit():
+        delivery = False
+        pickup = False
+        disposable = False
+        reusable = False
+        canCancel = False
+        if form.transport.data == 'delivery':
+            delivery = True
+        if form.transport.data == 'pickup':
+            pickup = True
+        if form.storage.data == 'disposable':
+            disposable = True
+        if form.storage.data == 'reusable':
+            reusable = True
+        if form.cancellation.data == 'canCancel':
+            pickup = True
+
         created_at = datetime.now(tz=timezone('US/Pacific')).strftime("%Y-%m-%dT%H:%M:%S")
         kitchen_id = uuid.uuid4().hex
         add_kitchen = db.put_item(TableName='kitchens',
@@ -209,28 +225,29 @@ def register():
                           'kitchen_name': {'S': form.kitchenName.data},
                           'description': {'S': form.description.data},
                           'username': {'S': form.username.data},
-                          'password': {'S': generate_password_hash(password)},
+                          'password': {'S': generate_password_hash(form.password.data)},
                           'first_name': {'S': form.firstName.data},
                           'last_name': {'S': form.lastName.data},
                           'street': {'S': form.street.data},
                           'city': {'S': form.city.data},
-                          'state': {'S': form.state.data},
+                          'st': {'S': form.state.data},
                           'zipcode': {'N': form.zipcode.data},
                           'phone_number': {'S': form.phoneNumber.data},
-                          'open_time': {'S': form.openTime.data},
-                          'close_time': {'S': form.closeTime.data},
+                          'open_time': {'S': form.openTime.data.strftime('%H:%M')},
+                          'close_time': {'S': form.closeTime.data.strftime('%H:%M')},
                           'isOpen': {'BOOL': False},
                           'email': {'S': form.email.data},
-                          'delivery_open_time': { 'S': form.deliveryOpenTime.data},
-                          'delivery_close_time': { 'S': form.deliveryCloseTime.data},
-                          'pickup': { 'BOOL': form.pickup.data},
-                          'delivery': { 'BOOL': form.delivery.data},
-                          'reusable': { 'BOOL': form.reusable.data},
-                          'disposable': { 'BOOL': form.disposable.data},
-                          'can_cancel': { 'BOOL': form.canCancel.data }
+                          'delivery_open_time': { 'S': form.deliveryOpenTime.data.strftime('%H:%M')},
+                          'delivery_close_time': { 'S': form.deliveryCloseTime.data.strftime('%H:%M')},
+                          'delivery': { 'BOOL': delivery},
+                          'pickup': { 'BOOL': pickup},
+                          'disposable': { 'BOOL': disposable},
+                          'reusable': { 'BOOL': reusable},
+                          'can_cancel': { 'BOOL': canCancel }
                     }
                 )
         flash(f'Your account has been created! You are now able to log in.', 'success') # python 3 format.
+        print("Account for " + form.email.data + " has been created")
         return redirect(url_for('login'))
 
     print(form.errors)
