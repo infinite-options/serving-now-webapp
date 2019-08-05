@@ -621,7 +621,7 @@ def renewIndvPastMeal(id):
                                      }
                                      )
     except:
-        flash(f'Meal not found.', 'danger') # python 3 format.
+        flash('Meal not found.', 'danger') # python 3 format.
 
 
     return redirect(url_for('kitchen', id=login_session['user_id']))
