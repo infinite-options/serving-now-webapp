@@ -247,7 +247,7 @@ def register():
                           'can_cancel': { 'BOOL': canCancel }
                     }
                 )
-        flash(f'Your account has been created! You are now able to log in.', 'success') # python 3 format.
+        flash('Your account has been created! You are now able to log in.', 'success') # python 3 format.
         print("Account for " + form.email.data + " has been created")
         return redirect(url_for('login'))
 
