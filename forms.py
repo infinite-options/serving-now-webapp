@@ -9,10 +9,20 @@ import datetime
 from flask_wtf import FlaskForm # imports to
 from flask_wtf.file import FileField, FileAllowed
 from flask_login import current_user
+from flask import session as login_session
 from wtforms import StringField, PasswordField, SubmitField, BooleanField, TimeField, RadioField, TextAreaField # imports these classes
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
 
 class RegistrationForm(FlaskForm): # create a Registration Form class.  Below are the form fields
+    kitchenName = StringField('Kitchen Name', validators=[DataRequired()])
+    description = TextAreaField('Description', validators=[DataRequired()])
+    closeTime = TimeField('Close Time', validators=[DataRequired()])
+    openTime = TimeField('Open Time', validators=[DataRequired()])
+    deliveryOpenTime = TimeField('Delivery Open Time', validators=[DataRequired()])
+    deliveryCloseTime = TimeField('Delivery Close Time', validators=[DataRequired()])
+    transport = RadioField('Transport', choices=[('pickup','Pickup'),('delivery','Delivery')], validators=[DataRequired()])
+    storage = RadioField('Storage', choices=[('reusable','Reusable'),('disposable','Disposable')], validators=[DataRequired()])
+    cancellation = RadioField('Cancellation', choices=[('canCancel','Allow cancellation within ordering hours'),('cannotCancel','Cancellations not allowed')], validators=[DataRequired()])
     username = StringField('Username', validators=[DataRequired(), Length(min=6, max=20)])  # StringField must identify Username as the label so form.username.label takes you to the username.label in the form
     email = StringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[DataRequired()])
@@ -24,15 +34,6 @@ class RegistrationForm(FlaskForm): # create a Registration Form class.  Below ar
     state = StringField('State', validators=[DataRequired()])
     city = StringField('City', validators=[DataRequired()])
     street = StringField('Street', validators=[DataRequired()])
-    kitchenName = StringField('Kitchen Name', validators=[DataRequired()])
-    description = TextAreaField('Description', validators=[DataRequired()])
-    closeTime = TimeField('Close Time', validators=[DataRequired()])
-    openTime = TimeField('Open Time', validators=[DataRequired()])
-    deliveryOpenTime = TimeField('Delivery Open Time', validators=[DataRequired()])
-    deliveryCloseTime = TimeField('Delivery Close Time', validators=[DataRequired()])
-    transport = RadioField('Transport', choices=[('pickup','Pickup'),('delivery','Delivery')], validators=[DataRequired()])
-    storage = RadioField('Storage', choices=[('reusable','Reusable'),('disposable','Disposable')], validators=[DataRequired()])
-    cancellation = RadioField('Cancellation', choices=[('canCancel','Allow cancellation within ordering hours'),('cannotCancel','Cancellations not allowed')], validators=[DataRequired()])
     # pickup = BooleanField('Pickup', validators=[DataRequired()])
     # delivery = BooleanField('Delivery', validators=[DataRequired()])
     # reusable = BooleanField('Reusable', validators=[DataRequired()])
@@ -120,39 +121,6 @@ class RegistrationForm(FlaskForm): # create a Registration Form class.  Below ar
             if not (phonenumbers.is_valid_number(input_number)):
                 raise ValidationError('Invalid phone number.')
 
-    # https://stackoverflow.com/questions/21815067/how-do-i-validate-wtforms-fields-against-one-another
-    # def validate(self):
-    #     result = True
-    #
-    #     OTerrors = list(self.openTime.errors)
-    #     CTerrors = list(self.closeTime.errors)
-    #     DOTerrors = list(self.deliveryOpenTime.errors)
-    #     DCTerrors = list(self.deliveryCloseTime.errors)
-    #
-    #     print(self.openTime.data)
-    #     print(self.closeTime.data)
-    #
-    #     if self.openTime.data > self.closeTime.data:
-    #         OTerrors.append('Please choose valid times.')
-    #         CTerrors.append('Please choose valid times.')
-    #         result = False
-    #
-    #     if self.deliveryOpenTime.data > self.deliveryCloseTime.data:
-    #         DOTerrors.append('Please choose valid times.')
-    #         DCTerrors.append('Please choose valid times.')
-    #         result = False
-    #
-    #     self.openTime.errors = OTerrors
-    #     print(self.openTime.errors)
-    #     self.closeTime.errors = CTerrors
-    #     self.deliveryOpenTime.errors = DOTerrors
-    #     self.deliveryCloseTime.errors = DCTerrors
-    #
-    #     if not FlaskForm.validate(self):
-    #         return False
-    #
-    #     return result
-
 
 class LoginForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
@@ -161,21 +129,101 @@ class LoginForm(FlaskForm):
     submit = SubmitField('Login In')
 
 class UpdateAccountForm(FlaskForm): # create a Registration Form class.  Below are the form fields
+    kitchenName = StringField('Kitchen Name', validators=[DataRequired()])
+    description = TextAreaField('Description', validators=[DataRequired()])
+    closeTime = TimeField('Close Time', validators=[DataRequired()])
+    openTime = TimeField('Open Time', validators=[DataRequired()])
+    deliveryOpenTime = TimeField('Delivery Open Time', validators=[DataRequired()])
+    deliveryCloseTime = TimeField('Delivery Close Time', validators=[DataRequired()])
+    transport = RadioField('Transport', choices=[('pickup','Pickup'),('delivery','Delivery')], validators=[DataRequired()])
+    storage = RadioField('Storage', choices=[('reusable','Reusable'),('disposable','Disposable')], validators=[DataRequired()])
+    cancellation = RadioField('Cancellation', choices=[('canCancel','Allow cancellation within ordering hours'),('cannotCancel','Cancellations not allowed')], validators=[DataRequired()])
     username = StringField('Username', validators=[DataRequired(), Length(min=6, max=20)])  # StringField must identify Username as the label so form.username.label takes you to the username.label in the form
     email = StringField('Email', validators=[DataRequired(), Email()])
-    picture = FileField('Update Profile Picture', validators=[FileAllowed(['jpg', 'png'])])
+    password = PasswordField('Password', validators=[DataRequired()])
+    verifyPassword = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
+    firstName = StringField('First Name', validators=[DataRequired()])
+    lastName = StringField('Last Name', validators=[DataRequired()])
+    phoneNumber = StringField('Phone Number', validators=[DataRequired()])
+    zipcode = StringField('Zipcode', validators=[DataRequired()])
+    state = StringField('State', validators=[DataRequired()])
+    city = StringField('City', validators=[DataRequired()])
+    street = StringField('Street', validators=[DataRequired()])
+    # pickup = BooleanField('Pickup', validators=[DataRequired()])
+    # delivery = BooleanField('Delivery', validators=[DataRequired()])
+    # reusable = BooleanField('Reusable', validators=[DataRequired()])
+    # disposable = BooleanField('Disposable', validators=[DataRequired()])
+    # canCancel = BooleanField('Can Cancel', validators=[DataRequired()])
     submit = SubmitField('Update') # SubmitField must allow Signup as its button Label.  Not sure yet where the action goes
 
+    def validate_transport(self, transport):
+        if self.transport.data == 'None':
+            raise ValidationError('Please pick either Pickup or Delivery')
+
+    def validate_storage(self, storage):
+        if self.storage.data == 'None':
+            raise ValidationError('Please pick either Reusable or Disposale')
+
+    def validate_cancellation(self, cancellation):
+        if self.cancellation.data == 'None':
+            raise ValidationError('Please pick a cancellation option')
+
+    def validate_openTime(self, openTime):
+        if self.openTime.data >= self.closeTime.data:
+            raise ValidationError('Please choose valid times.')
+
+    def validate_closeTime(self, closeTime):
+        if self.openTime.data >= self.closeTime.data:
+            raise ValidationError('Please choose valid times.')
+
+    def validate_deliveryOpenTime(self, deliveryOpenTime):
+        if self.deliveryOpenTime.data >= self.deliveryCloseTime.data:
+            raise ValidationError('Please choose valid times.')
+
+    def validate_deliveryCloseTime(self, deliveryCloseTime):
+        if self.deliveryOpenTime.data >= self.deliveryCloseTime.data:
+            raise ValidationError('Please choose valid times.')
+
     def validate_username(self, username):
-        if username.data != current_user.username:
-            user = User.query.filter_by(username=username.data).first()
-            if user:
+        if username.data != login_session['username']:
+            username = db.scan(TableName="kitchens",
+                    FilterExpression='#name = :val',
+                    ExpressionAttributeNames={
+                        '#name': 'username'
+                    },
+                    ExpressionAttributeValues={
+                        ':val': {'S': username.data}
+                    }
+                )
+            if username.get('Items') != []:
                 raise ValidationError('That username is taken. Please choose another one.')
 
     def validate_email(self, email):
-        if email.data != current_user.email:
-            user = User.query.filter_by(email=email.data).first()
-            if user:
+        if email.data != login_session['email']:
+            email = db.scan(TableName="kitchens",
+                    FilterExpression='#name = :val',
+                    ExpressionAttributeNames={
+                        '#name': 'email'
+                    },
+                    ExpressionAttributeValues={
+                        ':val': {'S': email.data}
+                    }
+                )
+            if email.get('Items') != []:
                 raise ValidationError('That email is taken. Please choose another one.')
+
+    def validate_kitchenName(self, kitchenName):
+        if kitchenName.data != login_session['kitchen_name']:
+            kitchen = db.scan(TableName="kitchens",
+                    FilterExpression='#name = :val',
+                    ExpressionAttributeNames={
+                        '#name': 'kitchen_name'
+                    },
+                    ExpressionAttributeValues={
+                        ':val': {'S': kitchenName.data}
+                    }
+                )
+            if kitchen.get('Items') != []:
+                raise ValidationError('That kitchen name is taken. Please choose another one.')
 
 from main import db, s3

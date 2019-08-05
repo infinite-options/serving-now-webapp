@@ -183,6 +183,8 @@ def login():
                 user_id = user['Items'][0]['kitchen_id']['S']
                 login_session['kitchen_name'] = user['Items'][0]['kitchen_name']['S']
                 login_session['user_id'] = user_id
+                login_session['email'] = user['Items'][0]['email']['S']
+                login_session['username'] = user['Items'][0]['username']['S']
                 login_user(User(user_id))
                 return redirect(url_for('kitchen', id=user_id))
 
@@ -214,14 +216,13 @@ def register():
         if form.storage.data == 'reusable':
             reusable = True
         if form.cancellation.data == 'canCancel':
-            pickup = True
+            canCancel = True
 
         created_at = datetime.now(tz=timezone('US/Pacific')).strftime("%Y-%m-%dT%H:%M:%S")
         kitchen_id = uuid.uuid4().hex
         add_kitchen = db.put_item(TableName='kitchens',
                     Item={'kitchen_id': {'S': kitchen_id},
                           'created_at': {'S': created_at},
-                          'name': {'S': form.kitchenName.data},
                           'kitchen_name': {'S': form.kitchenName.data},
                           'description': {'S': form.description.data},
                           'username': {'S': form.username.data},
@@ -253,171 +254,6 @@ def register():
     print(form.errors)
 
     return render_template('register.html', title='Register', form=form) #  This is what happens if the submit is unsuccessful with errors highlighted
-
-
-
-    # if request.method == 'POST':
-    #     email = request.form.get('email')
-    #     password = request.form.get('password')
-    #     verifyPassword = request.form.get('verify-password')
-    #     username = request.form.get('username')
-    #     firstName = request.form.get('first_name')
-    #     lastName = request.form.get('last_name')
-    #     kitchenName = request.form.get('name')
-    #     phoneNumber = request.form.get('phone_number')
-    #     closeTime = request.form.get('close_time')
-    #     openTime = request.form.get('open_time')
-    #     zipcode = request.form.get('zip_code')
-    #     state = request.form.get('state')
-    #     city = request.form.get('city')
-    #     street = request.form.get('address')
-    #     description = request.form.get('description')
-    #     deliveryOpenTime = request.form.get('delivery_open_time')
-    #     deliveryCloseTime = request.form.get('delivery_close_time')
-    #     pickup = strToBool(request.form.get('pickup'))
-    #     delivery = strToBool(request.form.get('delivery'))
-    #     reusable = strToBool(request.form.get('reusable'))
-    #     disposable = strToBool(request.form.get('disposable'))
-    #     canCancel = strToBool(request.form.get('can_cancel'))
-    #
-    #
-    #     if email == None or password == None or verifyPassword == None \
-    #       or username == None or firstName == None or lastName == None \
-    #       or kitchenName == None or phoneNumber == None or closeTime == None \
-    #       or openTime == None or zipcode == None or state == None or city == None \
-    #       or street == None or description == None or deliveryOpenTime == None \
-    #       or deliveryCloseTime == None or pickup == None or delivery == None \
-    #       or reusable == None or disposable == None or canCancel == None:
-    #         flash('Please fill in all the required fields')
-    #         response['message'] = 'This kitchen name is already taken.'
-    #         return response, 400
-    #
-    #     if verifyPassword != password:
-    #         flash('Your passwords don\'t match')
-    #         response['message'] = 'This kitchen name is already taken.'
-    #         return response, 400
-    #
-    #     # request_data = {'email': email, 'password': password,
-    #     #                 'username': username, 'first_name': firstName,
-    #     #                 'last_name': lastName, 'name': kitchenName,
-    #     #                 'address': street, 'city': city, 'state': state,
-    #     #                 'zipcode': zipcode, 'description': description,
-    #     #                 'phone_number': phoneNumber, 'close_time': closeTime,
-    #     #                 'open_time': openTime, 'delivery_open_time': deliveryOpenTime,
-    #     #                 'delivery_close_time': deliveryCloseTime, 'pickup': pickup,
-    #     #                 'delivery': delivery, 'reusable': reusable, 'disposable': disposable,
-    #     #                 'can_cancel': canCancel}
-    #
-    #     # print(request_data)
-    #     # scan to check if the kitchen name exists
-    #     kitchen = db.scan(TableName="kitchens",
-    #         FilterExpression='#kitchen_name = :val',
-    #         ExpressionAttributeNames={
-    #             '#name': 'name'
-    #         },
-    #         ExpressionAttributeValues={
-    #             ':val': {'S': kitchenName}
-    #         }
-    #     )
-    #
-    #     if kitchen.get('Items') != []:
-    #         print('kitchen name invalid')
-    #         response['message'] = 'This kitchen name is already taken.'
-    #         return response, 400
-    #
-    #     email = db.scan(TableName="kitchens",
-    #         FilterExpression='#name = :val',
-    #         ExpressionAttributeNames={
-    #             '#name': 'email'
-    #         },
-    #         ExpressionAttributeValues={
-    #             ':val': {'S': email}
-    #         }
-    #     )
-    #
-    #     if email.get('Items') != []:
-    #         print('email invalid')
-    #         response['message'] = 'This email is already taken.'
-    #         return response, 400
-    #
-    #     username = db.scan(TableName="kitchens",
-    #         FilterExpression='#name = :val',
-    #         ExpressionAttributeNames={
-    #             '#name': 'username'
-    #         },
-    #         ExpressionAttributeValues={
-    #             ':val': {'S': username}
-    #         }
-    #     )
-    #
-    #     # raise exception if the username already exists
-    #     if username.get('Items') != []:
-    #         print('username invalid')
-    #         response['message'] = 'This username is already taken.'
-    #         return response, 400
-    #
-    #     kitchen_id = uuid.uuid4().hex
-    #
-    #     # can_cancel = False
-    #     # if data['can_cancel'] == 'true':
-    #     #   can_cancel = True
-    #
-    #     try:
-    #         created_at = datetime.now(tz=timezone('US/Pacific')).strftime("%Y-%m-%dT%H:%M:%S")
-    #         add_kitchen = db.put_item(TableName='kitchens',
-    #             Item={'kitchen_id': {'S': kitchen_id},
-    #                   'created_at': {'S': created_at},
-    #                   'name': {'S': kitchenName},
-    #                   'kitchen_name': {'S': kitchenName},
-    #                   'description': {'S': description},
-    #                   'username': {'S': username},
-    #                   'password': {'S': generate_password_hash(password)},
-    #                   'first_name': {'S': firstName},
-    #                   'last_name': {'S': lastName},
-    #                   'address': {'S': street},
-    #                   'city': {'S': city},
-    #                   'state': {'S': state},
-    #                   'zipcode': {'N': str(zipcode)},
-    #                   'phone_number': {'S': str(phoneNumber)},
-    #                   'open_time': {'S': str(openTime)},
-    #                   'close_time': {'S': str(closeTime)},
-    #                   'isOpen': {'BOOL': False},
-    #                   'email': {'S': email},
-    #                   'delivery_open_time': { 'S': deliveryOpenTime},
-    #                   'delivery_close_time': { 'S': deliveryCloseTime},
-    #                   'pickup': { 'BOOL': pickup},
-    #                   'delivery': { 'BOOL': delivery},
-    #                   'reusable': { 'BOOL': reusable},
-    #                   'disposable': { 'BOOL': disposable},
-    #                   'can_cancel': { 'BOOL': canCancel }
-    #             }
-    #         )
-    #         return redirect(url_for('login'))
-    #     except:
-    #         flash('Kitchen not registered.')
-    #         return render_template('register.html', form=form)# return back to register with forms filled in
-
-        # response['message'] = 'Request successful'
-        # response['kitchen_id'] = kitchen_id
-        # return response, 200
-
-        # apiURL = API_BASE_URL +'api/v1/kitchens/register'
-        # session = requests.Session()
-        # response = session.post(apiURL, data=json.dumps(request_data))
-
-        # print(response.json())
-
-        # if response.json().get('message') == 'Request successful':
-        #     return redirect(url_for('login'))
-        # else:
-        #     flash('Kitchen not registered.')
-        #     return render_template('register.html')# return back to register with forms filled in
-        #     # return redirect(url_for('kitchen', id=response.json().get('kitchen_id')))
-
-    # return render_template('register.html', form=form)
-
-# {'message': 'An uncaught exception happened while servicing this request. You can investigate this with the `zappa tail` command.', 'traceback': ['Traceback (most recent call last):\n', '  File "/var/task/handler.py", line 518, in handler\n    response = Response.from_app(self.wsgi_app, environ)\n', '  File "/var/task/werkzeug/wrappers.py", line 939, in from_app\n    return cls(*_run_wsgi_app(app, environ, buffered))\n', '  File "/var/task/werkzeug/test.py", line 923, in run_wsgi_app\n    app_rv = app(environ, start_response)\n', '  File "/var/task/zappa/middleware.py", line 70, in __call__\n    response = self.application(environ, encode_response)\n', '  File "/var/task/flask/app.py", line 2309, in __call__\n    return self.wsgi_app(environ, start_response)\n', '  File "/var/task/flask/app.py", line 2295, in wsgi_app\n    response = self.handle_exception(e)\n', '  File "/var/task/flask_restful/__init__.py", line 269, in error_router\n    return original_handler(e)\n', '  File "/var/task/flask_cors/extension.py", line 161, in wrapped_function\n    return cors_after_request(app.make_response(f(*args, **kwargs)))\n', '  File "/var/task/flask/app.py", line 1741, in handle_exception\n    reraise(exc_type, exc_value, tb)\n', '  File "/var/task/flask/_compat.py", line 34, in reraise\n    raise value.with_traceback(tb)\n', '  File "/var/task/flask/app.py", line 2292, in wsgi_app\n    response = self.full_dispatch_request()\n', '  File "/var/task/flask/app.py", line 1815, in full_dispatch_request\n    rv = self.handle_user_exception(e)\n', '  File "/var/task/flask_restful/__init__.py", line 269, in error_router\n    return original_handler(e)\n', '  File "/var/task/flask_cors/extension.py", line 161, in wrapped_function\n    return cors_after_request(app.make_response(f(*args, **kwargs)))\n', '  File "/var/task/flask/app.py", line 1718, in handle_user_exception\n    reraise(exc_type, exc_value, tb)\n', '  File "/var/task/flask/_compat.py", line 34, in reraise\n    raise value.with_traceback(tb)\n', '  File "/var/task/flask/app.py", line 1813, in full_dispatch_request\n    rv = self.dispatch_request()\n', '  File "/var/task/flask/app.py", line 1799, in dispatch_request\n    return self.view_functions[rule.endpoint](**req.view_args)\n', '  File "/var/task/flask_restful/__init__.py", line 458, in wrapper\n    resp = resource(*args, **kwargs)\n', '  File "/var/task/flask/views.py", line 88, in view\n    return self.dispatch_request(*args, **kwargs)\n', '  File "/var/task/flask_restful/__init__.py", line 573, in dispatch_request\n    resp = meth(*args, **kwargs)\n', '  File "/var/task/app.py", line 228, in post\n    \':val\': {\'S\': data[\'name\']}\n', '  File "/var/runtime/botocore/client.py", line 314, in _api_call\n    return self._make_api_call(operation_name, kwargs)\n', '  File "/var/runtime/botocore/client.py", line 612, in _make_api_call\n    raise error_class(parsed_response, operation_name)\n', 'botocore.exceptions.ClientError: An error occurred (ValidationException) when calling the Scan operation: ExpressionAttributeValues contains invalid value: One or more parameter values were invalid: An AttributeValue may not contain an empty string for key :val\n']}
-
 
 @app.route('/kitchens/<string:id>')
 @login_required
@@ -460,8 +296,8 @@ def kitchen(id):
     meals['Items'] = mealItems
     previousMeals['Items'] = previousMealsItems
 
-    print("\n\n" + str(meals) + "\n\n")
-    print("\n\n" + str(previousMeals) + "\n\n")
+    # print("\n\n" + str(meals) + "\n\n")
+    # print("\n\n" + str(previousMeals) + "\n\n")
 
     todaysMenu = meals["Items"]
     pastMenu = previousMeals["Items"]
@@ -499,75 +335,179 @@ def kitchen(id):
 @cross_origin(supports_credentials=True)
 @login_required
 def kitchenSettings(id):
+    form = UpdateAccountForm()
+    if form.validate_on_submit():
+        delivery = False
+        pickup = False
+        disposable = False
+        reusable = False
+        canCancel = False
+        if form.transport.data == 'delivery':
+            delivery = True
+        if form.transport.data == 'pickup':
+            pickup = True
+        if form.storage.data == 'disposable':
+            disposable = True
+        if form.storage.data == 'reusable':
+            reusable = True
+        if form.cancellation.data == 'canCancel':
+            canCancel = True
+        db.update_item(TableName='kitchens',
+                       Key={'kitchen_id': {'S': id}},
+                       UpdateExpression='SET can_cancel = :cc, \
+                                             city = :c, \
+                                             close_time = :ct, \
+                                             delivery = :d, \
+                                             delivery_close_time = :dct, \
+                                             delivery_open_time = :dot, \
+                                             description = :des, \
+                                             disposable = :dis, \
+                                             email = :e, \
+                                             first_name = :fn, \
+                                             kitchen_name = :kn, \
+                                             last_name = :ln, \
+                                             open_time = :ot, \
+                                             password = :p, \
+                                             phone_number = :pn, \
+                                             pickup = :pi, \
+                                             reusable = :r, \
+                                             st = :st, \
+                                             street = :s, \
+                                             username = :u, \
+                                             zipcode = :z',
+                       ExpressionAttributeValues={
+                           ':cc': {'BOOL': canCancel},
+                           ':c': {'S': form.city.data},
+                           ':ct': {'S': form.closeTime.data.strftime('%H:%M')},
+                           ':d': {'BOOL': delivery},
+                           ':dct': {'S': form.deliveryCloseTime.data.strftime('%H:%M')},
+                           ':dot': {'S': form.deliveryOpenTime.data.strftime('%H:%M')},
+                           ':des': {'S': form.description.data},
+                           ':dis': {'BOOL': disposable},
+                           ':e': {'S':form.email.data},
+                           ':fn': {'S': form.firstName.data},
+                           ':kn': {'S': form.kitchenName.data},
+                           ':ln': {'S': form.lastName.data},
+                           ':ot': {'S': form.openTime.data.strftime('%H:%M')},
+                           ':p': {'S': generate_password_hash(form.password.data)},
+                           ':pn': {'S': form.phoneNumber.data},
+                           ':pi': {'BOOL': pickup},
+                           ':r': {'BOOL': reusable},
+                           ':st': {'S': form.state.data},
+                           ':s': {'S': form.street.data},
+                           ':u': {'S': form.username.data},
+                           ':z': {'S': form.zipcode.data},
+                       }
+                       )
+        flash('Your account has been updated!', 'success')
+        return redirect(url_for('kitchenSettings', id=current_user.get_id()))
+    elif request.method == 'GET':
+        kitchen = db.scan(TableName='kitchens',
+                          FilterExpression='kitchen_id = :value',
+                          ExpressionAttributeValues={
+                              ':value': {'S': current_user.get_id()},
+                          }
+        )['Items'][0]
 
-    updates = {}
-
-    print("\n\n"+ str(request.form.get('type')) +"\n\n")
-
-    if request.form.get('type') == 'registration':
-        updates["username"] = request.form.get('payload[username]')
-        updates["password"] = generate_password_hash(request.form.get('payload[password]'))
-
-    if request.form.get('type') == 'personal':
-        updates["first_name"] = request.form.get('payload[first_name]')
-        updates["last_name"] = request.form.get('payload[last_name]')
-        updates["street"] = request.form.get('payload[street]')
-        updates["city"] = request.form.get('payload[city]')
-        updates["st"] = request.form.get('payload[state]')
-        updates["zipcode"] = request.form.get('payload[zipcode]')
-        updates["phone_number"] = request.form.get('payload[phone_number]')
-        updates["email"] = request.form.get('payload[email]')
-
-    if request.form.get('type') == 'kitchen':
-        updates["kitchen_name"] = request.form.get('payload[kitchen_name]')
-        updates["description"] = request.form.get('payload[description]')
-        updates["open_time"] = request.form.get('payload[open_time]')
-        updates["close_time"] = request.form.get('payload[close_time]')
-        updates["delivery_open_time"] = request.form.get('payload[delivery_open_time]')
-        updates["delivery_close_time"] = request.form.get('payload[delivery_close_time]')
-        updates["delivery"] = strToBool(request.form.get('payload[delivery]'))
-        updates["pickup"] = strToBool(request.form.get('payload[pickup]'))
-        updates["reusable"] = strToBool(request.form.get('payload[reusable]'))
-        updates["disposable"] = strToBool(request.form.get('payload[disposable]'))
-        updates["can_cancel"] = strToBool(request.form.get('payload[cancellation_option]'))
-
-    for field in updates:
-
-        print("\n\n\n"+ str(updates[field]) +"\n")
-        print(str(field) +"\n")
-
-        if (updates[field]) == None:
-            flash('Please fill ' + field + ' in')
+        form.kitchenName.data = kitchen['kitchen_name']['S']
+        form.description.data = kitchen['description']['S']
+        form.closeTime.data = datetime.strptime(kitchen['close_time']['S'], '%H:%M')
+        form.openTime.data = datetime.strptime(kitchen['open_time']['S'], '%H:%M')
+        form.deliveryOpenTime.data = datetime.strptime(kitchen['delivery_open_time']['S'], '%H:%M')
+        form.deliveryCloseTime.data = datetime.strptime(kitchen['delivery_close_time']['S'], '%H:%M')
+        if kitchen['delivery']['BOOL']:
+            form.transport.data = 'delivery'
         else:
-            keyVal = {"":""}
+            form.transport.data = 'pickup'
+        if kitchen['disposable']['BOOL']:
+            form.storage.data = 'disposable'
+        else:
+            form.storage.data = 'reusable'
+        if kitchen['can_cancel']['BOOL']:
+            form.cancellation.data = 'canCancel'
+        else:
+            form.cancellation.data = 'cannotCancel'
+        form.username.data = kitchen['username']['S']
+        form.email.data = kitchen['email']['S']
+        form.firstName.data = kitchen['first_name']['S']
+        form.lastName.data = kitchen['last_name']['S']
+        form.phoneNumber.data = kitchen['phone_number']['S']
+        form.zipcode.data = kitchen['zipcode']['S']
+        form.state.data = kitchen['st']['S']
+        form.city.data = kitchen['city']['S']
+        form.street.data = kitchen['street']['S']
 
-            if isinstance(updates[field], str):
-                keyVal = {'S': updates[field]}
-            elif isinstance(updates[field], bool):
-                keyVal = {'BOOL': updates[field]}
-            elif isinstance(updates[field], int):
-                keyVal = {'N': updates[field]}
+    return render_template('kitchenSettings.html', form=form, id=id, kitchen_name=login_session['kitchen_name'])
 
-            print(str(keyVal) +"\n\n\n")
 
-            update = db.update_item(TableName='kitchens',
-                                     Key={'kitchen_id': {'S': id}},
-                                     UpdateExpression='SET ' + field + ' = :n',
-                                     ExpressionAttributeValues={
-                                         ':n': keyVal
-                                         }
-                                    )
-
-    kitchen = db.scan(TableName='kitchens',
-                      FilterExpression='kitchen_id = :value',
-                      ExpressionAttributeValues={
-                          ':value': {'S': id}
-                      })
-
-    return render_template('kitchenSettings.html',
-                            id=id,
-                            kitchen=kitchen['Items'][0],
-                            kitchen_name=login_session['kitchen_name'])
+    # updates = {}
+    #
+    # print("\n\n"+ str(request.form.get('type')) +"\n\n")
+    #
+    # if request.form.get('type') == 'registration':
+    #     updates["username"] = request.form.get('payload[username]')
+    #     updates["password"] = generate_password_hash(request.form.get('payload[password]'))
+    #
+    # if request.form.get('type') == 'personal':
+    #     updates["first_name"] = request.form.get('payload[first_name]')
+    #     updates["last_name"] = request.form.get('payload[last_name]')
+    #     updates["street"] = request.form.get('payload[street]')
+    #     updates["city"] = request.form.get('payload[city]')
+    #     updates["st"] = request.form.get('payload[state]')
+    #     updates["zipcode"] = request.form.get('payload[zipcode]')
+    #     updates["phone_number"] = request.form.get('payload[phone_number]')
+    #     updates["email"] = request.form.get('payload[email]')
+    #
+    # if request.form.get('type') == 'kitchen':
+    #     updates["kitchen_name"] = request.form.get('payload[kitchen_name]')
+    #     updates["description"] = request.form.get('payload[description]')
+    #     updates["open_time"] = request.form.get('payload[open_time]')
+    #     updates["close_time"] = request.form.get('payload[close_time]')
+    #     updates["delivery_open_time"] = request.form.get('payload[delivery_open_time]')
+    #     updates["delivery_close_time"] = request.form.get('payload[delivery_close_time]')
+    #     updates["delivery"] = strToBool(request.form.get('payload[delivery]'))
+    #     updates["pickup"] = strToBool(request.form.get('payload[pickup]'))
+    #     updates["reusable"] = strToBool(request.form.get('payload[reusable]'))
+    #     updates["disposable"] = strToBool(request.form.get('payload[disposable]'))
+    #     updates["can_cancel"] = strToBool(request.form.get('payload[cancellation_option]'))
+    #
+    # for field in updates:
+    #
+    #     print("\n\n\n"+ str(updates[field]) +"\n")
+    #     print(str(field) +"\n")
+    #
+    #     if (updates[field]) == None:
+    #         flash('Please fill ' + field + ' in')
+    #     else:
+    #         keyVal = {"":""}
+    #
+    #         if isinstance(updates[field], str):
+    #             keyVal = {'S': updates[field]}
+    #         elif isinstance(updates[field], bool):
+    #             keyVal = {'BOOL': updates[field]}
+    #         elif isinstance(updates[field], int):
+    #             keyVal = {'N': updates[field]}
+    #
+    #         print(str(keyVal) +"\n\n\n")
+    #
+    #         update = db.update_item(TableName='kitchens',
+    #                                  Key={'kitchen_id': {'S': id}},
+    #                                  UpdateExpression='SET ' + field + ' = :n',
+    #                                  ExpressionAttributeValues={
+    #                                      ':n': keyVal
+    #                                      }
+    #                                 )
+    #
+    # kitchen = db.scan(TableName='kitchens',
+    #                   FilterExpression='kitchen_id = :value',
+    #                   ExpressionAttributeValues={
+    #                       ':value': {'S': id}
+    #                   })
+    #
+    # return render_template('kitchenSettings.html',
+    #                         id=id,
+    #                         kitchen=kitchen['Items'][0],
+    #                         kitchen_name=login_session['kitchen_name'])
 
 
 @app.route('/kitchens/meals/create', methods=['POST'])
@@ -665,6 +605,27 @@ def renewPastMeals():
                                      )
 
     return redirect(url_for('kitchen', id=login_session['user_id']))
+
+@app.route('/kitchens/meals/renew/<id>')
+@login_required
+def renewIndvPastMeal(id):
+
+    todays_date = datetime.now(tz=timezone('US/Pacific')).strftime("%Y-%m-%dT%H:%M:%S")
+
+    try:
+        update_meal = db.update_item(TableName='meals',
+                                     Key={'meal_id': {'S': str(id)[:-6]}},
+                                     UpdateExpression='SET created_at = :val',
+                                     ExpressionAttributeValues={
+                                         ':val': {'S': todays_date}
+                                     }
+                                     )
+    except:
+        flash(f'Meal not found.', 'danger') # python 3 format.
+
+
+    return redirect(url_for('kitchen', id=login_session['user_id']))
+
 
 @app.route('/kitchens/meals/<string:meal_id>', methods=['POST'])
 @login_required
@@ -785,8 +746,8 @@ def report():
     meals['Items'] = mealItems
     previousMeals['Items'] = previousMealsItems
 
-    print("\n\n" + str(meals) + "\n\n")
-    print("\n\n" + str(previousMeals) + "\n\n")
+    # print("\n\n" + str(meals) + "\n\n")
+    # print("\n\n" + str(previousMeals) + "\n\n")
 
     todaysMenu = meals["Items"]
     pastMenu = previousMeals["Items"]
@@ -997,4 +958,4 @@ def favorite(meal_id):
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port='8080', debug=True)
+    app.run(host='127.0.0.1', port='8080', debug=True)

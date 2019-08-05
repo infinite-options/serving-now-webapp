@@ -1,6 +1,7 @@
 flask-restful
 flask_login
 flask-cors
+flask-wtf
 phonenumbers
 wtforms
 flask

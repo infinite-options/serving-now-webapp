@@ -8,7 +8,11 @@
 .table-borderless td,
 .table-borderless th {
   border: 0;
-  border-top: 0 ! important;
+  border-top: 0 !important;
+}
+
+.display-4 {
+  color: #8a8a8a !important;
 }
 
 .border-gray {

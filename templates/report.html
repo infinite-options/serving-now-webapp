@@ -16,14 +16,16 @@
       <main role="main" class="container-fluid">
         <div class="row">
           <div class="col-md-8">
-            <h1>Delivery Report</h1>
+            <div class="border-bottom mb-4 ml-4 d-flex justify-content-between">  <!-- this is spacing below Join Today text -->
+              <span class="display-4">Orders Report</span>
+            </div>
             {% if not orders %}
-              <h4 class="text-secondary">You currently have no orders placed.</h4>
+              <p class="lead text-secondary ml-4">You currently have no orders placed.</p>
             {% endif %}
             {% for order in orders %}
               {% set outer_loop = loop %}
               {% if outer_loop.index == 1%}
-              <div class="border-top border-bottom border-gray p-2 mb-1 mt-1" >
+              <div class="border-top border-bottom border-gray ml-4 p-2 mb-1 mt-1" >
               {% else %}
               <div class="border-bottom border-gray p-2 mb-1 mt-1" >
               {% endif %}
@@ -76,7 +78,9 @@
 
           <div class="col-md-4">
             <div class="content-section">
-              <h1>Current Statistics</h1>
+              <div class="border-bottom mb-4 d-flex justify-content-between">  <!-- this is spacing below Join Today text -->
+                <span class="display-4">Current Statistics</span>
+              </div>
               <table class="table table-borderless">
                 <tbody>
                   <tr>
