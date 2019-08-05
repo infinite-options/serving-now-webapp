@@ -232,7 +232,7 @@ def register():
                           'street': {'S': form.street.data},
                           'city': {'S': form.city.data},
                           'st': {'S': form.state.data},
-                          'zipcode': {'N': form.zipcode.data},
+                          'zipcode': {'S': form.zipcode.data},
                           'phone_number': {'S': form.phoneNumber.data},
                           'open_time': {'S': form.openTime.data.strftime('%H:%M')},
                           'close_time': {'S': form.closeTime.data.strftime('%H:%M')},
