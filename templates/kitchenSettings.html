@@ -45,7 +45,7 @@
                 {% endif %}
               </div>
               <div class="form-group">   <!-- form group where we use the fields from the form we passed in -->
-                {{ form.description.label(class="form-control-label") }}  <!-- prints out the label from the username field.  Pass in form argument-->
+                {{ form.description.label(class="form-control-label") }} 
 
                 {% if form.description.errors %}
                   {{ form.description(cols="40", rows="5", class="description-input-box input-lg form-control form-control-lg is-invalid") }}
@@ -263,20 +263,6 @@
             <div class="col-sm">                  <!-- this is a style section in main.css -->
               {{ form.hidden_tag() }}           <!-- for security reasons -->
               <fieldset class="form-group">      <!-- adding other form fields.  This is Bootstrap -->
-                <div class="form-group">   <!-- form group where we use the fields from the form we passed in -->
-                  {{ form.username.label(class="form-control-label") }}  <!-- prints out the label from the username field.  Pass in form argument-->
-
-                  {% if form.username.errors %}
-                    {{ form.username(class="form-control form-control-lg is-invalid") }}
-                    <div class="invalid-feedback">
-                      {% for error in form.username.errors %}
-                        <span>{{ error }}</span>
-                      {% endfor %}
-                    </div>
-                  {% else %}
-                    {{ form.username(class="form-control form-control-lg") }}  <!-- passes in the username -->
-                  {% endif %}
-                </div>
                 <div class="form-group">
                   {{ form.email.label(class="form-control-label") }}
 

@@ -14,7 +14,7 @@ from wtforms import StringField, PasswordField, SubmitField, BooleanField, TimeF
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
 
 class RegistrationForm(FlaskForm): # create a Registration Form class.  Below are the form fields
-    kitchenName = StringField('Kitchen Name', validators=[DataRequired()])
+    kitchenName = StringField('Buisness Name', validators=[DataRequired()])
     description = TextAreaField('Description', validators=[DataRequired()])
     closeTime = TimeField('Close Time', validators=[DataRequired()])
     openTime = TimeField('Open Time', validators=[DataRequired()])
@@ -23,7 +23,6 @@ class RegistrationForm(FlaskForm): # create a Registration Form class.  Below ar
     transport = RadioField('Transport', choices=[('pickup','Pickup'),('delivery','Delivery')], validators=[DataRequired()])
     storage = RadioField('Storage', choices=[('reusable','Reusable'),('disposable','Disposable')], validators=[DataRequired()])
     cancellation = RadioField('Cancellation', choices=[('canCancel','Allow cancellation within ordering hours'),('cannotCancel','Cancellations not allowed')], validators=[DataRequired()])
-    username = StringField('Username', validators=[DataRequired(), Length(min=6, max=20)])  # StringField must identify Username as the label so form.username.label takes you to the username.label in the form
     email = StringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[DataRequired()])
     verifyPassword = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
@@ -68,19 +67,6 @@ class RegistrationForm(FlaskForm): # create a Registration Form class.  Below ar
     def validate_deliveryCloseTime(self, deliveryCloseTime):
         if self.deliveryOpenTime.data >= self.deliveryCloseTime.data:
             raise ValidationError('Please choose valid times.')
-
-    def validate_username(self, username):
-        username = db.scan(TableName="kitchens",
-                FilterExpression='#name = :val',
-                ExpressionAttributeNames={
-                    '#name': 'username'
-                },
-                ExpressionAttributeValues={
-                    ':val': {'S': username.data}
-                }
-            )
-        if username.get('Items') != []:
-            raise ValidationError('That username is taken. Please choose another one.')
 
     def validate_email(self, email):
         email = db.scan(TableName="kitchens",
@@ -129,7 +115,7 @@ class LoginForm(FlaskForm):
     submit = SubmitField('Login In')
 
 class UpdateAccountForm(FlaskForm): # create a Registration Form class.  Below are the form fields
-    kitchenName = StringField('Kitchen Name', validators=[DataRequired()])
+    kitchenName = StringField('Buisness Name', validators=[DataRequired()])
     description = TextAreaField('Description', validators=[DataRequired()])
     closeTime = TimeField('Close Time', validators=[DataRequired()])
     openTime = TimeField('Open Time', validators=[DataRequired()])
@@ -138,10 +124,9 @@ class UpdateAccountForm(FlaskForm): # create a Registration Form class.  Below a
     transport = RadioField('Transport', choices=[('pickup','Pickup'),('delivery','Delivery')], validators=[DataRequired()])
     storage = RadioField('Storage', choices=[('reusable','Reusable'),('disposable','Disposable')], validators=[DataRequired()])
     cancellation = RadioField('Cancellation', choices=[('canCancel','Allow cancellation within ordering hours'),('cannotCancel','Cancellations not allowed')], validators=[DataRequired()])
-    username = StringField('Username', validators=[DataRequired(), Length(min=6, max=20)])  # StringField must identify Username as the label so form.username.label takes you to the username.label in the form
     email = StringField('Email', validators=[DataRequired(), Email()])
-    password = PasswordField('Password', validators=[DataRequired()])
-    verifyPassword = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
+    password = PasswordField('New Password', validators=[DataRequired()])
+    verifyPassword = PasswordField('Confirm New Password', validators=[DataRequired(), EqualTo('password')])
     firstName = StringField('First Name', validators=[DataRequired()])
     lastName = StringField('Last Name', validators=[DataRequired()])
     phoneNumber = StringField('Phone Number', validators=[DataRequired()])
@@ -183,20 +168,6 @@ class UpdateAccountForm(FlaskForm): # create a Registration Form class.  Below a
     def validate_deliveryCloseTime(self, deliveryCloseTime):
         if self.deliveryOpenTime.data >= self.deliveryCloseTime.data:
             raise ValidationError('Please choose valid times.')
-
-    def validate_username(self, username):
-        if username.data != login_session['username']:
-            username = db.scan(TableName="kitchens",
-                    FilterExpression='#name = :val',
-                    ExpressionAttributeNames={
-                        '#name': 'username'
-                    },
-                    ExpressionAttributeValues={
-                        ':val': {'S': username.data}
-                    }
-                )
-            if username.get('Items') != []:
-                raise ValidationError('That username is taken. Please choose another one.')
 
     def validate_email(self, email):
         if email.data != login_session['email']:

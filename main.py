@@ -184,7 +184,6 @@ def login():
                 login_session['kitchen_name'] = user['Items'][0]['kitchen_name']['S']
                 login_session['user_id'] = user_id
                 login_session['email'] = user['Items'][0]['email']['S']
-                login_session['username'] = user['Items'][0]['username']['S']
                 login_user(User(user_id))
                 return redirect(url_for('kitchen', id=user_id))
 
@@ -225,7 +224,6 @@ def register():
                           'created_at': {'S': created_at},
                           'kitchen_name': {'S': form.kitchenName.data},
                           'description': {'S': form.description.data},
-                          'username': {'S': form.username.data},
                           'password': {'S': generate_password_hash(form.password.data)},
                           'first_name': {'S': form.firstName.data},
                           'last_name': {'S': form.lastName.data},
@@ -373,7 +371,6 @@ def kitchenSettings(id):
                                              reusable = :r, \
                                              st = :st, \
                                              street = :s, \
-                                             username = :u, \
                                              zipcode = :z',
                        ExpressionAttributeValues={
                            ':cc': {'BOOL': canCancel},
@@ -395,7 +392,6 @@ def kitchenSettings(id):
                            ':r': {'BOOL': reusable},
                            ':st': {'S': form.state.data},
                            ':s': {'S': form.street.data},
-                           ':u': {'S': form.username.data},
                            ':z': {'S': form.zipcode.data},
                        }
                        )
@@ -427,7 +423,6 @@ def kitchenSettings(id):
             form.cancellation.data = 'canCancel'
         else:
             form.cancellation.data = 'cannotCancel'
-        form.username.data = kitchen['username']['S']
         form.email.data = kitchen['email']['S']
         form.firstName.data = kitchen['first_name']['S']
         form.lastName.data = kitchen['last_name']['S']
@@ -796,8 +791,8 @@ def report():
                 # TODO add meal specific price
                 item['photo'] = mealInfo['photo']
                 item['qty'] = int(item['M']['qty']['N'])
-                item['revenue'] = int(mealInfo['price']['S']) * item['qty']
-                item['price'] = int(mealInfo['price']['S'])
+                item['revenue'] = float(mealInfo['price']['S']) * item['qty']
+                item['price'] = float(mealInfo['price']['S'])
                 totalRevenue += float(item['revenue'])
                 #totalRevenue += item['revenue']
                 if order_id_str in totalMealQuantity:

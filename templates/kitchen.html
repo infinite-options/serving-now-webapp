@@ -7,7 +7,7 @@
 <script src="{{ url_for('.static', filename='updateMeal.js') }}"></script>
 <script src="{{ url_for('.static', filename='deleteMeal.js') }}"></script>
 <script src="{{ url_for('.static', filename='favMeal.js') }}"></script>
-<link href="{{ url_for('.static', filename='style.css') }}" rel="stylesheet" />
+<link href="{{ url_for('.static', filename='kitchen.css') }}" rel="stylesheet" />
 <!-- References style sheet -->
 
 <!DOCTYPE html>
@@ -26,157 +26,18 @@
   })
 </script>
 
-<style>
-  .serving-now-logo {
-    width: 130px;
-    height: 130px;
-  }
+<body>
+  <div class="ml-4">
+    <div class="border-bottom mb-4 ml-4 d-flex justify-content-between">  <!-- this is spacing below Join Today text -->
+      <span class="display-4">Kitchen</span>
+    </div>
+  </div>
 
-  .grid-container {
-    display: grid;
-    grid-template-areas: 'logo right-content''logo addmealbtn ''current-meal current-meal''currentmeal-card currentmeal-card''pastmeal pastmeal''pastmeal-card pastmeal-card';
-    grid-template-columns: repeat(auto-fit);
-    grid-row-gap: 5px;
-  }
-
-  .card-overlay {
-    display: flex;
-    width: 100%;
-    height: 100%;
-    justify-content: space-between;
-    align-items: flex-end;
-  }
-
-  #logo {
-    display: grid;
-    grid-template-columns: auto 1fr;
-    grid-area: logo;
-    grid-column-gap: 10px;
-    padding: 40px;
-  }
-
-  #kitchen-name {
-    grid-area: kitchen-name;
-  }
-
-  #currentmeal {
-    grid-area: current-meal;
-    margin-left: 40px;
-    margin-top: 10px;
-  }
-
-  #currentmeal-card {
-    display: grid;
-    grid-area: currentmeal-card;
-    grid-auto-rows: minmax(100px, auto);
-    /* grid-column-gap: none; */
-    margin-top: 10px;
-    margin-left: 40px;
-    margin-right: none;
-  }
-
-  #pastmeal {
-    grid-area: pastmeal;
-    margin: 40px;
-  }
-
-  /* #pastmeal-card {
-  grid-area: pastmeal-card;
-  display: grid;
-  padding: 15px;
-  margin: 40px;
-  background-color: #cccccc;
-  grid-auto-rows: minmax(100px, auto);
-} */
-
-#pastmeal-card {
-  display: grid;
-  grid-area: pastmeal-card;
-  grid-auto-rows: minmax(100px, auto);
-  /* grid-column-gap: none; */
-  margin-top: 10px;
-  margin-left: 40px;
-  margin-right: none;
-}
-
-.add-meal-btn,
-.kitchen-username-btn {
-  background: #a0050f;
-  border-radius: 25px;
-  border: 2px solid #ECEAEA;
-  color: #ECEAEA;
-}
-
-.add-meal-btn-div {
-  margin-left: 42%;
-}
-
-.meal-card {
-  min-height: 327px !important;
-}
-
-.meal-info {
-  min-height: 47px !important;
-}
-
-.kitchen-username {
-  cursor: text !important;
-  width: 150px;
-  height: 40px;
-}
-
-.quantity-no {
-  background-color: #a0050f;
-  border-radius: 25px;
-  border: 3px solid #ECEAEA;
-  min-width: 40px;
-  margin-top: -173px;
-  pointer-events: none;
-}
-
-.form-control,
-.name-of-meal input[type=text] {
-  color: rgb(104, 103, 103);
-  background: transparent;
-  font-style: italic;
-  text-align: center;
-}
-
-#option-items,
-#edit-option-items,
-#edit_meal_option1_qty,
-#edit_meal_option2_qty,
-#edit_meal_option3_qty,
-#edit_meal_option4_qty,
-#edit_meal_option5_qty,
-#add_meal_option1_qty,
-#add_meal_option2_qty,
-#add_meal_option3_qty,
-#add_meal_option4_qty,
-#add_meal_option5_qty {
-  background: transparent;
-  border-radius: 25px;
-  border: 2px solid #ECEAEA;
-}
-
-#popup-mealname .ui .input {
-  min-width: 325px;
-  margin-left: 17%;
-}
-
-#popup-mealname .ui .input>input {
-  background: transparent;
-  border: 2px solid #ECEAEA;
-  border-radius: 25px;
-}
-</style>
-
-<body style="background-color:#ECEAEA">
   <div class="grid-container">
     <div id="logo">
       <div> <img src="{{ url_for('.static', filename='ServingNowLogo.png') }}" class="serving-now-logo"></div>
       <div>
-        <h1><strong>{{ kitchen_name }}</strong></h1>
+        <h1> {{ kitchen_name }} </h1>
         <p>{{ description }}</p>
         <!-- <div class="add-meal-btn-div"> -->
       </div>
@@ -256,7 +117,7 @@
                     <button type="button">
                       <a class="text-dark" href="{{ url_for('renewIndvPastMeal', id=meal.meal_id.S) }} type="button" name="button">Renew</a>
                     </button>
-                    <input onclick="('{{meal.meal_id.S}}');" type="image" class="ui inverted" width="40" height="40" src="{{ url_for('.static', filename='TrashIcon.png') }}" id="delete-meal-btn">
+                    <input onclick="deleteMeal('{{meal.meal_id.S}}');" type="image" class="ui inverted" width="40" height="40" src="{{ url_for('.static', filename='TrashIcon.png') }}" id="delete-meal-btn">
                   </div>
                 </div>
                 <div>
