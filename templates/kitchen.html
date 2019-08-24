@@ -1,6 +1,8 @@
 {% extends "main.html" %} {% block content%}
 
 <script src="{{ url_for('.static', filename='script.js') }}"></script>
+<!-- Font Awesome -->
+<script src="https://kit.fontawesome.com/c144addda0.js"></script>
 <!-- References scripts for web interaction -->
 <script src="{{ url_for('.static', filename='addMeal.js') }}"></script>
 <script src="{{ url_for('.static', filename='editMeal.js') }}"></script>
@@ -29,24 +31,25 @@
 <body>
   <div class="ml-4">
     <div class="border-bottom mb-4 ml-4 d-flex justify-content-between">  <!-- this is spacing below Join Today text -->
-      <span class="display-4">Kitchen</span>
+      <span class="display-4">Buisness</span>
     </div>
   </div>
 
   <div class="grid-container">
     <div id="logo">
-      <div> <img src="{{ url_for('.static', filename='ServingNowLogo.png') }}" class="serving-now-logo"></div>
+      <div> <img src="{{ kitchenImage }}" class="serving-now-logo"></div>
       <div>
-        <h1> {{ kitchen_name }} </h1>
+        <h1> {{ kitchenName }} </h1>
         <p>{{ description }}</p>
         <!-- <div class="add-meal-btn-div"> -->
       </div>
     </div>
     <h2 id="currentmeal">
-      <strong>Current Meals:</strong>
+      <span class="display-4"> Current Produce: </span>
       <br>
-      <button type="button" class="btn btn-primary add-meal-btn" data-toggle="modal" data-target="#addMeal">
-        Add Meal
+      <a id="add-new" data-toggle="modal" data-target="#addMeal" style="cursor: pointer;">
+        <small id="add-new-text"> <i class="fas fa-plus"></i> Add Product</small>
+      </a>
       </h2>
     </div>
     <div id="currentmeal-card">
@@ -59,7 +62,7 @@
               <div class="blurring dimmable image">
                 <div class="ui dimmer">
                   <div class="card-overlay">
-                    <input type="image" class="ui inverted" width="40" height="40" src="{{ url_for('.static', filename='EditIcon.png') }}" data-meal_id="{{meal.meal_id.S}}" data-toggle="modal" id="edit-meal-btn" data-meal_name="{{meal.meal_name.S}}"
+                    <input type="image" class="ui inverted" width="40" height="40" src="{{ url_for('.static', filename='EditIcon copy.png') }}" data-meal_id="{{meal.meal_id.S}}" data-toggle="modal" id="edit-meal-btn" data-meal_name="{{meal.meal_name.S}}"
                     data-meal_photo="{{meal.photo.S}}" data-meal_price="{{meal.price.S}}" data-meal_description="{{meal.description.S}}" data-target="#editMeal">
                     <input onclick="deleteMeal('{{meal.meal_id.S}}');" type="image" class="ui inverted" width="40" height="40" src="{{ url_for('.static', filename='TrashIcon.png') }}" id="delete-meal-btn">
                   </div>
@@ -67,9 +70,9 @@
                 <div>
                   <img src={{meal.photo.S}} class="card-img-top" style="max-width:290px; height:174px">
                 </div>
-                <div style="position:absolute" class="btn btn-primary quantity-no">{{ meal.count_today.N }}</div>
               </div>
               <div class="content">
+                <div style="position:absolute" class="quantity-no">{{ meal.count_today.N }}</div>
                 <div class="header meal-info"><i>{{meal.meal_name.S}}</i></div>
                 <div class="meta">
                   <span class="date"><i>{{meal.description.S}}</i></span>
@@ -96,11 +99,11 @@
       </div>
     </div>
     <h2 id="pastmeal">
-      <strong>Past Meals: </strong>
+      <span class="display-4"> Past Produce: </span>
       <br>
-      <button type="button" class="btn btn-primary add-meal-btn">
-        <a class="text-light" href="{{ url_for('renewPastMeals') }}">Renew Meals</i></a>
-      </button>
+      <a id="renew" data-toggle="modal" data-target="#addMeal" style="cursor: pointer;">
+        <small id="renew-text"> <i class="fas fa-redo-alt"></i> Renew Products</small>
+      </a>
     </h2>
     <div id="pastmeal-card">
       <div class="row">
@@ -112,20 +115,20 @@
               <div class="blurring dimmable image">
                 <div class="ui dimmer">
                   <div class="card-overlay">
-                    <input type="image" class="ui inverted" width="40" height="40" src="{{ url_for('.static', filename='EditIcon.png') }}" data-meal_id="{{meal.meal_id.S}}" data-toggle="modal" id="edit-meal-btn" data-meal_name="{{meal.meal_name.S}}"
+                    <input type="image" class="ui inverted" width="40" height="40" src="{{ url_for('.static', filename='EditIcon copy.png') }}" data-meal_id="{{meal.meal_id.S}}" data-toggle="modal" id="edit-meal-btn" data-meal_name="{{meal.meal_name.S}}"
                     data-meal_photo="{{meal.photo.S}}" data-meal_price="{{meal.price.S}}" data-meal_description="{{meal.description.S}}" data-target="#editMeal">
-                    <button type="button">
-                      <a class="text-dark" href="{{ url_for('renewIndvPastMeal', id=meal.meal_id.S) }} type="button" name="button">Renew</a>
-                    </button>
+                    <a class="text-dark" href="{{ url_for('renewIndvPastMeal', id=meal.meal_id.S) }}">
+                      <img src="{{ url_for('.static', filename='RenewIcon.png') }}" alt="Renew" width="40" height="40">
+                    </a>
                     <input onclick="deleteMeal('{{meal.meal_id.S}}');" type="image" class="ui inverted" width="40" height="40" src="{{ url_for('.static', filename='TrashIcon.png') }}" id="delete-meal-btn">
                   </div>
                 </div>
                 <div>
                   <img src={{meal.photo.S}} class="card-img-top" style="max-width:290px; height:174px">
                 </div>
-                <div style="position:absolute" class="btn btn-primary quantity-no">{{ meal.count_today.N }}</div>
               </div>
               <div class="content">
+                <div style="position:absolute" class="quantity-no">0</div>
                 <div class="header meal-info"><i>{{meal.meal_name.S}}</i></div>
                 <div class="meta">
                   <span class="date"><i>{{meal.description.S}}</i></span>
@@ -359,7 +362,7 @@
                   <strong>Meal Price</i></strong>
                 </div>
                 <div class="right-content">
-                  <input style="background: transparent" type="number" name="price" class="right-content form-control form-control-class" id="add_meal_price" placeholder="price">
+                  <input style="background: transparent" type="number" step="0.01" min="0" name="price" class="right-content form-control form-control-class" id="add_meal_price" placeholder="price">
                 </div>
               </div>
             </div>

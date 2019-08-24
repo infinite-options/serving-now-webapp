@@ -17,7 +17,7 @@
         <div class="row">
           <div class="col-md-8">
             <div class="border-bottom mb-4 ml-4 d-flex justify-content-between">  <!-- this is spacing below Join Today text -->
-              <span class="display-4">Orders Report</span>
+              <span class="display-4 page-header-title">Orders Report</span>
             </div>
             {% if not orders %}
               <p class="lead text-secondary ml-4">You currently have no orders placed.</p>
@@ -25,14 +25,14 @@
             {% for order in orders %}
               {% set outer_loop = loop %}
               {% if outer_loop.index == 1%}
-              <div class="border-top border-bottom border-gray ml-4 p-2 mb-1 mt-1" >
+              <div class="border-top border-bottom ml-4 p-2 mb-1 mt-1" >
               {% else %}
-              <div class="border-bottom border-gray ml-4 p-2 mb-1 mt-1" >
+              <div class="border-bottom ml-4 p-2 mb-1 mt-1" >
               {% endif %}
                 <table class='table table-borderless mb-0'>
                   <tbody>
                     <tr>
-                      <td class="time-col align-middle table-borderless" scope="col">{{ order.created_at.S }}</td>
+                      <td class="time-col align-middle table-borderless" scope="col">{{ order.order_time }}</td>
                       <th class="name-col align-middle table-borderless" scope="col">{{ order.name.S }}</th>
                       <td class="address-col align-middle table-borderless" >
                         <div> {{ order.street.S }} </div>
@@ -79,7 +79,7 @@
           <div class="col-md-4">
             <div class="content-section">
               <div class="border-bottom mb-4 d-flex justify-content-between">  <!-- this is spacing below Join Today text -->
-                <span class="display-4">Current Statistics</span>
+                <span class="display-4 page-header-title">Current Statistics</span>
               </div>
               <table class="table table-borderless">
                 <tbody>

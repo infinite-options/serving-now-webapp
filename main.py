@@ -3,7 +3,6 @@
 # @Date:   2019-05-24 19:40:12
 # @Last Modified by:   Prashant Marathay
 # @Last Modified time: 2019-07-26 19:10:31
-
 import boto3
 import json
 import uuid
@@ -11,6 +10,7 @@ import requests
 
 from datetime import datetime
 from pytz import timezone
+from operator import itemgetter
 
 from flask import (Flask, Blueprint, request, render_template,
     redirect, url_for, flash)
@@ -68,10 +68,19 @@ API_BASE_URL = 'https://phaqvwjbw6.execute-api.us-west-1.amazonaws.com/dev'
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 
 
+@app.after_request
+def add_header(response):
+    """
+    Add headers to both force latest IE rendering engine or Chrome Frame,
+    and also to cache the rendered page for 10 minutes.
+    """
+    response.headers['X-UA-Compatible'] = 'IE=Edge,chrome=1'
+    response.headers['Cache-Control'] = 'public, max-age=0'
+    return response
 
 # =======HELPER FUNCTIONS FOR UPLOADING AN IMAGE=============
 
-def upload_meal_img(file, bucket, key):
+def upload_s3_img(file, bucket, key):
     if file and allowed_file(file.filename):
         filename = 'https://s3-us-west-1.amazonaws.com/' \
                    + str(bucket) + '/' + str(key)
@@ -99,8 +108,8 @@ def allowed_file(filename):
 
 # =======HELPER FUNCTIONS FOR DELETING AN IMAGE=============
 
-def delete_meal_img(bucket, key):
-    print ("Inside delete_meal_img..")
+def delete_s3_img(bucket, key):
+    print ("Inside delete_s3_img..")
     print ("bucket: ", bucket)
     print ("key: ", key)
 
@@ -114,7 +123,6 @@ def delete_meal_img(bucket, key):
         print ("Item cannot be deleted")
 
     return None
-
 # ===========================================================
 
 
@@ -135,7 +143,7 @@ def _login_manager_load_user(user_id):
 
 @app.route('/')
 def index():
-    return render_template('landing.html')
+    return redirect(url_for('login'))
 
 
 @app.route('/accounts/logout')
@@ -150,17 +158,12 @@ def logout():
 @app.route('/accounts', methods=['GET', 'POST'])
 @app.route('/accounts/login', methods=['GET', 'POST'])
 def login():
-    if 'user_id' in login_session:
+    if current_user.is_authenticated:
         return redirect(url_for('kitchen', id=login_session['user_id']))
-
-    if request.method == 'POST':
-        email = request.form.get('email')
-        password = request.form.get('password')
-
-        if not email or not password:
-            flash('Enter an email and password')
-            return render_template('login.html')
-
+    form = LoginForm()
+    if form.validate_on_submit():
+        email = form.email.data.lower()
+        password = form.password.data
         try:
             user = db.query(TableName="kitchens",
                 IndexName='email-index',
@@ -172,28 +175,22 @@ def login():
             )
 
             if user.get('Count') == 0:
-                flash('User not found.')
-                return render_template('login.html')
+                return render_template('login.html', title='Login', form=form)
 
             if not check_password_hash(user['Items'][0]['password']['S'], \
               password):
-                flash('Password is incorrect.')
-                return render_template('login.html')
+                return render_template('login.html', title='Login', form=form)
             else:
                 user_id = user['Items'][0]['kitchen_id']['S']
                 login_session['kitchen_name'] = user['Items'][0]['kitchen_name']['S']
                 login_session['user_id'] = user_id
-                login_session['email'] = user['Items'][0]['email']['S']
                 login_user(User(user_id))
-                return redirect(url_for('kitchen', id=user_id))
+                return redirect(url_for('kitchen', id=login_session['user_id']))
 
         except Exception as e:
-            flash('Unable to connect to database.')
             print(e)
-            return render_template('login.html')
-
-    return render_template('login.html')
-
+            return render_template('login.html', title='Login', form=form)
+    return render_template('login.html', title='Login', form=form)
 
 @app.route('/accounts/register', methods=['GET', 'POST'])
 def register():
@@ -219,9 +216,19 @@ def register():
 
         created_at = datetime.now(tz=timezone('US/Pacific')).strftime("%Y-%m-%dT%H:%M:%S")
         kitchen_id = uuid.uuid4().hex
+
+        photo_path = "https://servingnow.s3-us-west-1.amazonaws.com/kitchen_imgs/landing-logo.png"
+
+        print("form.kitchenImage.data: " + str(form.kitchenImage.data))
+
+        if form.kitchenImage.data:
+            photo_key = 'kitchen_imgs/{}'.format(str(kitchen_id))
+            photo_path = upload_s3_img(form.kitchenImage.data, BUCKET_NAME, photo_key)
+
         add_kitchen = db.put_item(TableName='kitchens',
                     Item={'kitchen_id': {'S': kitchen_id},
                           'created_at': {'S': created_at},
+                          'kitchen_image': {'S': photo_path},
                           'kitchen_name': {'S': form.kitchenName.data},
                           'description': {'S': form.description.data},
                           'password': {'S': generate_password_hash(form.password.data)},
@@ -235,7 +242,7 @@ def register():
                           'open_time': {'S': form.openTime.data.strftime('%H:%M')},
                           'close_time': {'S': form.closeTime.data.strftime('%H:%M')},
                           'isOpen': {'BOOL': False},
-                          'email': {'S': form.email.data},
+                          'email': {'S': form.email.data.lower()},
                           'delivery_open_time': { 'S': form.deliveryOpenTime.data.strftime('%H:%M')},
                           'delivery_close_time': { 'S': form.deliveryCloseTime.data.strftime('%H:%M')},
                           'delivery': { 'BOOL': delivery},
@@ -286,13 +293,15 @@ def kitchen(id):
     previousMealsItems = []
 
     for meal in allMeals:
+        twelveHourTime = datetime.strptime(meal['created_at']['S'][11:16], "%H:%M")
+        meal['order_time'] = twelveHourTime.strftime("%I:%M %p")
         if todays_date in meal['created_at']['S']:
             mealItems.append(meal)
         else:
             previousMealsItems.append(meal)
 
-    meals['Items'] = mealItems
-    previousMeals['Items'] = previousMealsItems
+    meals['Items'] = sorted(mealItems, key=itemgetter('order_time'), reverse=True)
+    previousMeals['Items'] = sorted(previousMealsItems, key=itemgetter('order_time'), reverse=True)
 
     # print("\n\n" + str(meals) + "\n\n")
     # print("\n\n" + str(previousMeals) + "\n\n")
@@ -318,11 +327,13 @@ def kitchen(id):
     )
 
     description = kitchen['Items'][0]['description']['S']
+    kitchenImage = kitchen['Items'][0]['kitchen_image']['S']
 
 
     return render_template('kitchen.html',
                             description=description,
-                            kitchen_name=login_session['kitchen_name'],
+                            kitchenName=login_session['kitchen_name'],
+                            kitchenImage=kitchenImage,
                             id=login_session['user_id'],
                             todaysMeals=todaysMenu,
                             pastMenu = pastMenu
@@ -350,6 +361,15 @@ def kitchenSettings(id):
             reusable = True
         if form.cancellation.data == 'canCancel':
             canCancel = True
+
+        photo_path = "https://servingnow.s3-us-west-1.amazonaws.com/kitchen_imgs/landing-logo.png"
+        print("form.kitchenImage.data: " + str(form.kitchenImage.data))
+        if form.kitchenImage.data:
+            kitchen_id = login_session['user_id']
+            photo_key = 'kitchen_imgs/{}'.format(str(kitchen_id))
+            delete_s3_img(BUCKET_NAME, photo_key)
+            photo_path = upload_s3_img(form.kitchenImage.data, BUCKET_NAME, photo_key)
+
         db.update_item(TableName='kitchens',
                        Key={'kitchen_id': {'S': id}},
                        UpdateExpression='SET can_cancel = :cc, \
@@ -362,10 +382,10 @@ def kitchenSettings(id):
                                              disposable = :dis, \
                                              email = :e, \
                                              first_name = :fn, \
+                                             kitchen_image = :ki, \
                                              kitchen_name = :kn, \
                                              last_name = :ln, \
                                              open_time = :ot, \
-                                             password = :p, \
                                              phone_number = :pn, \
                                              pickup = :pi, \
                                              reusable = :r, \
@@ -381,12 +401,13 @@ def kitchenSettings(id):
                            ':dot': {'S': form.deliveryOpenTime.data.strftime('%H:%M')},
                            ':des': {'S': form.description.data},
                            ':dis': {'BOOL': disposable},
-                           ':e': {'S':form.email.data},
+                           ':e': {'S':form.email.data.lower()},
                            ':fn': {'S': form.firstName.data},
+                           ':ki': {'S': photo_path},
                            ':kn': {'S': form.kitchenName.data},
                            ':ln': {'S': form.lastName.data},
                            ':ot': {'S': form.openTime.data.strftime('%H:%M')},
-                           ':p': {'S': generate_password_hash(form.password.data)},
+                           # ':p': {'S': generate_password_hash(form.password.data)},
                            ':pn': {'S': form.phoneNumber.data},
                            ':pi': {'BOOL': pickup},
                            ':r': {'BOOL': reusable},
@@ -432,77 +453,7 @@ def kitchenSettings(id):
         form.city.data = kitchen['city']['S']
         form.street.data = kitchen['street']['S']
 
-    return render_template('kitchenSettings.html', form=form, id=id, kitchen_name=login_session['kitchen_name'])
-
-
-    # updates = {}
-    #
-    # print("\n\n"+ str(request.form.get('type')) +"\n\n")
-    #
-    # if request.form.get('type') == 'registration':
-    #     updates["username"] = request.form.get('payload[username]')
-    #     updates["password"] = generate_password_hash(request.form.get('payload[password]'))
-    #
-    # if request.form.get('type') == 'personal':
-    #     updates["first_name"] = request.form.get('payload[first_name]')
-    #     updates["last_name"] = request.form.get('payload[last_name]')
-    #     updates["street"] = request.form.get('payload[street]')
-    #     updates["city"] = request.form.get('payload[city]')
-    #     updates["st"] = request.form.get('payload[state]')
-    #     updates["zipcode"] = request.form.get('payload[zipcode]')
-    #     updates["phone_number"] = request.form.get('payload[phone_number]')
-    #     updates["email"] = request.form.get('payload[email]')
-    #
-    # if request.form.get('type') == 'kitchen':
-    #     updates["kitchen_name"] = request.form.get('payload[kitchen_name]')
-    #     updates["description"] = request.form.get('payload[description]')
-    #     updates["open_time"] = request.form.get('payload[open_time]')
-    #     updates["close_time"] = request.form.get('payload[close_time]')
-    #     updates["delivery_open_time"] = request.form.get('payload[delivery_open_time]')
-    #     updates["delivery_close_time"] = request.form.get('payload[delivery_close_time]')
-    #     updates["delivery"] = strToBool(request.form.get('payload[delivery]'))
-    #     updates["pickup"] = strToBool(request.form.get('payload[pickup]'))
-    #     updates["reusable"] = strToBool(request.form.get('payload[reusable]'))
-    #     updates["disposable"] = strToBool(request.form.get('payload[disposable]'))
-    #     updates["can_cancel"] = strToBool(request.form.get('payload[cancellation_option]'))
-    #
-    # for field in updates:
-    #
-    #     print("\n\n\n"+ str(updates[field]) +"\n")
-    #     print(str(field) +"\n")
-    #
-    #     if (updates[field]) == None:
-    #         flash('Please fill ' + field + ' in')
-    #     else:
-    #         keyVal = {"":""}
-    #
-    #         if isinstance(updates[field], str):
-    #             keyVal = {'S': updates[field]}
-    #         elif isinstance(updates[field], bool):
-    #             keyVal = {'BOOL': updates[field]}
-    #         elif isinstance(updates[field], int):
-    #             keyVal = {'N': updates[field]}
-    #
-    #         print(str(keyVal) +"\n\n\n")
-    #
-    #         update = db.update_item(TableName='kitchens',
-    #                                  Key={'kitchen_id': {'S': id}},
-    #                                  UpdateExpression='SET ' + field + ' = :n',
-    #                                  ExpressionAttributeValues={
-    #                                      ':n': keyVal
-    #                                      }
-    #                                 )
-    #
-    # kitchen = db.scan(TableName='kitchens',
-    #                   FilterExpression='kitchen_id = :value',
-    #                   ExpressionAttributeValues={
-    #                       ':value': {'S': id}
-    #                   })
-    #
-    # return render_template('kitchenSettings.html',
-    #                         id=id,
-    #                         kitchen=kitchen['Items'][0],
-    #                         kitchen_name=login_session['kitchen_name'])
+    return render_template('kitchenSettings.html', form=form, id=id, kitchenName=login_session['kitchen_name'])
 
 
 @app.route('/kitchens/meals/create', methods=['POST'])
@@ -539,7 +490,7 @@ def postMeal():
 
     # try:
     photo_key = 'meals_imgs/{}_{}'.format(str(kitchen_id), str(meal_id))
-    photo_path = upload_meal_img(photo, BUCKET_NAME, photo_key)
+    photo_path = upload_s3_img(photo, BUCKET_NAME, photo_key)
 
     if photo_path == None:
         raise BadRequest('Request failed. \
@@ -606,17 +557,21 @@ def renewPastMeals():
 def renewIndvPastMeal(id):
 
     todays_date = datetime.now(tz=timezone('US/Pacific')).strftime("%Y-%m-%dT%H:%M:%S")
+    print (str(id))
 
     try:
         update_meal = db.update_item(TableName='meals',
-                                     Key={'meal_id': {'S': str(id)[:-6]}},
-                                     UpdateExpression='SET created_at = :val',
+                                     Key={'meal_id': {'S': str(id)}},
+                                     UpdateExpression='SET created_at = :ca, \
+                                                           count_today = :ct',
                                      ExpressionAttributeValues={
-                                         ':val': {'S': todays_date}
+                                         ':ca': {'S': todays_date},
+                                         ':ct': {'N': 0},
+
                                      }
                                      )
     except:
-        flash('Meal not found.', 'danger') # python 3 format.
+        flash('Meal not found.', 'danger')
 
 
     return redirect(url_for('kitchen', id=login_session['user_id']))
@@ -625,8 +580,7 @@ def renewIndvPastMeal(id):
 @app.route('/kitchens/meals/<string:meal_id>', methods=['POST'])
 @login_required
 def editMeal(meal_id):
-    # print("edit meal api called: Server Side")
-    # print(meal_id)
+
     name = request.form.get('name')
     price = request.form.get('price')
     photo = request.files.get('photo')
@@ -653,7 +607,7 @@ def editMeal(meal_id):
 
     if photo != None:
         photo_key = 'meals_imgs/{}_{}'.format(str(current_user.get_id()), str(meal_id))
-        photo_path = upload_meal_img(photo, BUCKET_NAME, photo_key)
+        photo_path = upload_s3_img(photo, BUCKET_NAME, photo_key)
 
         update_meal = db.update_item(TableName='meals',
                                      Key={'meal_id': {'S': meal_id}},
@@ -684,23 +638,6 @@ def editMeal(meal_id):
                                          ':n': {'L': description}
                                      }
                                      )
-    #
-    # # TODO: if the limit was removed, update meal to remove the given limit
-    # if limit != None:
-    #     update_meal = db.update_item(TableName='meals',
-    #                                  Key={'meal_id': {'S': meal_id}},
-    #                                  UpdateExpression='SET #l = :l',
-    #                                  ExpressionAttributeNames={
-    #                                      '#l': 'limit'
-    #                                  },
-    #                                  ExpressionAttributeValues={
-    #                                      ':n': {'N': str(limit)}
-    #                                  }
-    #                                  )
-
-    # return redirect(url_for('kitchen', id="5d114cb5c4f54c94a8bb4d955a576fca"))
-    # return redirect(url_for('kitchen', id=current_user.get_id()))
-
 
 @app.route('/kitchens/report')
 @login_required
@@ -741,33 +678,11 @@ def report():
     meals['Items'] = mealItems
     previousMeals['Items'] = previousMealsItems
 
-    # print("\n\n" + str(meals) + "\n\n")
-    # print("\n\n" + str(previousMeals) + "\n\n")
-
     todaysMenu = meals["Items"]
     pastMenu = previousMeals["Items"]
 
-    # todaysMenu = db.Table('meals')
     if todaysMenu == None:
       todaysMenu = []
-
-    # apiURL = API_BASE_URL +'/api/v1/meals/' + current_user.get_id()
-    # response = requests.get(apiURL)
-    #
-    # todaysMenu = response.json().get('result')
-    # mealsToCook = todaysMenu
-
-    # for item in mealsToCook:
-    #     item['qty'] = 0
-
-    # meal
-    #{'Items': [{'photo': {'S': 'https://s3-us-west-1.amazonaws.com/ordermealapp/meals_imgs/638ade3aaef0488f835aa0fb1a75d654_4b9a70fc5f194c7f93a3d5f65c11f9ff'}, 'created_at': {'S': '2019-07-18T13:49:40'}, 'kitchen_id': {'S': '638ade3aaef0488f835aa0fb1a75d654'}, 'favorite': {'BOOL': False}, 'price': {'S': '18'}, 'description': {'L': [{'M': {'title': {'S': 'Mac & Cheese'}, 'qty': {'N': '1'}}}]}, 'meal_id': {'S': '4b9a70fc5f194c7f93a3d5f65c11f9ff'}, 'meal_name': {'S': 'Vegan Mac & Cheese'}}], 'Count': 1, 'ScannedCount': 126, 'ResponseMetadata': {'RequestId': '4HD5TCV1TGS94UG3R8QEBBN2VVVV4KQNSO5AEMVJF66Q9ASUAAJG', 'HTTPStatusCode': 200, 'HTTPHeaders': {'server': 'Server', 'date': 'Thu, 18 Jul 2019 21:35:24 GMT', 'content-type': 'application/x-amz-json-1.0', 'content-length': '488', 'connection': 'keep-alive', 'x-amzn-requestid': '4HD5TCV1TGS94UG3R8QEBBN2VVVV4KQNSO5AEMVJF66Q9ASUAAJG', 'x-amz-crc32': '3635124217'}, 'RetryAttempts': 0}}
-
-    # orders
-#     {'created_at': {'S': '2019-07-18T13:58:53'}, 'kitchen_id': {'S': '638ade3aaef0488f835aa0fb1a75d654'}, 'totalAmount': {'N': '113.36'}, 'email': {'S': 'Jeremy.h.manalo@gmail.com'}, 'order_items': {'L': [{'M': {'meal_id': {'S': '4b9a70fc5f194c7f93a3d5f65c11f9ff'}, 'qty': {'N': '2'}}, 'photo': {'S': 'https://s3-us-west-1.amazonaws.com/ordermealapp/meals_imgs/638ade3aaef0488f835aa0fb1a75d654_4b9a70fc5f194c7f93a3d5f65c11f9ff'}, 'qty': 1, 'meal_name': 'Mac & Cheese'}, {'M': {'meal_id': {'S': '86286f2ad0ac44cab39c8262a8120e72'}, 'qty': {'N': '4'}}, 'photo': {'S': 'https://s3-us-west-1.amazonaws.com/ordermealapp/meals_imgs/638ade3aaef0488f835aa0fb1a75d654_86286f2ad0ac44cab39c8262a8120e72'}, 'qty': 2, 'meal_name': 'bread'}, {'M': {'meal_id': {'S': 'c641a125b3a3409b9348c819fa9e11c1'}, 'qty': {'N': '8'}}}]}, 'name': {'S': 'Jeremy Manalo'}, 'paid': {'BOOL': False}, 'state': {'S': 'CA'}, 'city': {'S': 'Santa Cruz'}, 'order_id': {'S': 'be5c293f2a9a4d3da8c6ce38c06d31ba'}, 'zipCode': {'N': '95060'}, 'phone': {'S': '8587767843'}, 'paymentType': {'S': 'cash'}, 'street': {'S': '434 Western Drive'}}
-
-                # print("\n\n\nmeal: \n\n" + str(meal))
-
 
     totalRevenue = 0.0;
     totalMealQuantity = {}
@@ -803,14 +718,16 @@ def report():
                   item['name'] = mealDescrip['title']['S']
                   update_meal = db.update_item(TableName='meals',
                                                Key={'meal_id': {'S': order_id}},
-                                               UpdateExpression='SET count_today = :n',
+                                               UpdateExpression='SET count_today = :ct',
                                                ExpressionAttributeValues={
-                                                   ':n': {'N': str(totalMealQuantity[order_id_str])}
+                                                   ':ct': {'N': str(totalMealQuantity[order_id_str])},
                                                }
                                                )
-        order['created_at']['S'] = order['created_at']['S'][11:16]
 
+        twelveHourTime = datetime.strptime(order['created_at']['S'][11:16], "%H:%M")
+        order['order_time'] = twelveHourTime.strftime("%I:%M %p")
 
+    sortedOrders = sorted(orders['Items'], key=itemgetter('order_time'), reverse=True)
 
         # order['created_at'] =
 
@@ -818,9 +735,9 @@ def report():
 
 
     return render_template('report.html',
-                            kitchen_name=login_session['kitchen_name'],
+                            kitchenName=login_session['kitchen_name'],
                             id=login_session['user_id'],
-                            orders=orders['Items'],
+                            orders=sortedOrders,
                             totalRevenue = totalRevenue,
                             todaysMeals = todaysMenu,
                             totalMealQuantity = totalMealQuantity)
@@ -875,7 +792,7 @@ def delete(meal_id):
         deleted_meal = db.delete_item(TableName='meals',
                                       Key={'meal_id': {'S': meal_id}}),
 
-        delete_meal_img(BUCKET_NAME, photo_key)
+        delete_s3_img(BUCKET_NAME, photo_key)
 
         response['message'] = 'Request successful'
         return response, 200

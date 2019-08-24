@@ -1,0 +1,17 @@
+body {
+  background-image: url(download.png);
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: auto;
+}
+
+.login-box {
+  background-color: #ffffffd6;;
+  color: #989898;
+  border-radius: 10px;
+  padding: 10px;
+  margin-left: 35%;
+  margin-right: 35%;
+  margin-top: 10%;
+  margin-bottom: 10%;
+}

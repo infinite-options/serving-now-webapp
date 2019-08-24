@@ -9,7 +9,7 @@ function postMeal() {
     console.log(validate_price);
     console.log(meal_name);
 
-    if ((validate_price == "" && validate_price[0] == "-" ) || (meal_name == "")) {
+    if (validate_price == "" || validate_price[0] == "-" || meal_name == "") {
         window.alert('Please enter valid value');
         return false;
     }

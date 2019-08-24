@@ -4,7 +4,6 @@
 * @Last Modified by:   Saurabh Mane
 * @Last Modified time: 2019-07-10 08:05
 */
-
 .display-4 {
   color: #8a8a8a !important;
 }
@@ -108,12 +107,17 @@ height: 40px;
 }
 
 .quantity-no {
-background-color: #a0050f;
-border-radius: 25px;
-border: 3px solid #ECEAEA;
-min-width: 40px;
-margin-top: -173px;
-pointer-events: none;
+  background-color: #d4d4d5;
+  color: white;
+  text-align: center;
+  padding: 5px;
+  border: 0;
+  height: 30px;
+  width: 30px;
+  margin-top: -204px;
+  margin-left: -32px;
+  border-radius: 25px;
+  z-index: 100;
 }
 
 .form-control,
@@ -270,8 +274,12 @@ input.form-control {
     z-index: 1;
 }
 
-a:hover {
-    text-decoration: none;
+#add-new:hover #add-new-text {
+    color: black;
+}
+
+#renew:hover #renew-text{
+    color: black;
 }
 
 .edit-img-preview {

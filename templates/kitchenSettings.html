@@ -25,9 +25,9 @@
     <div class="content-section">
       <div class="pr-4 pl-4 mr-4 ml-4">
         <div class="border-bottom mb-4 d-flex justify-content-between">  <!-- this is spacing below Join Today text -->
-          <span class="display-4">Update Kitchen</span>
+          <span class="display-4">Update Buisness</span>
         </div>
-        <form method = "POST" action="">
+        <form method="POST" action="" enctype="multipart/form-data">
           <div class="row">
             <div class="col-sm">
               <div class="form-group">
@@ -45,7 +45,7 @@
                 {% endif %}
               </div>
               <div class="form-group">   <!-- form group where we use the fields from the form we passed in -->
-                {{ form.description.label(class="form-control-label") }} 
+                {{ form.description.label(class="form-control-label") }}
 
                 {% if form.description.errors %}
                   {{ form.description(cols="40", rows="5", class="description-input-box input-lg form-control form-control-lg is-invalid") }}
@@ -262,7 +262,16 @@
             </div>
             <div class="col-sm">                  <!-- this is a style section in main.css -->
               {{ form.hidden_tag() }}           <!-- for security reasons -->
-              <fieldset class="form-group">      <!-- adding other form fields.  This is Bootstrap -->
+              <fieldset class="form-group">
+                <div class="form-group">
+                  {{ form.kitchenImage.label }}
+                  {{ form.kitchenImage(class="form-control-file") }}
+                  {% if form.kitchenImage.errors %}
+                    {% for error in form.kitchenImage.errors %}
+                      <span class="text-danger">{{ error }}</span><br>
+                    {% endfor %}
+                  {% endif %}
+                </div>
                 <div class="form-group">
                   {{ form.email.label(class="form-control-label") }}
 
@@ -275,33 +284,6 @@
                       </div>
                   {% else %}
                   {{ form.email(class="form-control form-control-lg") }}
-                  {% endif %}
-
-                </div>
-                <div class="form-group">
-                  {{ form.password.label(class="form-control-label") }}
-                  {% if form.password.errors %}
-                    {{ form.password(class="form-control form-control-lg is-invalid") }}
-                    <div class="invalid-feedback">
-                      {% for error in form.password.errors %}
-                        <span>{{ error }}</span>
-                      {% endfor %}
-                    </div>
-                  {% else %}
-                    {{ form.password(class="form-control form-control-lg") }}
-                  {% endif %}
-                </div>
-                <div class="form-group">
-                  {{ form.verifyPassword.label(class="form-control-label") }}
-                  {% if form.verifyPassword.errors %}
-                    {{ form.verifyPassword(class="form-control form-control-lg is-invalid") }}
-                    <div class="invalid-feedback">
-                      {% for error in form.verifyPassword.errors %}
-                        <span>{{ error }}</span>
-                      {% endfor %}
-                    </div>
-                  {% else %}
-                    {{ form.verifyPassword(class="form-control form-control-lg") }}
                   {% endif %}
                 </div>
               </fieldset>
