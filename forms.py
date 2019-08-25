@@ -15,7 +15,7 @@ from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationE
 from werkzeug.security import check_password_hash
 
 class RegistrationForm(FlaskForm): # create a Registration Form class.  Below are the form fields
-    kitchenName = StringField('Buisness Name', validators=[DataRequired()])
+    kitchenName = StringField('Business Name', validators=[DataRequired()])
     description = TextAreaField('Description', validators=[DataRequired()])
     closeTime = TimeField('Close Time', validators=[DataRequired()])
     openTime = TimeField('Open Time', validators=[DataRequired()])
@@ -149,7 +149,7 @@ class UpdateAccountForm(FlaskForm): # create a Registration Form class.  Below a
     description = TextAreaField('Description', validators=[DataRequired()])
     email = StringField('Email', validators=[DataRequired(), Email()])
     firstName = StringField('First Name', validators=[DataRequired()])
-    kitchenName = StringField('Buisness Name', validators=[DataRequired()])
+    kitchenName = StringField('Business Name', validators=[DataRequired()])
     lastName = StringField('Last Name', validators=[DataRequired()])
     openTime = TimeField('Open Time', validators=[DataRequired()])
     storage = RadioField('Delivery Container', choices=[('reusable','Reusable'),('disposable','Disposable')], validators=[DataRequired()])
