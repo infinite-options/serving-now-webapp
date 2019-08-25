@@ -282,6 +282,10 @@ input.form-control {
     color: black;
 }
 
+#renew-text a{
+  text-decoration: none !important;
+}
+
 .edit-img-preview {
     display: inline-block;
     vertical-align: middle;

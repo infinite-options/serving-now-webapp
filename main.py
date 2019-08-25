@@ -42,6 +42,7 @@ app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 465
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 
 mail = Mail(app)
 
@@ -68,14 +69,12 @@ API_BASE_URL = 'https://phaqvwjbw6.execute-api.us-west-1.amazonaws.com/dev'
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 
 
+# No caching at all for API endpoints.
 @app.after_request
 def add_header(response):
-    """
-    Add headers to both force latest IE rendering engine or Chrome Frame,
-    and also to cache the rendered page for 10 minutes.
-    """
-    response.headers['X-UA-Compatible'] = 'IE=Edge,chrome=1'
-    response.headers['Cache-Control'] = 'public, max-age=0'
+    # response.cache_control.no_store = True
+    if 'Cache-Control' not in response.headers:
+        response.headers['Cache-Control'] = 'no-store'
     return response
 
 # =======HELPER FUNCTIONS FOR UPLOADING AN IMAGE=============
@@ -184,6 +183,7 @@ def login():
                 user_id = user['Items'][0]['kitchen_id']['S']
                 login_session['kitchen_name'] = user['Items'][0]['kitchen_name']['S']
                 login_session['user_id'] = user_id
+                login_session['email'] = email
                 login_user(User(user_id))
                 return redirect(url_for('kitchen', id=login_session['user_id']))
 
@@ -345,6 +345,12 @@ def kitchen(id):
 @login_required
 def kitchenSettings(id):
     form = UpdateAccountForm()
+    kitchen = db.scan(TableName='kitchens',
+                      FilterExpression='kitchen_id = :value',
+                      ExpressionAttributeValues={
+                          ':value': {'S': current_user.get_id()},
+                      }
+    )['Items'][0]
     if form.validate_on_submit():
         delivery = False
         pickup = False
@@ -362,7 +368,7 @@ def kitchenSettings(id):
         if form.cancellation.data == 'canCancel':
             canCancel = True
 
-        photo_path = "https://servingnow.s3-us-west-1.amazonaws.com/kitchen_imgs/landing-logo.png"
+        photo_path = kitchen['kitchen_image']['S']
         print("form.kitchenImage.data: " + str(form.kitchenImage.data))
         if form.kitchenImage.data:
             kitchen_id = login_session['user_id']
@@ -419,13 +425,6 @@ def kitchenSettings(id):
         flash('Your account has been updated!', 'success')
         return redirect(url_for('kitchenSettings', id=current_user.get_id()))
     elif request.method == 'GET':
-        kitchen = db.scan(TableName='kitchens',
-                          FilterExpression='kitchen_id = :value',
-                          ExpressionAttributeValues={
-                              ':value': {'S': current_user.get_id()},
-                          }
-        )['Items'][0]
-
         form.kitchenName.data = kitchen['kitchen_name']['S']
         form.description.data = kitchen['description']['S']
         form.closeTime.data = datetime.strptime(kitchen['close_time']['S'], '%H:%M')
@@ -566,7 +565,7 @@ def renewIndvPastMeal(id):
                                                            count_today = :ct',
                                      ExpressionAttributeValues={
                                          ':ca': {'S': todays_date},
-                                         ':ct': {'N': 0},
+                                         ':ct': {'N': '0'}
 
                                      }
                                      )
