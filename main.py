@@ -19,6 +19,7 @@ from flask_login import (LoginManager, login_required, current_user,
 	UserMixin, login_user, logout_user)
 from flask_mail import Mail, Message
 from flask_cors import CORS, cross_origin
+from flask_caching import Cache
 
 from forms import RegistrationForm, LoginForm, UpdateAccountForm
 
@@ -43,6 +44,10 @@ app.config['MAIL_PORT'] = 465
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
+app.config["CACHE_TYPE"] = "null"
+cache = Cache(app,config={'CACHE_TYPE': 'redis'})
+
+cache.init_app(app)
 
 mail = Mail(app)
 
@@ -72,10 +77,14 @@ ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 # No caching at all for API endpoints.
 @app.after_request
 def add_header(response):
-    # response.cache_control.no_store = True
-    if 'Cache-Control' not in response.headers:
-        response.headers['Cache-Control'] = 'no-store'
+    """
+    Add headers to both force latest IE rendering engine or Chrome Frame,
+    and also to cache the rendered page for 10 minutes.
+    """
+    response.headers['X-UA-Compatible'] = 'IE=Edge,chrome=1'
+    response.headers['Cache-Control'] = 'public, max-age=0'
     return response
+
 
 # =======HELPER FUNCTIONS FOR UPLOADING AN IMAGE=============
 
