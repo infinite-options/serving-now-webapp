@@ -7,6 +7,7 @@ import boto3
 import json
 import uuid
 import requests
+import locale
 
 from datetime import datetime
 from pytz import timezone
@@ -21,7 +22,7 @@ from flask_mail import Mail, Message
 from flask_cors import CORS, cross_origin
 from flask_caching import Cache
 
-from forms import RegistrationForm, LoginForm, UpdateAccountForm
+from forms import RegistrationForm, LoginForm, UpdateAccountForm, CustomerForm
 
 
 from werkzeug.exceptions import BadRequest, NotFound
@@ -53,6 +54,8 @@ mail = Mail(app)
 
 db = boto3.client('dynamodb')
 s3 = boto3.client('s3')
+
+locale.setlocale( locale.LC_ALL, 'en_CA.UTF-8' )
 
 # db = boto3.client('dynamodb',
 #           region_name='us-west-1',
@@ -153,6 +156,9 @@ def _login_manager_load_user(user_id):
 def index():
     return redirect(url_for('login'))
 
+@app.route('/payment/<string:total>')
+def payment(total):
+    return render_template('paypal.html', total=total)
 
 @app.route('/accounts/logout')
 @login_required
@@ -269,6 +275,27 @@ def register():
 
     return render_template('register.html', title='Register', form=form) #  This is what happens if the submit is unsuccessful with errors highlighted
 
+@app.route('/customer/register', methods=['GET', 'POST'])
+def registerCustomer():
+    form = CustomerForm(request.form)
+    if form.validate_on_submit():
+        customerId = uuid.uuid4().hex
+        todaysDate = datetime.now(tz=timezone('US/Pacific')).strftime("%Y-%m-%dT%H:%M:%S")
+        add_customer = db.put_item(TableName='customers',
+                    Item={'customer_id': {'S': customerId},
+                          'created_at': {'S': todaysDate},
+                          'first_name': {'S': form.firstName.data},
+                          'last_name': {'S': form.lastName.data},
+                          'phone_number': {'S': form.phoneNumber.data},
+                          'email': {'S': form.email.data.lower()},
+                    }
+                )
+        flash(form.email.data + ' is now registered as a customer for Serving Now.', 'success') # python 3 format.
+        print("Account for " + form.email.data + " has been created")
+        return redirect(url_for('login'))
+    return render_template('registerCustomer.html', title='registerCustomer', form=form) #  This is what happens if the submit is unsuccessful with errors highlighted
+
+
 @app.route('/kitchens/<string:id>')
 @login_required
 def kitchen(id):
@@ -304,6 +331,7 @@ def kitchen(id):
     for meal in allMeals:
         twelveHourTime = datetime.strptime(meal['created_at']['S'][11:16], "%H:%M")
         meal['order_time'] = twelveHourTime.strftime("%I:%M %p")
+        meal['price']['S'] = locale.currency(float(meal['price']['S']))[1:]
         if todays_date in meal['created_at']['S']:
             mealItems.append(meal)
         else:
@@ -715,9 +743,10 @@ def report():
                 item['photo'] = mealInfo['photo']
                 item['qty'] = int(item['M']['qty']['N'])
                 item['revenue'] = float(mealInfo['price']['S']) * item['qty']
-                item['price'] = float(mealInfo['price']['S'])
+                item['price'] = locale.currency(float(mealInfo['price']['S']), grouping=True)
                 totalRevenue += float(item['revenue'])
                 #totalRevenue += item['revenue']
+                item['revenue'] = locale.currency(item['revenue'], grouping=True)
                 if order_id_str in totalMealQuantity:
                     totalMealQuantity[order_id_str] += item['qty']
                 else:
@@ -746,7 +775,7 @@ def report():
                             kitchenName=login_session['kitchen_name'],
                             id=login_session['user_id'],
                             orders=sortedOrders,
-                            totalRevenue = totalRevenue,
+                            totalRevenue = locale.currency(totalRevenue),
                             todaysMeals = todaysMenu,
                             totalMealQuantity = totalMealQuantity)
 

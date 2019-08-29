@@ -1,15 +1,15 @@
 {% extends "main.html" %} {% block content%}
 
-<script src="{{ url_for('.static', filename='script.js') }}"></script>
+<script src="{{ url_for('.static', filename='js/script.js') }}"></script>
 <!-- Font Awesome -->
 <script src="https://kit.fontawesome.com/c144addda0.js"></script>
 <!-- References scripts for web interaction -->
-<script src="{{ url_for('.static', filename='addMeal.js') }}"></script>
-<script src="{{ url_for('.static', filename='editMeal.js') }}"></script>
-<script src="{{ url_for('.static', filename='updateMeal.js') }}"></script>
-<script src="{{ url_for('.static', filename='deleteMeal.js') }}"></script>
-<script src="{{ url_for('.static', filename='favMeal.js') }}"></script>
-<link href="{{ url_for('.static', filename='kitchen.css') }}" rel="stylesheet" />
+<script src="{{ url_for('.static', filename='js/addMeal.js') }}"></script>
+<script src="{{ url_for('.static', filename='js/ditMeal.js') }}"></script>
+<script src="{{ url_for('.static', filename='js/updateMeal.js') }}"></script>
+<script src="{{ url_for('.static', filename='js/deleteMeal.js') }}"></script>
+<script src="{{ url_for('.static', filename='js/favMeal.js') }}"></script>
+<link href="{{ url_for('.static', filename='css/kitchen.css') }}" rel="stylesheet" />
 <!-- References style sheet -->
 
 <!DOCTYPE html>
@@ -62,9 +62,9 @@
               <div class="blurring dimmable image">
                 <div class="ui dimmer">
                   <div class="card-overlay">
-                    <input type="image" class="ui inverted" width="40" height="40" src="{{ url_for('.static', filename='EditIcon copy.png') }}" data-meal_id="{{meal.meal_id.S}}" data-toggle="modal" id="edit-meal-btn" data-meal_name="{{meal.meal_name.S}}"
+                    <input type="image" class="ui inverted" width="40" height="40" src="{{ url_for('.static', filename='images/EditIcon copy.png') }}" data-meal_id="{{meal.meal_id.S}}" data-toggle="modal" id="edit-meal-btn" data-meal_name="{{meal.meal_name.S}}"
                     data-meal_photo="{{meal.photo.S}}" data-meal_price="{{meal.price.S}}" data-meal_description="{{meal.description.S}}" data-target="#editMeal">
-                    <input onclick="deleteMeal('{{meal.meal_id.S}}');" type="image" class="ui inverted" width="40" height="40" src="{{ url_for('.static', filename='TrashIcon.png') }}" id="delete-meal-btn">
+                    <input onclick="deleteMeal('{{meal.meal_id.S}}');" type="image" class="ui inverted" width="40" height="40" src="{{ url_for('.static', filename='images/TrashIcon.png') }}" id="delete-meal-btn">
                   </div>
                 </div>
                 <div>
@@ -102,7 +102,7 @@
       <span class="display-4"> Past Produce: </span>
       <br>
       <a id="renew" href="{{ url_for('renewPastMeals') }}" style="cursor: pointer;">
-        <small id="renew-text"> <i class="fas fa-redo-alt"></i> Renew Products</small>
+        <small id="renew-text"> <i class="fas fa-redo-alt"></i> Renew All Products</small>
       </a>
     </h2>
     <div id="pastmeal-card">
@@ -115,12 +115,12 @@
               <div class="blurring dimmable image">
                 <div class="ui dimmer">
                   <div class="card-overlay">
-                    <input type="image" class="ui inverted" width="40" height="40" src="{{ url_for('.static', filename='EditIcon copy.png') }}" data-meal_id="{{meal.meal_id.S}}" data-toggle="modal" id="edit-meal-btn" data-meal_name="{{meal.meal_name.S}}"
+                    <input type="image" class="ui inverted" width="40" height="40" src="{{ url_for('.static', filename='images/EditIcon copy.png') }}" data-meal_id="{{meal.meal_id.S}}" data-toggle="modal" id="edit-meal-btn" data-meal_name="{{meal.meal_name.S}}"
                     data-meal_photo="{{meal.photo.S}}" data-meal_price="{{meal.price.S}}" data-meal_description="{{meal.description.S}}" data-target="#editMeal">
                     <a class="text-dark" href="{{ url_for('renewIndvPastMeal', id=meal.meal_id.S) }}">
-                      <img src="{{ url_for('.static', filename='RenewIcon.png') }}" alt="Renew" width="40" height="40">
+                      <img src="{{ url_for('.static', filename='images/RenewIcon.png') }}" alt="Renew" width="40" height="40">
                     </a>
-                    <input onclick="deleteMeal('{{meal.meal_id.S}}');" type="image" class="ui inverted" width="40" height="40" src="{{ url_for('.static', filename='TrashIcon.png') }}" id="delete-meal-btn">
+                    <input onclick="deleteMeal('{{meal.meal_id.S}}');" type="image" class="ui inverted" width="40" height="40" src="{{ url_for('.static', filename='images/TrashIcon.png') }}" id="delete-meal-btn">
                   </div>
                 </div>
                 <div>

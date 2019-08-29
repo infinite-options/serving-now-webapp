@@ -139,6 +139,50 @@ class LoginForm(FlaskForm):
                 return False
         return True
 
+class CustomerForm(FlaskForm):
+    firstName = StringField('First Name', validators=[DataRequired()])
+    lastName = StringField('Last Name', validators=[DataRequired()])
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    phoneNumber = StringField('Phone Number', validators=[DataRequired()])
+    submit = SubmitField('Submit')
+
+    def validate_email(self, email):
+        user = db.scan(TableName='customers',
+                FilterExpression='#name = :val',
+                ExpressionAttributeNames={
+                    '#name': 'email'
+                },
+                ExpressionAttributeValues={
+                    ':val': {'S': email.data.lower()}
+                }
+            )
+        if user.get('Items') != []:
+            raise ValidationError('It looks like the email: '+ email.data + ' has already been registered.')
+
+    # https://stackoverflow.com/questions/36251149/validating-us-phone-number-in-wtfforms
+    def validate_phoneNumber(self, phoneNumber):
+        user = db.scan(TableName="customers",
+                FilterExpression='#name = :val',
+                ExpressionAttributeNames={
+                    '#name': 'phone_number'
+                },
+                ExpressionAttributeValues={
+                    ':val': {'S': phoneNumber.data}
+                }
+            )
+        if user.get('Items') != []:
+            raise ValidationError('It looks like the phone number: '+ phoneNumber.data + ' has already been registered.')
+
+        if len(phoneNumber.data) > 16:
+            raise ValidationError('Invalid phone number.')
+        try:
+            input_number = phonenumbers.parse(phoneNumber.data)
+            if not (phonenumbers.is_valid_number(input_number)):
+                raise ValidationError('Invalid phone number.')
+        except:
+            input_number = phonenumbers.parse("+1"+phoneNumber.data)
+            if not (phonenumbers.is_valid_number(input_number)):
+                raise ValidationError('Invalid phone number.')
 
 class UpdateAccountForm(FlaskForm): # create a Registration Form class.  Below are the form fields
     closeTime = TimeField('Close Time', validators=[DataRequired()])

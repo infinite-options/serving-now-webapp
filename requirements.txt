@@ -7,6 +7,7 @@ Flask-Mail
 flask-restful
 flask-wtf
 jinja2
+locale
 phonenumbers
 pytz
 wtforms

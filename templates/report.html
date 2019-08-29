@@ -3,7 +3,6 @@
   <head>
     <title>Order Report</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="ordermeal.js"></script>
   </head>
   <body>
 
@@ -11,7 +10,7 @@
 
     {% block content %}
       <script src="ordermeal.js"></script>
-      <link rel="stylesheet" type="text/css" href="{{ url_for('.static', filename='reportStyle.css' )}}">
+      <link rel="stylesheet" type="text/css" href="{{ url_for('.static', filename='css/reportStyle.css' )}}">
 
       <main role="main" class="container-fluid">
         <div class="row">
@@ -54,9 +53,9 @@
                         <div class="border border-gray mb-2 mt-2 order-item-box">
                           <img src={{item.photo.S}} class="card-img-top float-left" style="max-width:190px; height:120px">
                             <span class="align-top list-inline-item float-left ml-2">
-                              <p class="display-4"> ${{ item.price }} {{ item.name }} </p>
+                              <p class="display-4"> {{ item.price }} {{ item.name }} </p>
                               <p class="text-left"> Quantity: {{ item.qty }} </p>
-                              <p class="text-left"> Revenue: ${{ item.revenue }} </p>
+                              <p class="text-left"> Revenue: {{ item.revenue }} </p>
                             </span>
                             <!-- <div class="form-group align-middle float-right m-1">
                               <textarea class="form-control notes-box" rows="7" id="order_notes"></textarea>
@@ -85,7 +84,7 @@
                 <tbody>
                   <tr>
                     <th> Total Revenue for Today: </th>
-                    <th class="text-center"> ${{ totalRevenue }} </th>
+                    <th class="text-center"> {{ totalRevenue }} </th>
                   </tr>
                 </tbody>
                 <tbody>
