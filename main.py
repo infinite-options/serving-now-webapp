@@ -170,7 +170,7 @@ def paymentCancelled(order_id):
     deleted_order = db.delete_item(TableName='meal_orders',
                                   Key={'order_id': {'S': order_id}})
     if deleted_order.get('Items') != []:
-        message = 'Order not Found.'
+        message = 'Your order has been cancelled.'
     else:
         message = 'Your order has been cancelled.'
     return render_template('paymentCancelled.html', message=message)
