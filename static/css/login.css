@@ -14,7 +14,8 @@ body {
   right: 0;
 }
 .login-box {
-  background-color: #ffffffd6;;
+  /* background-color: #ffffffd6; */
+  background-color: #ffffff;
   color: #989898;
   border-radius: 10px;
   padding: 25px;
