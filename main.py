@@ -156,9 +156,24 @@ def _login_manager_load_user(user_id):
 def index():
     return redirect(url_for('login'))
 
-@app.route('/payment/<string:total>')
-def payment(total):
-    return render_template('paypal.html', total=total)
+@app.route('/payment/<string:order_id>/<string:total>')
+def payment(order_id, total):
+    return render_template('paypal.html', total=total, order_id=order_id)
+
+@app.route('/paymentComplete')
+def paymentComplete():
+    return render_template('paymentComplete.html')
+
+@app.route('/order/<string:order_id>/paymentCancelled')
+def paymentCancelled(order_id):
+    message = ''
+    deleted_order = db.delete_item(TableName='meal_orders',
+                                  Key={'order_id': {'S': order_id}})
+    if deleted_order.get('Items') != []:
+        message = 'Order not Found.'
+    else:
+        message = 'Your order has been cancelled.'
+    return render_template('paymentCancelled.html', message=message)
 
 @app.route('/accounts/logout')
 @login_required
@@ -827,7 +842,7 @@ def delete(meal_id):
 
         #delete from meals table
         deleted_meal = db.delete_item(TableName='meals',
-                                      Key={'meal_id': {'S': meal_id}}),
+                                      Key={'meal_id': {'S': meal_id}})
 
         delete_s3_img(BUCKET_NAME, photo_key)
 
