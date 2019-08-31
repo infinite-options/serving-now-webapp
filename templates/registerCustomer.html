@@ -47,20 +47,6 @@
 
         <img src="{{ url_for('.static', filename='images/landing-logo.png') }}" class="center-block" width="150px" height="150px">
         <div class="form-group">
-          {{ form.representative.label(class="form-control-label") }}
-          *Not required if by self
-          {% if form.representative.errors %}
-            {{ form.representative(class="form-control form-control-lg is-invalid") }}
-            <div class="invalid-feedback">
-              {% for error in form.representative.errors %}
-                <span>{{ error }}</span>
-              {% endfor %}
-            </div>
-          {% else %}
-            {{ form.representative(class="form-control form-control-lg") }}
-          {% endif %}
-        </div>
-        <div class="form-group">
           *{{ form.firstName.label(class="form-control-label") }}
 
           {% if form.firstName.errors %}
@@ -152,6 +138,20 @@
       </p>
       <div class="form-group">
         {{ form.submit(class="btn btn-info") }}
+      </div>
+      <div class="form-group">
+        {{ form.representative.label(class="form-control-label") }}
+        *Not required if by self
+        {% if form.representative.errors %}
+          {{ form.representative(class="form-control form-control-lg is-invalid") }}
+          <div class="invalid-feedback">
+            {% for error in form.representative.errors %}
+              <span>{{ error }}</span>
+            {% endfor %}
+          </div>
+        {% else %}
+          {{ form.representative(class="form-control form-control-lg") }}
+        {% endif %}
       </div>
     </form>
     <div class="border-top pt-3">
