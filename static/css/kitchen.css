@@ -8,6 +8,10 @@
   color: #8a8a8a !important;
 }
 
+#page-name {
+  margin-right: 40px;
+}
+
 .serving-now-logo {
   width: 130px;
   height: 130px;
@@ -282,7 +286,13 @@ input.form-control {
     color: black;
 }
 
-#renew-text a{
+#add-new{
+  color: gray;
+  text-decoration: none !important;
+}
+
+#renew{
+  color: gray;
   text-decoration: none !important;
 }
 

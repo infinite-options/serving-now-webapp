@@ -5,7 +5,7 @@
 <script src="https://kit.fontawesome.com/c144addda0.js"></script>
 <!-- References scripts for web interaction -->
 <script src="{{ url_for('.static', filename='js/addMeal.js') }}"></script>
-<script src="{{ url_for('.static', filename='js/ditMeal.js') }}"></script>
+<script src="{{ url_for('.static', filename='js/editMeal.js') }}"></script>
 <script src="{{ url_for('.static', filename='js/updateMeal.js') }}"></script>
 <script src="{{ url_for('.static', filename='js/deleteMeal.js') }}"></script>
 <script src="{{ url_for('.static', filename='js/favMeal.js') }}"></script>
@@ -30,7 +30,7 @@
 
 <body>
   <div class="ml-4">
-    <div class="border-bottom mb-4 ml-4 d-flex justify-content-between">  <!-- this is spacing below Join Today text -->
+    <div id="page-name" class="border-bottom mb-4 ml-4 d-flex justify-content-between">  <!-- this is spacing below Join Today text -->
       <span class="display-4">Business</span>
     </div>
   </div>
@@ -584,7 +584,7 @@
               <strong>Meal Price</i></strong>
             </div>
             <div class="right-content">
-              <input style="background: transparent" type="number" name="price" class="right-content form-control form-control-class" id="edit_meal_price">
+              <input style="background: transparent" type="number" step="0.01" min="0" name="price" class="right-content form-control form-control-class" id="edit_meal_price" placeholder="price">
             </div>
             <!-- <div class="col-md-6" id="meal-id">
             <strong>Meal Price</i></strong>
@@ -601,7 +601,6 @@
       <!-- update button, calls update meal javascript -->
     </div>
   </form>
-</div>
 </div>
 </div>
 </div>

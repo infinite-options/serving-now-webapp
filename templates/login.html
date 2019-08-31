@@ -80,16 +80,21 @@
           {% endif %}
         </div>
       </fieldset>
-      <div class="form-group">
+      <div class="form-group d-flex">
         {{ form.submit(class="btn btn-info") }}
+        <span class="ml-auto"> Need Support? <br> (925) 400-7469 </span>
       </div>
     </form>
     <div class="pt-3 d-flex">
       <small class="test-muted">
-        New Vendor? <a href="{{ url_for('register') }}">Create Account Here.</a>  <!--pass in name of function -->
+        New Vendor?
+        <br>
+        <a href="{{ url_for('register') }}">Create Account Here</a>  <!--pass in name of function -->
       </small>
-      <small class="test-muted ml-auto">
-        New Customer? <a href="{{ url_for('registerCustomer') }}">Sign Up Here.</a>  <!--pass in name of function -->
+      <small class="test-muted ml-auto text-right">
+        <span > New Customer? </span>
+        <br>
+        <a class="mr-2"href="{{ url_for('registerCustomer') }}">Sign Up Here</a>  <!--pass in name of function -->
       </small>
     </div>
   </div>
