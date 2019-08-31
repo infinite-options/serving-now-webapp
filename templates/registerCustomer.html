@@ -47,7 +47,21 @@
 
         <img src="{{ url_for('.static', filename='images/landing-logo.png') }}" class="center-block" width="150px" height="150px">
         <div class="form-group">
-          {{ form.firstName.label(class="form-control-label") }}
+          {{ form.representative.label(class="form-control-label") }}
+          *Not required if by self
+          {% if form.representative.errors %}
+            {{ form.representative(class="form-control form-control-lg is-invalid") }}
+            <div class="invalid-feedback">
+              {% for error in form.representative.errors %}
+                <span>{{ error }}</span>
+              {% endfor %}
+            </div>
+          {% else %}
+            {{ form.representative(class="form-control form-control-lg") }}
+          {% endif %}
+        </div>
+        <div class="form-group">
+          *{{ form.firstName.label(class="form-control-label") }}
 
           {% if form.firstName.errors %}
             {{ form.firstName(class="form-control form-control-lg is-invalid") }}
@@ -61,7 +75,7 @@
           {% endif %}
         </div>
         <div class="form-group">
-          {{ form.lastName.label(class="form-control-label") }}
+          *{{ form.lastName.label(class="form-control-label") }}
 
           {% if form.lastName.errors %}
             {{ form.lastName(class="form-control form-control-lg is-invalid") }}
@@ -75,7 +89,7 @@
           {% endif %}
         </div>
         <div class="form-group">
-          {{ form.email.label(class="form-control-label") }}
+          *{{ form.email.label(class="form-control-label") }}
 
           {% if form.email.errors %}
             {{ form.email(class="form-control form-control-lg is-invalid") }}
@@ -89,7 +103,7 @@
           {% endif %}
         </div>
         <div class="form-group">
-          {{ form.phoneNumber.label(class="form-control-label") }}
+          *{{ form.phoneNumber.label(class="form-control-label") }}
 
           {% if form.phoneNumber.errors %}
             {{ form.phoneNumber(class="form-control form-control-lg is-invalid") }}
@@ -100,6 +114,36 @@
             </div>
           {% else %}
             {{ form.phoneNumber(class="form-control form-control-lg") }}
+          {% endif %}
+        </div>
+        <div class="form-group">
+          *{{ form.betaTester.label() }}
+          {% if form.betaTester.errors %}
+            {{ form.betaTester(class="pl-0", style="list-style: none;") }}
+            <div style="display: block;" class="invalid-feedback">
+              {% for error in form.betaTester.errors %}
+                {% if loop.index != 1 %}
+                  <span>{{ error }}</span>
+                {% endif %}
+              {% endfor %}
+            </div>
+          {% else %}
+            {{ form.betaTester(class="pl-0", style="list-style: none;") }}
+          {% endif %}
+        </div>
+        <div class="form-group">
+          *{{ form.futureCustomer.label() }}
+          {% if form.futureCustomer.errors %}
+            {{ form.futureCustomer(class="pl-0", style="list-style: none;") }}
+            <div style="display: block;" class="invalid-feedback">
+              {% for error in form.futureCustomer.errors %}
+                {% if loop.index != 1 %}
+                  <span>{{ error }}</span>
+                {% endif %}
+              {% endfor %}
+            </div>
+          {% else %}
+            {{ form.futureCustomer(class="pl-0", style="list-style: none;") }}
           {% endif %}
         </div>
       </fieldset>

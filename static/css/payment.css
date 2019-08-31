@@ -4,9 +4,10 @@
 }
 
 #cancelBtn {
+  margin-top: 5px;
   width: 750px;
   height: 50px;
-  border-radius: 3px;
+  border-radius: 4px;
   text-align: center;
   padding-top: 9px;
   background-color: #d0d0d0;

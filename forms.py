@@ -140,10 +140,13 @@ class LoginForm(FlaskForm):
         return True
 
 class CustomerForm(FlaskForm):
+    representative = StringField('Representative')
     firstName = StringField('First Name', validators=[DataRequired()])
     lastName = StringField('Last Name', validators=[DataRequired()])
     email = StringField('Email', validators=[DataRequired(), Email()])
     phoneNumber = StringField('Phone Number', validators=[DataRequired()])
+    betaTester = RadioField('Would you like to be a Beta Tester?', choices=[('True','Yes'),('False','No')], default='True', validators=[DataRequired()])
+    futureCustomer = RadioField('Would you like to be a Future Customer?', choices=[('True','Yes'),('False','No')], default='True', validators=[DataRequired()])
     submit = SubmitField('Submit')
 
     def validate_email(self, email):

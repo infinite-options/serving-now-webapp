@@ -294,20 +294,28 @@ def register():
 def registerCustomer():
     form = CustomerForm(request.form)
     if form.validate_on_submit():
+        if not form.representative.data:
+            form.representative.data = 'None'
+        login_session['representative'] = form.representative.data
         customerId = uuid.uuid4().hex
         todaysDate = datetime.now(tz=timezone('US/Pacific')).strftime("%Y-%m-%dT%H:%M:%S")
         add_customer = db.put_item(TableName='customers',
                     Item={'customer_id': {'S': customerId},
                           'created_at': {'S': todaysDate},
+                          'representative': {'S': form.representative.data},
                           'first_name': {'S': form.firstName.data},
                           'last_name': {'S': form.lastName.data},
                           'phone_number': {'S': form.phoneNumber.data},
                           'email': {'S': form.email.data.lower()},
+                          'beta_tester': {'BOOL': strToBool(form.futureCustomer.data)},
+                          'future_customer': {'BOOL': strToBool(form.futureCustomer.data)},
                     }
                 )
         flash(form.email.data + ' is now registered as a customer for Serving Now.', 'success') # python 3 format.
         print("Account for " + form.email.data + " has been created")
         return redirect(url_for('login'))
+    if login_session.get('representative'):
+        form.representative.data = login_session['representative']
     return render_template('registerCustomer.html', title='registerCustomer', form=form) #  This is what happens if the submit is unsuccessful with errors highlighted
 
 
