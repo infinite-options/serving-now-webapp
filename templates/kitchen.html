@@ -31,7 +31,7 @@
 <body>
   <div class="ml-4">
     <div id="page-name" class="border-bottom mb-4 ml-4 d-flex justify-content-between">  <!-- this is spacing below Join Today text -->
-      <span class="display-4">Business</span>
+      <span class="display-4">Store Front</span>
     </div>
   </div>
 
@@ -80,6 +80,7 @@
               </div>
               <div class="extra content">
                 <span class="right floated">
+                  <!-- <i class="fas fa-sync-alt mr-3"></i> -->
                   <a onclick="favMeal('{{meal.meal_id.S}}')">
                     {% if meal.favorite.BOOL %}
                     <i class="star icon" style="color:#f7d305"></i>
@@ -136,6 +137,7 @@
               </div>
               <div class="extra content">
                 <span class="right floated">
+                  <!-- <i class="fas fa-sync-alt mr-3"></i> -->
                   <a onclick="favMeal('{{meal.meal_id.S}}')">
                     {% if meal.favorite.BOOL %}
                     <i class="star icon" style="color:#f7d305"></i>
@@ -172,14 +174,14 @@
                     <div class="row">
                       <div class="col">
                         <br>
-                        <img class="img-bg" style="border: 2px solid #ECEAEA; border-radius: 4px; " src="" width="299" height="194">
+                        <img id="img-upload" class="img-bg" style="border: 2px solid #ECEAEA; border-radius: 4px; " src="" width="299" height="194">
                       </div>
                     </div>
                     <div class="row add-meal-img-btn">
 
                       <div class="file btn btn-lg btn-primary">
                         Add photo
-                        <input style="width:300px; height:36.4px; " type="file" name="photo" id="add_meal_image" onchange="previewFile()" /><br>
+                        <input style="width:300px; height:36.4px; " type="file" name="photo" id="add_meal_image" onchange="readURL(this)"/><br>
                       </div>
                     </div>
                   </div>

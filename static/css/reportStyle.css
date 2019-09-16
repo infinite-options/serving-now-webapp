@@ -5,7 +5,7 @@
 * @Last Modified time: 2019-05-29 17:09:41
 */
 .item-title {
-  font-size: 31px;
+  font-size: 31px !important;
 }
 .display-4 {
   font-size: 35px;

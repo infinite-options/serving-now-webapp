@@ -16,11 +16,13 @@ from operator import itemgetter
 from flask import (Flask, Blueprint, request, render_template,
     redirect, url_for, flash)
 from flask import session as login_session
+from flask_cors import CORS, cross_origin
+from flask_caching import Cache
 from flask_login import (LoginManager, login_required, current_user,
 	UserMixin, login_user, logout_user)
 from flask_mail import Mail, Message
-from flask_cors import CORS, cross_origin
-from flask_caching import Cache
+from PIL import Image
+
 
 from forms import RegistrationForm, LoginForm, UpdateAccountForm, CustomerForm
 
@@ -31,7 +33,7 @@ from werkzeug.security import (generate_password_hash,
 
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
-cors = CORS(app, resources={r"/api/*": {"origins": "*"}}, support_credentials=True)
+cors = CORS(app, resources={r'/api/*': {'origins': '*'}}, support_credentials=True)
 
 login_manager = LoginManager(app)
 
@@ -45,7 +47,7 @@ app.config['MAIL_PORT'] = 465
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
-app.config["CACHE_TYPE"] = "null"
+app.config['CACHE_TYPE'] = 'null'
 cache = Cache(app,config={'CACHE_TYPE': 'redis'})
 
 cache.init_app(app)
@@ -80,10 +82,10 @@ ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 # No caching at all for API endpoints.
 @app.after_request
 def add_header(response):
-    """
+    '''
     Add headers to both force latest IE rendering engine or Chrome Frame,
     and also to cache the rendered page for 10 minutes.
-    """
+    '''
     response.headers['X-UA-Compatible'] = 'IE=Edge,chrome=1'
     response.headers['Cache-Control'] = 'public, max-age=0'
     return response
@@ -114,24 +116,24 @@ def strToBool(str):
         return False
 
 def allowed_file(filename):
-    """Checks if the file is allowed to upload"""
+    '''Checks if the file is allowed to upload'''
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 # =======HELPER FUNCTIONS FOR DELETING AN IMAGE=============
 
 def delete_s3_img(bucket, key):
-    print ("Inside delete_s3_img..")
-    print ("bucket: ", bucket)
-    print ("key: ", key)
+    print ('Inside delete_s3_img..')
+    print ('bucket: ', bucket)
+    print ('key: ', key)
 
     try:
         delete_file = s3.delete_object(
                             Bucket=bucket,
                             Key=key)
-        print("delete_file : ", delete_file)
+        print('delete_file : ', delete_file)
 
     except:
-        print ("Item cannot be deleted")
+        print ('Item cannot be deleted')
 
     return None
 # ===========================================================
@@ -194,7 +196,7 @@ def login():
         email = form.email.data.lower()
         password = form.password.data
         try:
-            user = db.query(TableName="kitchens",
+            user = db.query(TableName='kitchens',
                 IndexName='email-index',
                 Limit=1,
                 KeyConditionExpression='email = :val',
@@ -244,12 +246,79 @@ def register():
         if form.cancellation.data == 'canCancel':
             canCancel = True
 
-        created_at = datetime.now(tz=timezone('US/Pacific')).strftime("%Y-%m-%dT%H:%M:%S")
+        openHoursMonday = '00:00'
+        closeHoursMonday = '00:00'
+        openHoursTuesday = '00:00'
+        closeHoursTuesday = '00:00'
+        openHoursWednesday = '00:00'
+        closeHoursWednesday = '00:00'
+        openHoursThursday = '00:00'
+        closeHoursThursday = '00:00'
+        openHoursFriday = '00:00'
+        closeHoursFriday = '00:00'
+        openHoursSaturday = '00:00'
+        closeHoursSaturday = '00:00'
+        openHoursSunday = '00:00'
+        closeHoursSunday = '00:00'
+        if form.isOpenMonday.data:
+            openHoursMonday = form.openHoursMonday.data.strftime('%H:%M')
+            closeHoursMonday = form.closeHoursMonday.data.strftime('%H:%M')
+        if form.isOpenTuesday.data:
+            openHoursTuesday = form.openHoursTuesday.data.strftime('%H:%M')
+            closeHoursTuesday = form.closeHoursTuesday.data.strftime('%H:%M')
+        if form.isOpenWednesday.data:
+            openHoursWednesday = form.openHoursWednesday.data.strftime('%H:%M')
+            closeHoursWednesday = form.closeHoursWednesday.data.strftime('%H:%M')
+        if form.isOpenThursday.data:
+            openHoursThursday = form.openHoursThursday.data.strftime('%H:%M')
+            closeHoursThursday = form.closeHoursThursday.data.strftime('%H:%M')
+        if form.isOpenFriday.data:
+            openHoursFriday = form.openHoursFriday.data.strftime('%H:%M')
+            closeHoursFriday = form.closeHoursFriday.data.strftime('%H:%M')
+        if form.isOpenSaturday.data:
+            openHoursSaturday = form.openHoursSaturday.data.strftime('%H:%M')
+            closeHoursSaturday = form.closeHoursSaturday.data.strftime('%H:%M')
+        if form.isOpenSunday.data:
+            openHoursSunday = form.openHoursSunday.data.strftime('%H:%M')
+            closeHoursSunday = form.closeHoursSunday.data.strftime('%H:%M')
+
+        accepting_hours = [{'M': {'isOpen': {'BOOL':form.isOpenMonday.data},
+                                  'open_time': {'S':openHoursMonday},
+                                  'close_time': {'S':closeHoursMonday}}},
+                           {'M': {'isOpen': {'BOOL':form.isOpenTuesday.data},
+                                  'open_time': {'S':openHoursTuesday},
+                                  'close_time': {'S':closeHoursTuesday}}},
+                           {'M': {'isOpen': {'BOOL':form.isOpenWednesday.data},
+                                  'open_time': {'S':openHoursWednesday},
+                                  'close_time': {'S':closeHoursWednesday}}},
+                           {'M': {'isOpen': {'BOOL':form.isOpenThursday.data},
+                                  'open_time': {'S':openHoursThursday},
+                                  'close_time': {'S':closeHoursThursday}}},
+                           {'M': {'isOpen': {'BOOL':form.isOpenFriday.data},
+                                  'open_time': {'S':openHoursFriday},
+                                  'close_time': {'S':closeHoursFriday}}},
+                           {'M': {'isOpen': {'BOOL':form.isOpenSaturday.data},
+                                  'open_time': {'S':openHoursSaturday},
+                                  'close_time': {'S':closeHoursSaturday}}},
+                           {'M': {'isOpen': {'BOOL':form.isOpenSunday.data},
+                                  'open_time': {'S':openHoursSunday},
+                                  'close_time': {'S':closeHoursSunday}}}]
+
+        deliveryOpenTime = '00:00'
+        deliveryCloseTime = '23:59'
+        if not form.is24hrDelivery.data:
+            deliveryOpenTime = form.deliveryOpenTime.data.strftime('%H:%M')
+            deliveryCloseTime = form.deliveryCloseTime.data.strftime('%H:%M')
+        deliveryHours = {'close_time':{'S': deliveryCloseTime},
+                         'is24hours': {'BOOL': form.is24hrDelivery.data},
+                         'open_time': {'S': deliveryOpenTime}}
+
+        created_at = datetime.now(tz=timezone('US/Pacific')).strftime('%Y-%m-%dT%H:%M:%S')
         kitchen_id = uuid.uuid4().hex
 
-        photo_path = "https://servingnow.s3-us-west-1.amazonaws.com/kitchen_imgs/landing-logo.png"
+        photo_path = 'https://servingnow.s3-us-west-1.amazonaws.com/kitchen_imgs/landing-logo.png'
 
-        print("form.kitchenImage.data: " + str(form.kitchenImage.data))
+        print('form.kitchenImage.data: ' + str(form.kitchenImage.data))
 
         if form.kitchenImage.data:
             photo_key = 'kitchen_imgs/{}'.format(str(kitchen_id))
@@ -257,33 +326,35 @@ def register():
 
         add_kitchen = db.put_item(TableName='kitchens',
                     Item={'kitchen_id': {'S': kitchen_id},
+                          'accepting_hours': {'L': accepting_hours},
+                          'can_cancel': { 'BOOL': canCancel },
+                          'city': {'S': form.city.data},
+                          'close_time': {'S': closeHoursMonday},
                           'created_at': {'S': created_at},
+                          'delivery': { 'BOOL': delivery},
+                          'delivery_open_time': {'S': deliveryOpenTime},
+                          'delivery_close_time': {'S': deliveryCloseTime},
+                          'delivery_hours': {'M': deliveryHours},
+                          'description': {'S': form.description.data},
+                          'disposable': { 'BOOL': disposable},
+                          'email': {'S': form.email.data.lower()},
+                          'first_name': {'S': form.firstName.data},
+                          'isOpen': {'BOOL': False},
                           'kitchen_image': {'S': photo_path},
                           'kitchen_name': {'S': form.kitchenName.data},
-                          'description': {'S': form.description.data},
-                          'password': {'S': generate_password_hash(form.password.data)},
-                          'first_name': {'S': form.firstName.data},
                           'last_name': {'S': form.lastName.data},
-                          'street': {'S': form.street.data},
-                          'city': {'S': form.city.data},
-                          'st': {'S': form.state.data},
-                          'zipcode': {'S': form.zipcode.data},
+                          'open_time': {'S': openHoursMonday},
+                          'password': {'S': generate_password_hash(form.password.data)},
                           'phone_number': {'S': form.phoneNumber.data},
-                          'open_time': {'S': form.openTime.data.strftime('%H:%M')},
-                          'close_time': {'S': form.closeTime.data.strftime('%H:%M')},
-                          'isOpen': {'BOOL': False},
-                          'email': {'S': form.email.data.lower()},
-                          'delivery_open_time': { 'S': form.deliveryOpenTime.data.strftime('%H:%M')},
-                          'delivery_close_time': { 'S': form.deliveryCloseTime.data.strftime('%H:%M')},
-                          'delivery': { 'BOOL': delivery},
                           'pickup': { 'BOOL': pickup},
-                          'disposable': { 'BOOL': disposable},
                           'reusable': { 'BOOL': reusable},
-                          'can_cancel': { 'BOOL': canCancel }
+                          'st': {'S': form.state.data},
+                          'street': {'S': form.street.data},
+                          'zipcode': {'S': form.zipcode.data}
                     }
                 )
         flash('Your account has been created! You are now able to log in.', 'success') # python 3 format.
-        print("Account for " + form.email.data + " has been created")
+        print('Account for ' + form.email.data + ' has been created')
         return redirect(url_for('login'))
 
     print(form.errors)
@@ -298,7 +369,7 @@ def registerCustomer():
             form.representative.data = 'None'
         login_session['representative'] = form.representative.data
         customerId = uuid.uuid4().hex
-        todaysDate = datetime.now(tz=timezone('US/Pacific')).strftime("%Y-%m-%dT%H:%M:%S")
+        todaysDate = datetime.now(tz=timezone('US/Pacific')).strftime('%Y-%m-%dT%H:%M:%S')
         add_customer = db.put_item(TableName='customers',
                     Item={'customer_id': {'S': customerId},
                           'created_at': {'S': todaysDate},
@@ -312,7 +383,7 @@ def registerCustomer():
                     }
                 )
         flash(form.email.data + ' is now registered as a customer for Serving Now.', 'success') # python 3 format.
-        print("Account for " + form.email.data + " has been created")
+        print('Account for ' + form.email.data + ' has been created')
         return redirect(url_for('login'))
     if login_session.get('representative'):
         form.representative.data = login_session['representative']
@@ -329,14 +400,14 @@ def kitchen(id):
     apiURL = API_BASE_URL +'/api/v1/meals/' + current_user.get_id()
     # apiURL = 'http://localhost:5000/api/v1/meals/' + current_user.get_id()
 
-    # print("API URL: " + str(apiURL))
+    # print('API URL: ' + str(apiURL))
     # apiURL = API_BASE_URL + '/api/v1/meals/' + '5d114cb5c4f54c94a8bb4d955a576fca'
     response = requests.get(apiURL)
     #
     allMeals = response.json().get('result')
-    # print("\n\n kitchen id:" + str(id) + "\n\n")
+    # print('\n\n kitchen id:' + str(id) + '\n\n')
     #
-    todays_date = datetime.now(tz=timezone('US/Pacific')).strftime("%Y-%m-%d")
+    todays_date = datetime.now(tz=timezone('US/Pacific')).strftime('%Y-%m-%d')
 
     # allMeals = db.scan(
     #     TableName='meals',
@@ -352,8 +423,8 @@ def kitchen(id):
     previousMealsItems = []
 
     for meal in allMeals:
-        twelveHourTime = datetime.strptime(meal['created_at']['S'][11:16], "%H:%M")
-        meal['order_time'] = twelveHourTime.strftime("%I:%M %p")
+        twelveHourTime = datetime.strptime(meal['created_at']['S'][11:16], '%H:%M')
+        meal['order_time'] = twelveHourTime.strftime('%I:%M %p')
         meal['price']['S'] = locale.currency(float(meal['price']['S']))[1:]
         if todays_date in meal['created_at']['S']:
             mealItems.append(meal)
@@ -363,17 +434,17 @@ def kitchen(id):
     meals['Items'] = sorted(mealItems, key=itemgetter('order_time'), reverse=True)
     previousMeals['Items'] = sorted(previousMealsItems, key=itemgetter('order_time'), reverse=True)
 
-    # print("\n\n" + str(meals) + "\n\n")
-    # print("\n\n" + str(previousMeals) + "\n\n")
+    # print('\n\n' + str(meals) + '\n\n')
+    # print('\n\n' + str(previousMeals) + '\n\n')
 
-    todaysMenu = meals["Items"]
-    pastMenu = previousMeals["Items"]
+    todaysMenu = meals['Items']
+    pastMenu = previousMeals['Items']
     #
-    # print("\n\n" + str(meals) + "\n\n")
-    # print("\n\n" + str(previousMeals) + "\n\n")
+    # print('\n\n' + str(meals) + '\n\n')
+    # print('\n\n' + str(previousMeals) + '\n\n')
     #
-    # todaysMenu = allMeals["Items"]
-    # pastMenu = previousMeals["Items"]
+    # todaysMenu = allMeals['Items']
+    # pastMenu = previousMeals['Items']
 
 
     if todaysMenu == None:
@@ -428,8 +499,75 @@ def kitchenSettings(id):
         if form.cancellation.data == 'canCancel':
             canCancel = True
 
+        openHoursMonday = '00:00'
+        closeHoursMonday = '00:00'
+        openHoursTuesday = '00:00'
+        closeHoursTuesday = '00:00'
+        openHoursWednesday = '00:00'
+        closeHoursWednesday = '00:00'
+        openHoursThursday = '00:00'
+        closeHoursThursday = '00:00'
+        openHoursFriday = '00:00'
+        closeHoursFriday = '00:00'
+        openHoursSaturday = '00:00'
+        closeHoursSaturday = '00:00'
+        openHoursSunday = '00:00'
+        closeHoursSunday = '00:00'
+        if form.isOpenMonday.data:
+            openHoursMonday = form.openHoursMonday.data.strftime('%H:%M')
+            closeHoursMonday = form.closeHoursMonday.data.strftime('%H:%M')
+        if form.isOpenTuesday.data:
+            openHoursTuesday = form.openHoursTuesday.data.strftime('%H:%M')
+            closeHoursTuesday = form.closeHoursTuesday.data.strftime('%H:%M')
+        if form.isOpenWednesday.data:
+            openHoursWednesday = form.openHoursWednesday.data.strftime('%H:%M')
+            closeHoursWednesday = form.closeHoursWednesday.data.strftime('%H:%M')
+        if form.isOpenThursday.data:
+            openHoursThursday = form.openHoursThursday.data.strftime('%H:%M')
+            closeHoursThursday = form.closeHoursThursday.data.strftime('%H:%M')
+        if form.isOpenFriday.data:
+            openHoursFriday = form.openHoursFriday.data.strftime('%H:%M')
+            closeHoursFriday = form.closeHoursFriday.data.strftime('%H:%M')
+        if form.isOpenSaturday.data:
+            openHoursSaturday = form.openHoursSaturday.data.strftime('%H:%M')
+            closeHoursSaturday = form.closeHoursSaturday.data.strftime('%H:%M')
+        if form.isOpenSunday.data:
+            openHoursSunday = form.openHoursSunday.data.strftime('%H:%M')
+            closeHoursSunday = form.closeHoursSunday.data.strftime('%H:%M')
+
+        accepting_hours = [{'M': {'isOpen': {'BOOL':form.isOpenMonday.data},
+                                  'open_time': {'S':openHoursMonday},
+                                  'close_time': {'S':closeHoursMonday}}},
+                           {'M': {'isOpen': {'BOOL':form.isOpenTuesday.data},
+                                  'open_time': {'S':openHoursTuesday},
+                                  'close_time': {'S':closeHoursTuesday}}},
+                           {'M': {'isOpen': {'BOOL':form.isOpenWednesday.data},
+                                  'open_time': {'S':openHoursWednesday},
+                                  'close_time': {'S':closeHoursWednesday}}},
+                           {'M': {'isOpen': {'BOOL':form.isOpenThursday.data},
+                                  'open_time': {'S':openHoursThursday},
+                                  'close_time': {'S':closeHoursThursday}}},
+                           {'M': {'isOpen': {'BOOL':form.isOpenFriday.data},
+                                  'open_time': {'S':openHoursFriday},
+                                  'close_time': {'S':closeHoursFriday}}},
+                           {'M': {'isOpen': {'BOOL':form.isOpenSaturday.data},
+                                  'open_time': {'S':openHoursSaturday},
+                                  'close_time': {'S':closeHoursSaturday}}},
+                           {'M': {'isOpen': {'BOOL':form.isOpenSunday.data},
+                                  'open_time': {'S':openHoursSunday},
+                                  'close_time': {'S':closeHoursSunday}}}]
+
+        deliveryOpenTime = '00:00'
+        deliveryCloseTime = '23:59'
+        if not form.is24hrDelivery.data:
+            deliveryOpenTime = form.deliveryOpenTime.data.strftime('%H:%M')
+            deliveryCloseTime = form.deliveryCloseTime.data.strftime('%H:%M')
+        deliveryHours = {'close_time':{'S': deliveryCloseTime},
+                         'is24hours': {'BOOL': form.is24hrDelivery.data},
+                         'open_time': {'S': deliveryOpenTime}}
+
         photo_path = kitchen['kitchen_image']['S']
-        print("form.kitchenImage.data: " + str(form.kitchenImage.data))
+        print('form.kitchenImage.data: ' + str(form.kitchenImage.data))
         if form.kitchenImage.data:
             kitchen_id = login_session['user_id']
             photo_key = 'kitchen_imgs/{}'.format(str(kitchen_id))
@@ -438,10 +576,12 @@ def kitchenSettings(id):
 
         db.update_item(TableName='kitchens',
                        Key={'kitchen_id': {'S': id}},
-                       UpdateExpression='SET can_cancel = :cc, \
+                       UpdateExpression='SET accepting_hours = :ah, \
+                                             can_cancel = :cc, \
                                              city = :c, \
                                              close_time = :ct, \
                                              delivery = :d, \
+                                             delivery_hours = :dh, \
                                              delivery_close_time = :dct, \
                                              delivery_open_time = :dot, \
                                              description = :des, \
@@ -459,12 +599,14 @@ def kitchenSettings(id):
                                              street = :s, \
                                              zipcode = :z',
                        ExpressionAttributeValues={
+                           ':ah': {'L': acceptingHours},
                            ':cc': {'BOOL': canCancel},
                            ':c': {'S': form.city.data},
                            ':ct': {'S': form.closeTime.data.strftime('%H:%M')},
                            ':d': {'BOOL': delivery},
                            ':dct': {'S': form.deliveryCloseTime.data.strftime('%H:%M')},
                            ':dot': {'S': form.deliveryOpenTime.data.strftime('%H:%M')},
+                           ':dh': {'M': deliveryHours},
                            ':des': {'S': form.description.data},
                            ':dis': {'BOOL': disposable},
                            ':e': {'S':form.email.data.lower()},
@@ -487,10 +629,8 @@ def kitchenSettings(id):
     elif request.method == 'GET':
         form.kitchenName.data = kitchen['kitchen_name']['S']
         form.description.data = kitchen['description']['S']
-        form.closeTime.data = datetime.strptime(kitchen['close_time']['S'], '%H:%M')
-        form.openTime.data = datetime.strptime(kitchen['open_time']['S'], '%H:%M')
-        form.deliveryOpenTime.data = datetime.strptime(kitchen['delivery_open_time']['S'], '%H:%M')
-        form.deliveryCloseTime.data = datetime.strptime(kitchen['delivery_close_time']['S'], '%H:%M')
+        form.deliveryOpenTime.data = datetime.strptime(kitchen['delivery_hours']['M']['open_time']['S'], '%H:%M')
+        form.deliveryCloseTime.data = datetime.strptime(kitchen['delivery_hours']['M']['close_time']['S'], '%H:%M')
         if kitchen['delivery']['BOOL']:
             form.transport.data = 'delivery'
         else:
@@ -503,6 +643,28 @@ def kitchenSettings(id):
             form.cancellation.data = 'canCancel'
         else:
             form.cancellation.data = 'cannotCancel'
+        form.isOpenMonday.data = kitchen['accepting_hours']['L'][0]['M']['isOpen']['BOOL']
+        form.isOpenTuesday.data = kitchen['accepting_hours']['L'][1]['M']['isOpen']['BOOL']
+        form.isOpenWednesday.data = kitchen['accepting_hours']['L'][2]['M']['isOpen']['BOOL']
+        form.isOpenThursday.data = kitchen['accepting_hours']['L'][3]['M']['isOpen']['BOOL']
+        form.isOpenFriday.data = kitchen['accepting_hours']['L'][4]['M']['isOpen']['BOOL']
+        form.isOpenSaturday.data = kitchen['accepting_hours']['L'][5]['M']['isOpen']['BOOL']
+        form.isOpenSunday.data = kitchen['accepting_hours']['L'][6]['M']['isOpen']['BOOL']
+        form.is24hrDelivery.data = kitchen['delivery_hours']['M']['is24hours']['BOOL']
+        form.openHoursMonday.data = datetime.strptime(kitchen['accepting_hours']['L'][0]['M']['open_time']['S'], '%H:%M')
+        form.openHoursTuesday.data = datetime.strptime(kitchen['accepting_hours']['L'][1]['M']['open_time']['S'], '%H:%M')
+        form.openHoursWednesday.data = datetime.strptime(kitchen['accepting_hours']['L'][2]['M']['open_time']['S'], '%H:%M')
+        form.openHoursThursday.data = datetime.strptime(kitchen['accepting_hours']['L'][3]['M']['open_time']['S'], '%H:%M')
+        form.openHoursFriday.data = datetime.strptime(kitchen['accepting_hours']['L'][4]['M']['open_time']['S'], '%H:%M')
+        form.openHoursSaturday.data = datetime.strptime(kitchen['accepting_hours']['L'][5]['M']['open_time']['S'], '%H:%M')
+        form.openHoursSunday.data = datetime.strptime(kitchen['accepting_hours']['L'][6]['M']['open_time']['S'], '%H:%M')
+        form.closeHoursMonday.data = datetime.strptime(kitchen['accepting_hours']['L'][0]['M']['close_time']['S'], '%H:%M')
+        form.closeHoursTuesday.data = datetime.strptime(kitchen['accepting_hours']['L'][1]['M']['close_time']['S'], '%H:%M')
+        form.closeHoursWednesday.data = datetime.strptime(kitchen['accepting_hours']['L'][2]['M']['close_time']['S'], '%H:%M')
+        form.closeHoursThursday.data = datetime.strptime(kitchen['accepting_hours']['L'][3]['M']['close_time']['S'], '%H:%M')
+        form.closeHoursFriday.data = datetime.strptime(kitchen['accepting_hours']['L'][4]['M']['close_time']['S'], '%H:%M')
+        form.closeHoursSaturday.data = datetime.strptime(kitchen['accepting_hours']['L'][5]['M']['close_time']['S'], '%H:%M')
+        form.closeHoursSunday.data = datetime.strptime(kitchen['accepting_hours']['L'][6]['M']['close_time']['S'], '%H:%M')
         form.email.data = kitchen['email']['S']
         form.firstName.data = kitchen['first_name']['S']
         form.lastName.data = kitchen['last_name']['S']
@@ -523,6 +685,9 @@ def postMeal():
     photo = request.files.get('photo')
     itemsData = request.form.get('items')
 
+    image = Image.open(photo)
+    image = image.resize((300,160),Image.ANTIALIAS)
+
     if name == None or price == None or photo == None or itemsData == None:
         print('Meal details missing')
         return
@@ -530,7 +695,7 @@ def postMeal():
     kitchen_id = current_user.get_id()
 
     meal_id = uuid.uuid4().hex
-    created_at = datetime.now(tz=timezone('US/Pacific')).strftime("%Y-%m-%dT%H:%M:%S")
+    created_at = datetime.now(tz=timezone('US/Pacific')).strftime('%Y-%m-%dT%H:%M:%S')
 
     meal_items = json.loads(itemsData)
 
@@ -549,7 +714,7 @@ def postMeal():
 
     # try:
     photo_key = 'meals_imgs/{}_{}'.format(str(kitchen_id), str(meal_id))
-    photo_path = upload_s3_img(photo, BUCKET_NAME, photo_key)
+    photo_path = upload_s3_img(image.format, BUCKET_NAME, photo_key)
 
     if photo_path == None:
         raise BadRequest('Request failed. \
@@ -577,8 +742,8 @@ def postMeal():
         }
     )
 
-    print("Inside POST API")
-    # print("kitchen:" + kitchen)
+    print('Inside POST API')
+    # print('kitchen:' + kitchen)
     # Technical debt that needs to be solved
 
     response['message'] = 'Request successful'
@@ -590,7 +755,7 @@ def postMeal():
 @login_required
 def renewPastMeals():
 
-    todays_date = datetime.now(tz=timezone('US/Pacific')).strftime("%Y-%m-%dT%H:%M:%S")
+    todays_date = datetime.now(tz=timezone('US/Pacific')).strftime('%Y-%m-%dT%H:%M:%S')
 
     allMeals = db.scan(
         TableName='meals',
@@ -615,7 +780,7 @@ def renewPastMeals():
 @login_required
 def renewIndvPastMeal(id):
 
-    todays_date = datetime.now(tz=timezone('US/Pacific')).strftime("%Y-%m-%dT%H:%M:%S")
+    todays_date = datetime.now(tz=timezone('US/Pacific')).strftime('%Y-%m-%dT%H:%M:%S')
     print (str(id))
 
     try:
@@ -704,7 +869,7 @@ def report():
     if 'kitchen_name' not in login_session:
         return redirect(url_for('index'))
 
-    todays_date = datetime.now(tz=timezone('US/Pacific')).strftime("%Y-%m-%d")
+    todays_date = datetime.now(tz=timezone('US/Pacific')).strftime('%Y-%m-%d')
     orders = db.scan(TableName='meal_orders',
         FilterExpression='kitchen_id = :value AND (contains(created_at, :x1))',
         ExpressionAttributeValues={
@@ -713,7 +878,7 @@ def report():
         }
     )
 
-    todays_date = datetime.now(tz=timezone('US/Pacific')).strftime("%Y-%m-%d")
+    todays_date = datetime.now(tz=timezone('US/Pacific')).strftime('%Y-%m-%d')
 
     allMeals = db.scan(
         TableName='meals',
@@ -737,8 +902,8 @@ def report():
     meals['Items'] = mealItems
     previousMeals['Items'] = previousMealsItems
 
-    todaysMenu = meals["Items"]
-    pastMenu = previousMeals["Items"]
+    todaysMenu = meals['Items']
+    pastMenu = previousMeals['Items']
 
     if todaysMenu == None:
       todaysMenu = []
@@ -761,7 +926,7 @@ def report():
                 mealInfo = meal['Items'][0]
                 mealDescrip = mealInfo['description']['L'][0]['M']
 
-                #print("\n\n" + str(item) + "\n\n")
+                #print('\n\n' + str(item) + '\n\n')
                 # TODO add meal specific price
                 item['photo'] = mealInfo['photo']
                 item['qty'] = int(item['M']['qty']['N'])
@@ -784,14 +949,14 @@ def report():
                                                }
                                                )
 
-        twelveHourTime = datetime.strptime(order['created_at']['S'][11:16], "%H:%M")
-        order['order_time'] = twelveHourTime.strftime("%I:%M %p")
+        twelveHourTime = datetime.strptime(order['created_at']['S'][11:16], '%H:%M')
+        order['order_time'] = twelveHourTime.strftime('%I:%M %p')
 
     sortedOrders = sorted(orders['Items'], key=itemgetter('order_time'), reverse=True)
 
         # order['created_at'] =
 
-    # print(str(orders) + "\n\n")
+    # print(str(orders) + '\n\n')
 
 
     return render_template('report.html',
@@ -835,18 +1000,18 @@ def delete(meal_id):
 
     #input argument validation
     response = {}
-    print("Inside delete..")
-    print("meal_id", meal_id)
+    print('Inside delete..')
+    print('meal_id', meal_id)
 
     try:
         #Get kitchen id and delete from s3 bucket first
         response = db.get_item(TableName='meals',Key={'meal_id':{'S':str(meal_id)}})
 
         kitchen_id = response['Item']['kitchen_id']['S']
-        print("kitchen_id : ", kitchen_id)
+        print('kitchen_id : ', kitchen_id)
 
         photo_key = 'meals_imgs/{}_{}'.format(str(kitchen_id), str(meal_id))
-        print("photo_key : ", photo_key)
+        print('photo_key : ', photo_key)
 
         #delete from meals table
         deleted_meal = db.delete_item(TableName='meals',
@@ -857,7 +1022,7 @@ def delete(meal_id):
         response['message'] = 'Request successful'
         return response, 200
     except Exception as ex:
-        print("ex: ", ex)
+        print('ex: ', ex)
         raise BadRequest('Request failed. Please try again later.')
 
 # @app.route('/delete/meal/<string:meal_id>', methods=['GET', 'PUT'])
@@ -871,7 +1036,7 @@ def delete(meal_id):
 #         #return response, 200
 #         return redirect(url_for('kitchen', id=current_user.get_id()))     # This seems to auto load the changes.  Can we use this everywhere?
 #     except Exception as ex:
-#         print("ex: ", ex)
+#         print('ex: ', ex)
 #         raise BadRequest('Request failed. Please try again later.')
 #     return redirect(url_for('kitchen', id=current_user.get_id()))
 
@@ -882,7 +1047,7 @@ def favorite(meal_id):
 
 # input argument validation
     response = {}
-    print("Inside favorite..")
+    print('Inside favorite..')
 
     # get meal from meals table
     meal = db.scan(TableName='meals',

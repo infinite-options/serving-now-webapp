@@ -52,13 +52,14 @@
 }
 
 #currentmeal-card {
+
   display: grid;
   grid-area: currentmeal-card;
   grid-auto-rows: minmax(100px, auto);
   /* grid-column-gap: none; */
   margin-top: 10px;
   margin-left: 40px;
-  margin-right: none;
+  margin-right: 40px;
 }
 
 #pastmeal {
@@ -82,7 +83,7 @@ grid-auto-rows: minmax(100px, auto);
 /* grid-column-gap: none; */
 margin-top: 10px;
 margin-left: 40px;
-margin-right: none;
+margin-right: 40px;
 }
 
 .add-meal-btn,

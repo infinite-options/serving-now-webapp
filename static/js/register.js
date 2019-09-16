@@ -1,111 +1,75 @@
-/*
-* @Author: Japan Parikh
-* @Date:   2019-05-24 21:51:33
-* @Last Modified by:   Japan Parikh
-* @Last Modified time: 2019-05-25 13:38:29
-*/
+$(document).ready(function(){
 
-
-function registerKitchen() {
-	var formData = new FormData();
-	var request = new XMLHttpRequest();
-
-	var name = document.getElementById("name").value;
-	var description = document.getElementById("description").value;
-	var username = document.getElementById("username").value;
-	var password = document.getElementById("password").value;
-	var verifyPassword = document.getElementById("verify-password").value;
-	var firstName = document.getElementById("first_name").value;
-	var lastName = document.getElementById("last_name").value;
-	var street = document.getElementById("street").value;
-	var state = document.getElementById("state").value;
-	var city = document.getElementById("city").value;
-	var zipCode = document.getElementById("zip_code").value;
-	var phoneNumber = document.getElementById("phone_number").value;
-	var closeTime = document.getElementById("close_time").value;
-	var openTime = document.getElementById("open_time").value;
-  var email = document.getElementById("email").value;
-  var deliveryOpenTime = document.getElementById("delivery_open_time").value;
-  var deliveryCloseTime = document.getElementById("delivery_close_time").value;
-  var pickup = false;
-  if (document.getElementById("pickup").checked) {
-    pickup = true;
+  if(typeof jQuery!=='undefined'){
+    console.log('jQuery Loaded');
   }
-  var delivery = false;
-  if (document.getElementById("delivery").checked) {
-    delivery = true;
-  }
-  var reusable = false;
-  if (document.getElementById("reusable").checked) {
-    reusable = true;
-  }
-  var disposable = false;
-  if (document.getElementById("disposable").checked) {
-    disposable = true;
-  }
-  var can_cancel = false;
-  if (document.getElementById("can_cancel").checked) {
-    can_cancel = true;
-  }
-
-  if (Date.parse(closeTime) < Date.parse(openTime)) {
-    window.alert("Please enter vaild accepting hours")
-    return false;
-  }
-
-  if (Date.parse(deliveryCloseTime) < Date.parse(deliveryOpenTime)) {
-    window.alert("Please enter vaild delivery hours")
-    return false;
+  else{
+    console.log('not loaded yet');
   }
 
 
-	// if (name == "" || username == "" || password == "" ||
-	// 	verifyPassword == "" || firstName == "" || lastName == "" ||
-	// 	address == "" || city == "" || state == "" ||
-	// 	phoneNumber == "" || zipcode == "" || closeTime == "" ||
-	// 	openTime == "" || email == "") {
+  var MondayBox = $('#Monday-box'),
+  TuesdayBox = $('#Tuesday-box'),
+  WednesdayBox = $('#Wednesday-box'),
+  ThursdayBox = $('#Thursday-box'),
+  FridayBox = $('#Friday-box'),
+  SaturdayBox = $('#Saturday-box'),
+  SundayBox = $('#Sunday-box');
+  var delivery24hrBox = $('#delivery-24hr-box'),
+  deliveryTime = $('#delivery-time');
 
-	// 	console.log("fields are empty");
+  setAcceptingTimeInputVisibility('#Monday-box', '#Monday');
+  setAcceptingTimeInputVisibility("#Tuesday-box", '#Tuesday');
+  setAcceptingTimeInputVisibility("#Wednesday-box", '#Wednesday');
+  setAcceptingTimeInputVisibility("#Thursday-box", '#Thursday');
+  setAcceptingTimeInputVisibility("#Friday-box", '#Friday');
+  setAcceptingTimeInputVisibility("#Saturday-box", '#Saturday');
+  setAcceptingTimeInputVisibility("#Sunday-box", '#Sunday');
+  setDeliveryTimeInputVisibility('#delivery-24hr-box','#delivery-time')
 
-	// } else {
-  formData.append("description", description);
+  MondayBox.on('click', function() {
+    setAcceptingTimeInputVisibility('#Monday-box', '#Monday');
+  });
+  TuesdayBox.on('click', function() {
+    setAcceptingTimeInputVisibility("#Tuesday-box", '#Tuesday');
+  });
+  WednesdayBox.on('click', function() {
+    setAcceptingTimeInputVisibility("#Wednesday-box", '#Wednesday');
+  });
+  ThursdayBox.on('click', function() {
+    setAcceptingTimeInputVisibility("#Thursday-box", '#Thursday');
+  });
+  FridayBox.on('click', function() {
+    setAcceptingTimeInputVisibility("#Friday-box", '#Friday');
+  });
+  SaturdayBox.on('click', function() {
+    setAcceptingTimeInputVisibility("#Saturday-box", '#Saturday');
+  });
+  SundayBox.on('click', function() {
+    setAcceptingTimeInputVisibility("#Sunday-box", '#Sunday')
+  });
+  delivery24hrBox.on('click', function() {
+    setDeliveryTimeInputVisibility('#delivery-24hr-box','#delivery-time')
+  });
 
-	formData.append("name", name);
-	formData.append("username", username);
-	formData.append("password", password);
-	formData.append("verify-password", verifyPassword);
-	formData.append("first_name", firstName);
-	formData.append("last_name", lastName);
-	formData.append("street", street);
-	formData.append("state", state);
-	formData.append("city", city);
-	formData.append("zip_code", zipCode);
-	formData.append("phone_number", phoneNumber);
-	formData.append("close_time", closeTime);
-	formData.append("open_time", openTime);
-	formData.append("email", email);
-	formData.append("delivery_open_time", delivery_open_time);
-	formData.append("delivery_open_time", delivery_close_time);
-	formData.append("pickup", pickup);
-	formData.append("delivery", delivery);
-	formData.append("reusable", reusable);
-	formData.append("disposable", disposable);
-	formData.append("can_cancel", can_cancel);
+});
 
-	request.open("POST", "/accounts/register", true);
-
-  request.onload = function() {
-      if (request.readyState === request.DONE) {
-          if (request.status === 400) {
-              window.location = "register"
-          }
-          if (request.status === 200) {
-              window.location = "login"
-          }
-      }
+function setAcceptingTimeInputVisibility(checkbox, timeInput) {
+  if($(checkbox).is(':checked')) {
+    $(timeInput).removeClass('d-none');
+    $(timeInput + ' :input').attr("disabled", false);
+  } else {
+    $(timeInput).addClass('d-none');
+    $(timeInput + ' :input').attr("disabled", true);
   }
+}
 
-	request.send(formData);
-
-	// }
+function setDeliveryTimeInputVisibility(checkbox, timeInput) {
+  if(!$(checkbox).is(':checked')) {
+    $(timeInput).removeClass('d-none');
+    $(timeInput + ' :input').attr("disabled", false);
+  } else {
+    $(timeInput).addClass('d-none');
+    $(timeInput + ' :input').attr("disabled", true);
+  }
 }

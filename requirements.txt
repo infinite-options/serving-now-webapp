@@ -8,6 +8,7 @@ flask-restful
 flask-wtf
 jinja2
 phonenumbers
+Pillow
 pytz
 wtforms
 requests

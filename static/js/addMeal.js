@@ -17,8 +17,6 @@ function postMeal() {
     var meal_options_elem = document.getElementById('option-items');
     var meal_options = meal_options_elem.options[meal_options_elem.selectedIndex].value;
 
-
-
     var items = {};
     var options = [];
 
@@ -35,17 +33,13 @@ function postMeal() {
     }
 
     items['meal_items'] = options
-    console.log(items);
+    console.log(document.getElementById('add_meal_image').files[0]);
 
     // Bind the FormData object and the form element
     formData.append('name', document.getElementById('add_meal_mealname').value)
     formData.append('items', JSON.stringify(items))
     formData.append('price', document.getElementById('add_meal_price').value)
     formData.append('photo', document.getElementById('add_meal_image').files[0]);
-
-    // Set up our request
-    // request.open("POST", "https://o5yv1ecpk1.execute-api.us-west-2.amazonaws.com/dev/api/v1/meals/" + kitchen_id, true);
-    //XHR.open("POST", "http://127.0.0.1:5000/api/v1/meals/" + "0001", true);
 
     // The data sent is what the user provided in the form
     //async has to be false because the webpage will refresh before the
@@ -54,22 +48,65 @@ function postMeal() {
     request.send(formData);
 
     console.log("finshed POST, Before refresh")
-
-    // window.location = "/kitchens/" + "638ade3aaef0488f835aa0fb1a75d654";
 }
 
-function previewFile() {
-    var preview = document.querySelector('.img-bg'); //selects the query named img
-    var file = document.querySelector('input[type=file]').files[0]; //sames as here
+function readURL(input) {
+  console.log("in readURL")
+  if (input.files && input.files[0]) {
     var reader = new FileReader();
 
-    reader.onloadend = function() {
-        preview.src = reader.result;
+    reader.onload = function(e) {
+      debugger;
+      $('#img-upload').attr('src', e.target.result);
+      img.onload = function() {
+        var MAX_WIDTH = 100;
+        var MAX_HEIGHT = 100;
+        var width = img.width;
+        var height = img.height;
+
+        if (width > height) {
+          if (width > MAX_WIDTH) {
+            height *= MAX_WIDTH / width;
+            width = MAX_WIDTH;
+          }
+        } else {
+          if (height > MAX_HEIGHT) {
+            width *= MAX_HEIGHT / height;
+            height = MAX_HEIGHT;
+          }
+        }
+
+        var canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        canvas.getContext("2d").drawImage(this, 0, 0, width, height);
+
+        //Causing Infinite Loop in your code
+        //img.src = e.target.result;
+
+        // Get dataURL of resized image from canvas
+        show.src = canvas.toDataURL('image/png');
+
+      }
+
     }
-    if (file) {
-        reader.readAsDataURL(file); //reads the data as a URL
-    } else {
-        preview.src = "Upload Photo";
-    }
+    reader.readAsDataURL(input.files[0]);
+
+  }
 }
+
+// function previewFile() {
+//     var preview = document.querySelector('.img-bg'); //selects the query named img
+//     var file = document.querySelector('input[type=file]').files[0]; //sames as here
+//     var reader = new FileReader();
+//
+//     reader.onloadend = function() {
+//         preview.src = reader.result;
+//     }
+//     if (file) {
+//         reader.readAsDataURL(file); //reads the data as a URL
+//     } else {
+//         preview.src = "Upload Photo";
+//     }
+// }
 // previewFile();

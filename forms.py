@@ -17,10 +17,30 @@ from werkzeug.security import check_password_hash
 class RegistrationForm(FlaskForm): # create a Registration Form class.  Below are the form fields
     kitchenName = StringField('Business Name', validators=[DataRequired()])
     description = TextAreaField('Description', validators=[DataRequired()])
-    closeTime = TimeField('Close Time', validators=[DataRequired()])
-    openTime = TimeField('Open Time', validators=[DataRequired()])
-    deliveryOpenTime = TimeField('Delivery Open Time', validators=[DataRequired()])
-    deliveryCloseTime = TimeField('Delivery Close Time', validators=[DataRequired()])
+    deliveryOpenTime = TimeField('Delivery Open Time')
+    deliveryCloseTime = TimeField('Delivery Close Time')
+    is24hrDelivery = BooleanField('24 Hours')
+    isOpenMonday = BooleanField('Monday')
+    isOpenTuesday = BooleanField('Tuesday')
+    isOpenWednesday = BooleanField('Wednesday')
+    isOpenThursday = BooleanField('Thursday')
+    isOpenFriday = BooleanField('Friday')
+    isOpenSaturday = BooleanField('Saturday')
+    isOpenSunday = BooleanField('Sunday')
+    openHoursMonday = TimeField('Monday')
+    openHoursTuesday = TimeField('Tuesday')
+    openHoursWednesday = TimeField('Wednesday')
+    openHoursThursday = TimeField('Thursday')
+    openHoursFriday = TimeField('Friday')
+    openHoursSaturday = TimeField('Saturday')
+    openHoursSunday = TimeField('Sunday')
+    closeHoursMonday = TimeField('Monday')
+    closeHoursTuesday = TimeField('Tuesday')
+    closeHoursWednesday = TimeField('Wednesday')
+    closeHoursThursday = TimeField('Thursday')
+    closeHoursFriday = TimeField('Friday')
+    closeHoursSaturday = TimeField('Saturday')
+    closeHoursSunday = TimeField('Sunday')
     transport = RadioField('Transport', choices=[('pickup','Pickup'),('delivery','Delivery')], validators=[DataRequired()])
     storage = RadioField('Delivery Container', choices=[('reusable','Reusable'),('disposable','Disposable')], validators=[DataRequired()])
     cancellation = RadioField('Cancellation', choices=[('canCancel','Allow cancellation within ordering hours'),('cannotCancel','Cancellations not allowed')], validators=[DataRequired()])
@@ -54,21 +74,86 @@ class RegistrationForm(FlaskForm): # create a Registration Form class.  Below ar
         if self.cancellation.data == 'None':
             raise ValidationError('Please pick a cancellation option')
 
-    def validate_openTime(self, openTime):
-        if self.openTime.data >= self.closeTime.data:
-            raise ValidationError('Please choose valid times.')
+    def validate_openHoursMonday(self, openHoursMonday):
+        if self.openHoursMonday.data and self.closeHoursMonday.data:
+            if self.openHoursMonday.data >= self.closeHoursMonday.data:
+                raise ValidationError('Please choose valid times.')
 
-    def validate_closeTime(self, closeTime):
-        if self.openTime.data >= self.closeTime.data:
-            raise ValidationError('Please choose valid times.')
+    def validate_closeHoursMonday(self, closeHoursMonday):
+        if self.openHoursMonday.data and self.closeHoursMonday.data:
+            if self.openHoursMonday.data >= self.closeHoursMonday.data:
+                raise ValidationError('Please choose valid times.')
+
+    def validate_openHoursTuesday(self, openHoursTuesday):
+        if self.openHoursTuesday.data and self.closeHoursTuesday.data:
+            if self.openHoursTuesday.data >= self.closeHoursTuesday.data:
+                raise ValidationError('Please choose valid times.')
+
+    def validate_closeHoursTuesday(self, closeHoursTuesday):
+        if self.openHoursTuesday.data and self.closeHoursTuesday.data:
+            if self.openHoursTuesday.data >= self.closeHoursTuesday.data:
+                raise ValidationError('Please choose valid times.')
+
+    def validate_openHoursWednesday(self, openHoursWednesday):
+        if self.openHoursWednesday.data and self.closeHoursWednesday.data:
+            if self.openHoursWednesday.data >= self.closeHoursWednesday.data:
+                raise ValidationError('Please choose valid times.')
+
+    def validate_closeHoursWednesday(self, closeHoursWednesday):
+        if self.openHoursWednesday.data and self.closeHoursWednesday.data:
+            if self.openHoursWednesday.data >= self.closeHoursWednesday.data:
+                raise ValidationError('Please choose valid times.')
+
+    def validate_openHoursThursday(self, openHoursThursday):
+        if self.openHoursThursday.data and self.closeHoursThursday.data:
+            if self.openHoursThursday.data >= self.closeHoursThursday.data:
+                raise ValidationError('Please choose valid times.')
+
+    def validate_closeHoursThursday(self, closeHoursThursday):
+        if self.openHoursThursday.data and self.closeHoursThursday.data:
+            if self.openHoursThursday.data >= self.closeHoursThursday.data:
+                raise ValidationError('Please choose valid times.')
+
+    def validate_openHoursFriday(self, openHoursFriday):
+        if self.openHoursFriday.data and self.closeHoursFriday.data:
+            if self.openHoursFriday.data >= self.closeHoursFriday.data:
+                raise ValidationError('Please choose valid times.')
+
+    def validate_closeHoursFriday(self, closeHoursFriday):
+        if self.openHoursFriday.data and self.closeHoursFriday.data:
+            if self.openHoursFriday.data >= self.closeHoursFriday.data:
+                raise ValidationError('Please choose valid times.')
+
+    def validate_openHoursSaturday(self, openHoursSaturday):
+        if self.openHoursSaturday.data and self.closeHoursSaturday.data:
+            if self.openHoursSaturday.data >= self.closeHoursSaturday.data:
+                raise ValidationError('Please choose valid times.')
+
+    def validate_closeHoursSaturday(self, closeHoursSaturday):
+        if self.openHoursSaturday.data and self.closeHoursSaturday.data:
+            if self.openHoursSaturday.data >= self.closeHoursSaturday.data:
+                raise ValidationError('Please choose valid times.')
+
+    def validate_openHoursSunday(self, openHoursSunday):
+        if self.openHoursSunday.data and self.closeHoursSunday.data:
+            if self.openHoursSunday.data >= self.closeHoursSunday.data:
+                raise ValidationError('Please choose valid times.')
+
+    def validate_closeHoursSunday(self, closeHoursSunday):
+        if self.openHoursSunday.data and self.closeHoursSunday.data:
+            if self.openHoursSunday.data >= self.closeHoursSunday.data:
+                raise ValidationError('Please choose valid times.')
 
     def validate_deliveryOpenTime(self, deliveryOpenTime):
-        if self.deliveryOpenTime.data >= self.deliveryCloseTime.data:
-            raise ValidationError('Please choose valid times.')
+        if self.deliveryOpenTime.data and self.deliveryCloseTime.data:
+            if self.deliveryOpenTime.data >= self.deliveryCloseTime.data:
+                raise ValidationError('Please choose valid times.')
 
     def validate_deliveryCloseTime(self, deliveryCloseTime):
-        if self.deliveryOpenTime.data >= self.deliveryCloseTime.data:
-            raise ValidationError('Please choose valid times.')
+        if self.deliveryOpenTime.data and self.deliveryCloseTime.data:
+            if self.deliveryOpenTime.data >= self.deliveryCloseTime.data:
+                raise ValidationError('Please choose valid times.')
+
 
     def validate_email(self, email):
         user = db.scan(TableName="kitchens",
@@ -191,8 +276,30 @@ class UpdateAccountForm(FlaskForm): # create a Registration Form class.  Below a
     closeTime = TimeField('Close Time', validators=[DataRequired()])
     cancellation = RadioField('Cancellation', choices=[('canCancel','Allow cancellation within ordering hours'),('cannotCancel','Cancellations not allowed')], validators=[DataRequired()])
     city = StringField('City', validators=[DataRequired()])
-    deliveryOpenTime = TimeField('Delivery Open Time', validators=[DataRequired()])
-    deliveryCloseTime = TimeField('Delivery Close Time', validators=[DataRequired()])
+    deliveryOpenTime = TimeField('Delivery Open Time')
+    deliveryCloseTime = TimeField('Delivery Close Time')
+    is24hrDelivery = BooleanField('24 Hours')
+    isOpenMonday = BooleanField('Monday')
+    isOpenTuesday = BooleanField('Tuesday')
+    isOpenWednesday = BooleanField('Wednesday')
+    isOpenThursday = BooleanField('Thursday')
+    isOpenFriday = BooleanField('Friday')
+    isOpenSaturday = BooleanField('Saturday')
+    isOpenSunday = BooleanField('Sunday')
+    openHoursMonday = TimeField('Monday')
+    openHoursTuesday = TimeField('Tuesday')
+    openHoursWednesday = TimeField('Wednesday')
+    openHoursThursday = TimeField('Thursday')
+    openHoursFriday = TimeField('Friday')
+    openHoursSaturday = TimeField('Saturday')
+    openHoursSunday = TimeField('Sunday')
+    closeHoursMonday = TimeField('Monday')
+    closeHoursTuesday = TimeField('Tuesday')
+    closeHoursWednesday = TimeField('Wednesday')
+    closeHoursThursday = TimeField('Thursday')
+    closeHoursFriday = TimeField('Friday')
+    closeHoursSaturday = TimeField('Saturday')
+    closeHoursSunday = TimeField('Sunday')
     description = TextAreaField('Description', validators=[DataRequired()])
     email = StringField('Email', validators=[DataRequired(), Email()])
     firstName = StringField('First Name', validators=[DataRequired()])
@@ -236,13 +343,85 @@ class UpdateAccountForm(FlaskForm): # create a Registration Form class.  Below a
         if self.openTime.data >= self.closeTime.data:
             raise ValidationError('Please choose valid times.')
 
+    def validate_openHoursMonday(self, openHoursMonday):
+        if self.openHoursMonday.data and self.closeHoursMonday.data:
+            if self.openHoursMonday.data >= self.closeHoursMonday.data:
+                raise ValidationError('Please choose valid times.')
+
+    def validate_closeHoursMonday(self, closeHoursMonday):
+        if self.openHoursMonday.data and self.closeHoursMonday.data:
+            if self.openHoursMonday.data >= self.closeHoursMonday.data:
+                raise ValidationError('Please choose valid times.')
+
+    def validate_openHoursTuesday(self, openHoursTuesday):
+        if self.openHoursTuesday.data and self.closeHoursTuesday.data:
+            if self.openHoursTuesday.data >= self.closeHoursTuesday.data:
+                raise ValidationError('Please choose valid times.')
+
+    def validate_closeHoursTuesday(self, closeHoursTuesday):
+        if self.openHoursTuesday.data and self.closeHoursTuesday.data:
+            if self.openHoursTuesday.data >= self.closeHoursTuesday.data:
+                raise ValidationError('Please choose valid times.')
+
+    def validate_openHoursWednesday(self, openHoursWednesday):
+        if self.openHoursWednesday.data and self.closeHoursWednesday.data:
+            if self.openHoursWednesday.data >= self.closeHoursWednesday.data:
+                raise ValidationError('Please choose valid times.')
+
+    def validate_closeHoursWednesday(self, closeHoursWednesday):
+        if self.openHoursWednesday.data and self.closeHoursWednesday.data:
+            if self.openHoursWednesday.data >= self.closeHoursWednesday.data:
+                raise ValidationError('Please choose valid times.')
+
+    def validate_openHoursThursday(self, openHoursThursday):
+        if self.openHoursThursday.data and self.closeHoursThursday.data:
+            if self.openHoursThursday.data >= self.closeHoursThursday.data:
+                raise ValidationError('Please choose valid times.')
+
+    def validate_closeHoursThursday(self, closeHoursThursday):
+        if self.openHoursThursday.data and self.closeHoursThursday.data:
+            if self.openHoursThursday.data >= self.closeHoursThursday.data:
+                raise ValidationError('Please choose valid times.')
+
+    def validate_openHoursFriday(self, openHoursFriday):
+        if self.openHoursFriday.data and self.closeHoursFriday.data:
+            if self.openHoursFriday.data >= self.closeHoursFriday.data:
+                raise ValidationError('Please choose valid times.')
+
+    def validate_closeHoursFriday(self, closeHoursFriday):
+        if self.openHoursFriday.data and self.closeHoursFriday.data:
+            if self.openHoursFriday.data >= self.closeHoursFriday.data:
+                raise ValidationError('Please choose valid times.')
+
+    def validate_openHoursSaturday(self, openHoursSaturday):
+        if self.openHoursSaturday.data and self.closeHoursSaturday.data:
+            if self.openHoursSaturday.data >= self.closeHoursSaturday.data:
+                raise ValidationError('Please choose valid times.')
+
+    def validate_closeHoursSaturday(self, closeHoursSaturday):
+        if self.openHoursSaturday.data and self.closeHoursSaturday.data:
+            if self.openHoursSaturday.data >= self.closeHoursSaturday.data:
+                raise ValidationError('Please choose valid times.')
+
+    def validate_openHoursSunday(self, openHoursSunday):
+        if self.openHoursSunday.data and self.closeHoursSunday.data:
+            if self.openHoursSunday.data >= self.closeHoursSunday.data:
+                raise ValidationError('Please choose valid times.')
+
+    def validate_closeHoursSunday(self, closeHoursSunday):
+        if self.openHoursSunday.data and self.closeHoursSunday.data:
+            if self.openHoursSunday.data >= self.closeHoursSunday.data:
+                raise ValidationError('Please choose valid times.')
+
     def validate_deliveryOpenTime(self, deliveryOpenTime):
-        if self.deliveryOpenTime.data >= self.deliveryCloseTime.data:
-            raise ValidationError('Please choose valid times.')
+        if self.deliveryOpenTime.data and self.deliveryCloseTime.data:
+            if self.deliveryOpenTime.data >= self.deliveryCloseTime.data:
+                raise ValidationError('Please choose valid times.')
 
     def validate_deliveryCloseTime(self, deliveryCloseTime):
-        if self.deliveryOpenTime.data >= self.deliveryCloseTime.data:
-            raise ValidationError('Please choose valid times.')
+        if self.deliveryOpenTime.data and self.deliveryCloseTime.data:
+            if self.deliveryOpenTime.data >= self.deliveryCloseTime.data:
+                raise ValidationError('Please choose valid times.')
 
     def validate_email(self, email):
         if email.data.lower() != login_session['email']:
