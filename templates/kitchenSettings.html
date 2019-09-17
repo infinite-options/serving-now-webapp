@@ -17,204 +17,385 @@
         </div>
         <form method="POST" action="" enctype="multipart/form-data">
           <div class="row">
-            <div class="col-sm"><label> Order Accepting Hours </label>
-              <div>{{form.isOpenMonday(id="Monday-box", class="mr-1")}}<label> Monday </label></div>
-              <div id="Monday">
+            <div class="col-sm"><label> When Customers Can Place Orders </label>
+              <div>{{ form.isAccepting24hr(id="accepting-24hr-box", class="mr-1") }}<label> {{ form.isAccepting24hr.label }} </label></div>
+              <span id="accepting-time">
+              <div class="mb-1">
                 <div class="d-flex justify-content-between time-input-field">
-                {{ form.hidden_tag() }}
-                {% if form.openHoursMonday.errors %}
-                  {{ form.openHoursMonday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box is-invalid")}}
-                {% else %}
-                  {{ form.openHoursMonday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box")}}
-                {% endif %}
-                <span class="mt-2">
-                  to
-                </span>
-                  {{ form.hidden_tag() }}
-                  {% if form.closeHoursMonday.errors %}
-                    {{ form.closeHoursMonday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box is-invalid")}}
-                  {% else %}
-                    {{ form.closeHoursMonday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box")}}
-                  {% endif %}
+                  <div>{{form.isAcceptingSunday(class="mr-1 mt-2")}}<label> Sun </label></div>
+                  <div class="d-flex">
+                    {{ form.hidden_tag() }}
+                    {% if form.acceptingOpenTimeSunday.errors %}
+                      {{ form.acceptingOpenTimeSunday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box is-invalid")}}
+                    {% else %}
+                      {{ form.acceptingOpenTimeSunday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box")}}
+                    {% endif %}
+                    <span class="mt-1 mr-1 ml-1">
+                      &mdash;
+                    </span>
+                    {{ form.hidden_tag() }}
+                    {% if form.acceptingCloseTimeSunday.errors %}
+                      {{ form.acceptingCloseTimeSunday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box is-invalid")}}
+                    {% else %}
+                      {{ form.acceptingCloseTimeSunday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box")}}
+                    {% endif %}
+                  </div>
                 </div>
-                <div class="d-block mt-0 invalid-feedback">
-                  {% for error in form.openHoursMonday.errors %}
+                <div class="text-right d-block mt-0 invalid-feedback">
+                  {% for error in form.acceptingOpenTimeSunday.errors %}
                     <span>{{ error }}</span>
                   {% endfor %}
                 </div>
               </div>
-              <div>{{form.isOpenTuesday(id="Tuesday-box", class="mr-1")}}<label> Tuesday </label></div>
-              <div id="Tuesday">
+              <div class="mb-1">
                 <div class="d-flex justify-content-between time-input-field">
-                {{ form.hidden_tag() }}
-                {% if form.openHoursTuesday.errors %}
-                  {{ form.openHoursTuesday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box is-invalid")}}
-                {% else %}
-                  {{ form.openHoursTuesday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box")}}
-                {% endif %}
-                <span class="mt-2">
-                  to
-                </span>
-                  {{ form.hidden_tag() }}
-                  {% if form.closeHoursTuesday.errors %}
-                    {{ form.closeHoursTuesday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box is-invalid")}}
-                  {% else %}
-                    {{ form.closeHoursTuesday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box")}}
-                  {% endif %}
+                  <div>{{form.isAcceptingMonday(class="mr-1 mt-2")}}<label> Mon </label></div>
+                  <div class="d-flex">
+                    {{ form.hidden_tag() }}
+                    {% if form.acceptingOpenTimeMonday.errors %}
+                      {{ form.acceptingOpenTimeMonday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box is-invalid")}}
+                    {% else %}
+                      {{ form.acceptingOpenTimeMonday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box")}}
+                    {% endif %}
+                    <span class="mt-1 mr-1 ml-1">
+                      &mdash;
+                    </span>
+                    {{ form.hidden_tag() }}
+                    {% if form.acceptingCloseTimeMonday.errors %}
+                      {{ form.acceptingCloseTimeMonday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box is-invalid")}}
+                    {% else %}
+                      {{ form.acceptingCloseTimeMonday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box")}}
+                    {% endif %}
+                  </div>
                 </div>
-                <div class="d-block mt-0 invalid-feedback">
-                  {% for error in form.openHoursTuesday.errors %}
+                <div class="text-right d-block mt-0 invalid-feedback">
+                  {% for error in form.acceptingOpenTimeMonday.errors %}
                     <span>{{ error }}</span>
                   {% endfor %}
                 </div>
               </div>
-              <div>{{form.isOpenWednesday(id="Wednesday-box", class="mr-1")}}<label> Wednesday </label></div>
-              <div id="Wednesday">
+              <div class="mb-1">
                 <div class="d-flex justify-content-between time-input-field">
-                {{ form.hidden_tag() }}
-                {% if form.openHoursWednesday.errors %}
-                  {{ form.openHoursWednesday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box is-invalid")}}
-                {% else %}
-                  {{ form.openHoursWednesday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box")}}
-                {% endif %}
-                <span class="mt-2">
-                  to
-                </span>
-                  {{ form.hidden_tag() }}
-                  {% if form.closeHoursWednesday.errors %}
-                    {{ form.closeHoursWednesday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box is-invalid")}}
-                  {% else %}
-                    {{ form.closeHoursWednesday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box")}}
-                  {% endif %}
+                  <div>{{form.isAcceptingTuesday(class="mr-1 mt-2")}}<label> Tues </label></div>
+                  <div class="d-flex">
+                    {{ form.hidden_tag() }}
+                    {% if form.acceptingOpenTimeTuesday.errors %}
+                      {{ form.acceptingOpenTimeTuesday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box is-invalid")}}
+                    {% else %}
+                      {{ form.acceptingOpenTimeTuesday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box")}}
+                    {% endif %}
+                    <span class="mt-1 mr-1 ml-1">
+                      &mdash;
+                    </span>
+                    {{ form.hidden_tag() }}
+                    {% if form.acceptingCloseTimeTuesday.errors %}
+                      {{ form.acceptingCloseTimeTuesday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box is-invalid")}}
+                    {% else %}
+                      {{ form.acceptingCloseTimeTuesday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box")}}
+                    {% endif %}
+                  </div>
                 </div>
-                <div class="d-block mt-0 invalid-feedback">
-                  {% for error in form.openHoursWednesday.errors %}
+                <div class="text-right d-block mt-0 invalid-feedback">
+                  {% for error in form.acceptingOpenTimeTuesday.errors %}
                     <span>{{ error }}</span>
                   {% endfor %}
                 </div>
               </div>
-              <div>{{form.isOpenThursday(id="Thursday-box", class="mr-1")}}<label> Thursday </label></div>
-              <div id="Thursday">
+              <div class="mb-1">
                 <div class="d-flex justify-content-between time-input-field">
-                {{ form.hidden_tag() }}
-                {% if form.openHoursThursday.errors %}
-                  {{ form.openHoursThursday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box is-invalid")}}
-                {% else %}
-                  {{ form.openHoursThursday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box")}}
-                {% endif %}
-                <span class="mt-2">
-                  to
-                </span>
-                  {{ form.hidden_tag() }}
-                  {% if form.closeHoursThursday.errors %}
-                    {{ form.closeHoursThursday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box is-invalid")}}
-                  {% else %}
-                    {{ form.closeHoursThursday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box")}}
-                  {% endif %}
+                  <div>{{form.isAcceptingWednesday(class="mr-1 mt-2")}}<label> Wed </label></div>
+                  <div class="d-flex">
+                    {{ form.hidden_tag() }}
+                    {% if form.acceptingOpenTimeWednesday.errors %}
+                      {{ form.acceptingOpenTimeWednesday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box is-invalid")}}
+                    {% else %}
+                      {{ form.acceptingOpenTimeWednesday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box")}}
+                    {% endif %}
+                    <span class="mt-1 mr-1 ml-1">
+                      &mdash;
+                    </span>
+                    {{ form.hidden_tag() }}
+                    {% if form.acceptingCloseTimeWednesday.errors %}
+                      {{ form.acceptingCloseTimeWednesday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box is-invalid")}}
+                    {% else %}
+                      {{ form.acceptingCloseTimeWednesday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box")}}
+                    {% endif %}
+                  </div>
                 </div>
-                <div class="d-block mt-0 invalid-feedback">
-                  {% for error in form.openHoursThursday.errors %}
+                <div class="text-right d-block mt-0 invalid-feedback">
+                  {% for error in form.acceptingOpenTimeWednesday.errors %}
                     <span>{{ error }}</span>
                   {% endfor %}
                 </div>
               </div>
-              <div>{{form.isOpenFriday(id="Friday-box", class="mr-1")}}<label> Friday </label></div>
-              <div id="Friday">
+              <div class="mb-1">
                 <div class="d-flex justify-content-between time-input-field">
-                {{ form.hidden_tag() }}
-                {% if form.openHoursFriday.errors %}
-                  {{ form.openHoursFriday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box is-invalid")}}
-                {% else %}
-                  {{ form.openHoursFriday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box")}}
-                {% endif %}
-                <span class="mt-2">
-                  to
-                </span>
-                  {{ form.hidden_tag() }}
-                  {% if form.closeHoursFriday.errors %}
-                    {{ form.closeHoursFriday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box is-invalid")}}
-                  {% else %}
-                    {{ form.closeHoursFriday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box")}}
-                  {% endif %}
+                  <div>{{form.isAcceptingThursday(class="mr-1 mt-2")}}<label> Thur </label></div>
+                  <div class="d-flex">
+                    {{ form.hidden_tag() }}
+                    {% if form.acceptingOpenTimeThursday.errors %}
+                      {{ form.acceptingOpenTimeThursday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box is-invalid")}}
+                    {% else %}
+                      {{ form.acceptingOpenTimeThursday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box")}}
+                    {% endif %}
+                    <span class="mt-1 mr-1 ml-1">
+                      &mdash;
+                    </span>
+                    {{ form.hidden_tag() }}
+                    {% if form.acceptingCloseTimeThursday.errors %}
+                      {{ form.acceptingCloseTimeThursday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box is-invalid")}}
+                    {% else %}
+                      {{ form.acceptingCloseTimeThursday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box")}}
+                    {% endif %}
+                  </div>
                 </div>
-                <div class="d-block mt-0 invalid-feedback">
-                  {% for error in form.openHoursFriday.errors %}
+                <div class="text-right d-block mt-0 invalid-feedback">
+                  {% for error in form.acceptingOpenTimeThursday.errors %}
                     <span>{{ error }}</span>
                   {% endfor %}
                 </div>
               </div>
-              <div>{{form.isOpenSaturday(id="Saturday-box", class="mr-1")}}<label> Saturday </label></div>
-              <div id="Saturday">
+              <div class="mb-1">
                 <div class="d-flex justify-content-between time-input-field">
-                {{ form.hidden_tag() }}
-                {% if form.openHoursSaturday.errors %}
-                  {{ form.openHoursSaturday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box is-invalid")}}
-                {% else %}
-                  {{ form.openHoursSaturday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box")}}
-                {% endif %}
-                <span class="mt-2">
-                  to
-                </span>
-                  {{ form.hidden_tag() }}
-                  {% if form.closeHoursSaturday.errors %}
-                    {{ form.closeHoursSaturday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box is-invalid")}}
-                  {% else %}
-                    {{ form.closeHoursSaturday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box")}}
-                  {% endif %}
+                  <div>{{form.isAcceptingFriday(class="mr-1 mt-2")}}<label> Fri </label></div>
+                  <div class="d-flex">
+                    {{ form.hidden_tag() }}
+                    {% if form.acceptingOpenTimeFriday.errors %}
+                      {{ form.acceptingOpenTimeFriday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box is-invalid")}}
+                    {% else %}
+                      {{ form.acceptingOpenTimeFriday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box")}}
+                    {% endif %}
+                    <span class="mt-1 mr-1 ml-1">
+                      &mdash;
+                    </span>
+                    {{ form.hidden_tag() }}
+                    {% if form.acceptingCloseTimeFriday.errors %}
+                      {{ form.acceptingCloseTimeFriday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box is-invalid")}}
+                    {% else %}
+                      {{ form.acceptingCloseTimeFriday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box")}}
+                    {% endif %}
+                  </div>
                 </div>
-                <div class="d-block mt-0 invalid-feedback">
-                  {% for error in form.openHoursSaturday.errors %}
+                <div class="text-right d-block mt-0 invalid-feedback">
+                  {% for error in form.acceptingOpenTimeFriday.errors %}
                     <span>{{ error }}</span>
                   {% endfor %}
                 </div>
               </div>
-              <div>{{form.isOpenSunday(id="Sunday-box", class="mr-1")}}<label> Sunday </label></div>
-              <div id="Sunday">
+              <div class="mb-1">
                 <div class="d-flex justify-content-between time-input-field">
-                {{ form.hidden_tag() }}
-                {% if form.openHoursSunday.errors %}
-                  {{ form.openHoursSunday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box is-invalid")}}
-                {% else %}
-                  {{ form.openHoursSunday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box")}}
-                {% endif %}
-                <span class="mt-2">
-                  to
-                </span>
-                  {{ form.hidden_tag() }}
-                  {% if form.closeHoursSunday.errors %}
-                    {{ form.closeHoursSunday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box is-invalid")}}
-                  {% else %}
-                    {{ form.closeHoursSunday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box")}}
-                  {% endif %}
+                  <div>{{form.isAcceptingSaturday(class="mr-1 mt-2")}}<label> Sat</label></div>
+                  <div class="d-flex">
+                    {{ form.hidden_tag() }}
+                    {% if form.acceptingOpenTimeSaturday.errors %}
+                      {{ form.acceptingOpenTimeSaturday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box is-invalid")}}
+                    {% else %}
+                      {{ form.acceptingOpenTimeSaturday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box")}}
+                    {% endif %}
+                    <span class="mt-1 mr-1 ml-1">
+                      &mdash;
+                    </span>
+                    {{ form.hidden_tag() }}
+                    {% if form.acceptingCloseTimeSaturday.errors %}
+                      {{ form.acceptingCloseTimeSaturday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box is-invalid")}}
+                    {% else %}
+                      {{ form.acceptingCloseTimeSaturday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box")}}
+                    {% endif %}
+                  </div>
                 </div>
-                <div class="d-block mt-0 invalid-feedback">
-                  {% for error in form.openHoursSunday.errors %}
+                <div class="text-right d-block mt-0 invalid-feedback">
+                  {% for error in form.acceptingOpenTimeSaturday.errors %}
                     <span>{{ error }}</span>
                   {% endfor %}
                 </div>
               </div>
-              <label class="mt-4"> Order Delivery Hours </label>
-              <div>{{form.is24hrDelivery(id="delivery-24hr-box", class="mr-1")}}<label> {{ form.is24hrDelivery.label }} </label></div>
-              <div id="delivery-time">
+            </span>
+              <label class="mt-4"> Delivery Hours </label>
+              <div class="mb-1">
                 <div class="d-flex justify-content-between time-input-field">
-                {{ form.hidden_tag() }}
-                {% if form.deliveryOpenTime.errors %}
-                  {{ form.deliveryOpenTime(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box is-invalid")}}
-                {% else %}
-                  {{ form.deliveryOpenTime(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box")}}
-                {% endif %}
-                <span class="mt-2">
-                  to
-                </span>
-                  {{ form.hidden_tag() }}
-                  {% if form.deliveryCloseTime.errors %}
-                    {{ form.deliveryCloseTime(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box is-invalid")}}
-                  {% else %}
-                    {{ form.deliveryCloseTime(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box")}}
-                  {% endif %}
+                  <div>{{form.isDeliveringSunday(class="mr-1 mt-2")}}<label> Sun </label></div>
+                  <div class="d-flex">
+                    {{ form.hidden_tag() }}
+                    {% if form.deliveryOpenTimeSunday.errors %}
+                      {{ form.deliveryOpenTimeSunday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box is-invalid")}}
+                    {% else %}
+                      {{ form.deliveryOpenTimeSunday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box")}}
+                    {% endif %}
+                    <span class="mt-1 mr-1 ml-1">
+                      &mdash;
+                    </span>
+                    {{ form.hidden_tag() }}
+                    {% if form.deliveryCloseTimeSunday.errors %}
+                      {{ form.deliveryCloseTimeSunday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box is-invalid")}}
+                    {% else %}
+                      {{ form.deliveryCloseTimeSunday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box")}}
+                    {% endif %}
+                  </div>
                 </div>
-                <div class="d-block mt-0 invalid-feedback">
-                  {% for error in form.deliveryOpenTime.errors %}
+                <div class="text-right d-block mt-0 invalid-feedback">
+                  {% for error in form.deliveryOpenTimeSunday.errors %}
+                    <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+              </div>
+              <div class="mb-1">
+                <div class="d-flex justify-content-between time-input-field">
+                  <div>{{form.isDeliveringMonday(class="mr-1 mt-2")}}<label> Mon </label></div>
+                  <div class="d-flex">
+                    {{ form.hidden_tag() }}
+                    {% if form.deliveryOpenTimeMonday.errors %}
+                      {{ form.deliveryOpenTimeMonday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box is-invalid")}}
+                    {% else %}
+                      {{ form.deliveryOpenTimeMonday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box")}}
+                    {% endif %}
+                    <span class="mt-1 mr-1 ml-1">
+                      &mdash;
+                    </span>
+                    {{ form.hidden_tag() }}
+                    {% if form.deliveryCloseTimeMonday.errors %}
+                      {{ form.deliveryCloseTimeMonday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box is-invalid")}}
+                    {% else %}
+                      {{ form.deliveryCloseTimeMonday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box")}}
+                    {% endif %}
+                  </div>
+                </div>
+                <div class="text-right d-block mt-0 invalid-feedback">
+                  {% for error in form.deliveryOpenTimeMonday.errors %}
+                    <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+              </div>
+              <div class="mb-1">
+                <div class="d-flex justify-content-between time-input-field">
+                  <div>{{form.isDeliveringTuesday(class="mr-1 mt-2")}}<label> Tues </label></div>
+                  <div class="d-flex">
+                    {{ form.hidden_tag() }}
+                    {% if form.deliveryOpenTimeTuesday.errors %}
+                      {{ form.deliveryOpenTimeTuesday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box is-invalid")}}
+                    {% else %}
+                      {{ form.deliveryOpenTimeTuesday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box")}}
+                    {% endif %}
+                    <span class="mt-1 mr-1 ml-1">
+                      &mdash;
+                    </span>
+                    {{ form.hidden_tag() }}
+                    {% if form.deliveryCloseTimeTuesday.errors %}
+                      {{ form.deliveryCloseTimeTuesday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box is-invalid")}}
+                    {% else %}
+                      {{ form.deliveryCloseTimeTuesday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box")}}
+                    {% endif %}
+                  </div>
+                </div>
+                <div class="text-right d-block mt-0 invalid-feedback">
+                  {% for error in form.deliveryOpenTimeTuesday.errors %}
+                    <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+              </div>
+              <div class="mb-1">
+                <div class="d-flex justify-content-between time-input-field">
+                  <div>{{form.isDeliveringWednesday(class="mr-1 mt-2")}}<label> Wed </label></div>
+                  <div class="d-flex">
+                    {{ form.hidden_tag() }}
+                    {% if form.deliveryOpenTimeWednesday.errors %}
+                      {{ form.deliveryOpenTimeWednesday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box is-invalid")}}
+                    {% else %}
+                      {{ form.deliveryOpenTimeWednesday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box")}}
+                    {% endif %}
+                    <span class="mt-1 mr-1 ml-1">
+                      &mdash;
+                    </span>
+                    {{ form.hidden_tag() }}
+                    {% if form.deliveryCloseTimeWednesday.errors %}
+                      {{ form.deliveryCloseTimeWednesday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box is-invalid")}}
+                    {% else %}
+                      {{ form.deliveryCloseTimeWednesday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box")}}
+                    {% endif %}
+                  </div>
+                </div>
+                <div class="text-right d-block mt-0 invalid-feedback">
+                  {% for error in form.deliveryOpenTimeWednesday.errors %}
+                    <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+              </div>
+              <div class="mb-1">
+                <div class="d-flex justify-content-between time-input-field">
+                  <div>{{form.isDeliveringThursday(class="mr-1 mt-2")}}<label> Thur </label></div>
+                  <div class="d-flex">
+                    {{ form.hidden_tag() }}
+                    {% if form.deliveryOpenTimeThursday.errors %}
+                      {{ form.deliveryOpenTimeThursday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box is-invalid")}}
+                    {% else %}
+                      {{ form.deliveryOpenTimeThursday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box")}}
+                    {% endif %}
+                    <span class="mt-1 mr-1 ml-1">
+                      &mdash;
+                    </span>
+                    {{ form.hidden_tag() }}
+                    {% if form.deliveryCloseTimeThursday.errors %}
+                      {{ form.deliveryCloseTimeThursday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box is-invalid")}}
+                    {% else %}
+                      {{ form.deliveryCloseTimeThursday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box")}}
+                    {% endif %}
+                  </div>
+                </div>
+                <div class="text-right d-block mt-0 invalid-feedback">
+                  {% for error in form.deliveryOpenTimeThursday.errors %}
+                    <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+              </div>
+              <div class="mb-1">
+                <div class="d-flex justify-content-between time-input-field">
+                  <div>{{form.isDeliveringFriday(class="mr-1 mt-2")}}<label> Fri </label></div>
+                  <div class="d-flex">
+                    {{ form.hidden_tag() }}
+                    {% if form.deliveryOpenTimeFriday.errors %}
+                      {{ form.deliveryOpenTimeFriday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box is-invalid")}}
+                    {% else %}
+                      {{ form.deliveryOpenTimeFriday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box")}}
+                    {% endif %}
+                    <span class="mt-1 mr-1 ml-1">
+                      &mdash;
+                    </span>
+                    {{ form.hidden_tag() }}
+                    {% if form.deliveryCloseTimeFriday.errors %}
+                      {{ form.deliveryCloseTimeFriday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box is-invalid")}}
+                    {% else %}
+                      {{ form.deliveryCloseTimeFriday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box")}}
+                    {% endif %}
+                  </div>
+                </div>
+                <div class="text-right d-block mt-0 invalid-feedback">
+                  {% for error in form.deliveryOpenTimeFriday.errors %}
+                    <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+              </div>
+              <div class="mb-1">
+                <div class="d-flex justify-content-between time-input-field">
+                  <div>{{form.isDeliveringSaturday(class="mr-1 mt-2")}}<label> Sat</label></div>
+                  <div class="d-flex">
+                    {{ form.hidden_tag() }}
+                    {% if form.deliveryOpenTimeSaturday.errors %}
+                      {{ form.deliveryOpenTimeSaturday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box is-invalid")}}
+                    {% else %}
+                      {{ form.deliveryOpenTimeSaturday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box")}}
+                    {% endif %}
+                    <span class="mt-1 mr-1 ml-1">
+                      &mdash;
+                    </span>
+                    {{ form.hidden_tag() }}
+                    {% if form.deliveryCloseTimeSaturday.errors %}
+                      {{ form.deliveryCloseTimeSaturday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box is-invalid")}}
+                    {% else %}
+                      {{ form.deliveryCloseTimeSaturday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box")}}
+                    {% endif %}
+                  </div>
+                </div>
+                <div class="text-right d-block mt-0 invalid-feedback">
+                  {% for error in form.deliveryOpenTimeSaturday.errors %}
                     <span>{{ error }}</span>
                   {% endfor %}
                 </div>
@@ -249,52 +430,50 @@
                   {{ form.description(cols="40", rows="5", class="description-input-box form-control form-control-lg") }}  <!-- passes in the username -->
                 {% endif %}
               </div>
-              <div class="row mt-4">
-                <div class="col-6">
-                  {{ form.transport.label() }}
-                  {% if form.transport.errors %}
-                    {{ form.transport(class="pl-0", style="list-style: none;") }}
-                    <div style="display: block;" class="invalid-feedback">
-                      {% for error in form.transport.errors %}
-                        {% if loop.index != 1 %}
-                          <span>{{ error }}</span>
-                        {% endif %}
-                      {% endfor %}
-                    </div>
-                  {% else %}
-                    {{ form.transport(class="pl-0", style="list-style: none;") }}
-                  {% endif %}
-                </div>
-                <div class="col-6">
-                  {{ form.storage.label() }}
-                  {% if form.storage.errors %}
-                    {{ form.storage(class="pl-0", style="list-style: none;") }}
-                    <div style="display: block;" class="invalid-feedback">
-                      {% for error in form.storage.errors %}
-                        {% if loop.index != 1 %}
-                          <span>{{ error }}</span>
-                        {% endif %}
-                      {% endfor %}
-                    </div>
-                  {% else %}
-                    {{ form.storage(class="pl-0", style="list-style: none;") }}
-                  {% endif %}
-                </div>
-                <div class="ml-4">
-                  {{ form.cancellation.label() }}
-                  {% if form.cancellation.errors %}
-                    {{ form.cancellation(class="pl-0 is-invalid", style="list-style: none;") }}
-                    <div style="display: block;" class="invalid-feedback">
-                      {% for error in form.cancellation.errors %}
-                        {% if loop.index != 1 %}
-                          <span>{{ error }}</span>
-                        {% endif %}
-                      {% endfor %}
-                    </div>
-                  {% else %}
-                    {{ form.cancellation(class="pl-0", style="list-style: none;") }}
-                  {% endif %}
-                </div>
+              <div class="form-group">
+                {{ form.transport.label() }}
+                {% if form.transport.errors %}
+                  {{ form.transport(class="pl-0", style="list-style: none;") }}
+                  <div style="display: block;" class="invalid-feedback">
+                    {% for error in form.transport.errors %}
+                      {% if loop.index != 1 %}
+                        <span>{{ error }}</span>
+                      {% endif %}
+                    {% endfor %}
+                  </div>
+                {% else %}
+                  {{ form.transport(class="pl-0", style="list-style: none;") }}
+                {% endif %}
+              </div>
+              <div class="form-group">
+                {{ form.storage.label() }}
+                {% if form.storage.errors %}
+                  {{ form.storage(class="pl-0", style="list-style: none;") }}
+                  <div style="display: block;" class="invalid-feedback">
+                    {% for error in form.storage.errors %}
+                      {% if loop.index != 1 %}
+                        <span>{{ error }}</span>
+                      {% endif %}
+                    {% endfor %}
+                  </div>
+                {% else %}
+                  {{ form.storage(class="pl-0", style="list-style: none;") }}
+                {% endif %}
+              </div>
+              <div class="form-group">
+                {{ form.cancellation.label() }}
+                {% if form.cancellation.errors %}
+                  {{ form.cancellation(class="pl-0 is-invalid", style="list-style: none;") }}
+                  <div style="display: block;" class="invalid-feedback">
+                    {% for error in form.cancellation.errors %}
+                      {% if loop.index != 1 %}
+                        <span>{{ error }}</span>
+                      {% endif %}
+                    {% endfor %}
+                  </div>
+                {% else %}
+                  {{ form.cancellation(class="pl-0", style="list-style: none;") }}
+                {% endif %}
               </div>
             </div>
             <div class="col-sm">        <!-- posts the information to the same route in came in on -->

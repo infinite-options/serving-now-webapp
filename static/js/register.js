@@ -15,61 +15,61 @@ $(document).ready(function(){
   FridayBox = $('#Friday-box'),
   SaturdayBox = $('#Saturday-box'),
   SundayBox = $('#Sunday-box');
-  var delivery24hrBox = $('#delivery-24hr-box'),
-  deliveryTime = $('#delivery-time');
+  var accepting24hrBox = $('#accepting-24hr-box'),
+  acceptingTime = $('#accepting-time');
 
-  setAcceptingTimeInputVisibility('#Monday-box', '#Monday');
-  setAcceptingTimeInputVisibility("#Tuesday-box", '#Tuesday');
-  setAcceptingTimeInputVisibility("#Wednesday-box", '#Wednesday');
-  setAcceptingTimeInputVisibility("#Thursday-box", '#Thursday');
-  setAcceptingTimeInputVisibility("#Friday-box", '#Friday');
-  setAcceptingTimeInputVisibility("#Saturday-box", '#Saturday');
-  setAcceptingTimeInputVisibility("#Sunday-box", '#Sunday');
-  setDeliveryTimeInputVisibility('#delivery-24hr-box','#delivery-time')
-
-  MondayBox.on('click', function() {
-    setAcceptingTimeInputVisibility('#Monday-box', '#Monday');
-  });
-  TuesdayBox.on('click', function() {
-    setAcceptingTimeInputVisibility("#Tuesday-box", '#Tuesday');
-  });
-  WednesdayBox.on('click', function() {
-    setAcceptingTimeInputVisibility("#Wednesday-box", '#Wednesday');
-  });
-  ThursdayBox.on('click', function() {
-    setAcceptingTimeInputVisibility("#Thursday-box", '#Thursday');
-  });
-  FridayBox.on('click', function() {
-    setAcceptingTimeInputVisibility("#Friday-box", '#Friday');
-  });
-  SaturdayBox.on('click', function() {
-    setAcceptingTimeInputVisibility("#Saturday-box", '#Saturday');
-  });
-  SundayBox.on('click', function() {
-    setAcceptingTimeInputVisibility("#Sunday-box", '#Sunday')
-  });
-  delivery24hrBox.on('click', function() {
-    setDeliveryTimeInputVisibility('#delivery-24hr-box','#delivery-time')
+  // setDeliveryTimeInputVisibility('#Monday-box', '#Monday');
+  // setDeliveryTimeInputVisibility("#Tuesday-box", '#Tuesday');
+  // setDeliveryTimeInputVisibility("#Wednesday-box", '#Wednesday');
+  // setDeliveryTimeInputVisibility("#Thursday-box", '#Thursday');
+  // setDeliveryTimeInputVisibility("#Friday-box", '#Friday');
+  // setDeliveryTimeInputVisibility("#Saturday-box", '#Saturday');
+  // setDeliveryTimeInputVisibility("#Sunday-box", '#Sunday');
+  setAcceptingTimeInputVisibility('#accepting-24hr-box','#accepting-time')
+  //
+  // MondayBox.on('click', function() {
+  //   setDeliveryTimeInputVisibility('#Monday-box', '#Monday');
+  // });
+  // TuesdayBox.on('click', function() {
+  //   setDeliveryTimeInputVisibility("#Tuesday-box", '#Tuesday');
+  // });
+  // WednesdayBox.on('click', function() {
+  //   setDeliveryTimeInputVisibility("#Wednesday-box", '#Wednesday');
+  // });
+  // ThursdayBox.on('click', function() {
+  //   setDeliveryTimeInputVisibility("#Thursday-box", '#Thursday');
+  // });
+  // FridayBox.on('click', function() {
+  //   setDeliveryTimeInputVisibility("#Friday-box", '#Friday');
+  // });
+  // SaturdayBox.on('click', function() {
+  //   setDeliveryTimeInputVisibility("#Saturday-box", '#Saturday');
+  // });
+  // SundayBox.on('click', function() {
+  //   setDeliveryTimeInputVisibility("#Sunday-box", '#Sunday')
+  // });
+  accepting24hrBox.on('click', function() {
+    setAcceptingTimeInputVisibility('#accepting-24hr-box','#accepting-time')
   });
 
 });
 
-function setAcceptingTimeInputVisibility(checkbox, timeInput) {
+function setDeliveryTimeInputVisibility(checkbox, timeInput) {
   if($(checkbox).is(':checked')) {
     $(timeInput).removeClass('d-none');
-    $(timeInput + ' :input').attr("disabled", false);
+    $(timeInput + ' :input');
   } else {
     $(timeInput).addClass('d-none');
-    $(timeInput + ' :input').attr("disabled", true);
+    $(timeInput + ' :input');
   }
 }
 
-function setDeliveryTimeInputVisibility(checkbox, timeInput) {
+function setAcceptingTimeInputVisibility(checkbox, timeInput) {
   if(!$(checkbox).is(':checked')) {
     $(timeInput).removeClass('d-none');
-    $(timeInput + ' :input').attr("disabled", false);
+    $(timeInput + ' :input');
   } else {
     $(timeInput).addClass('d-none');
-    $(timeInput + ' :input').attr("disabled", true);
+    $(timeInput + ' :input');
   }
 }

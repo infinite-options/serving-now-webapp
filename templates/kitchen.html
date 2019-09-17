@@ -80,7 +80,13 @@
               </div>
               <div class="extra content">
                 <span class="right floated">
-                  <!-- <i class="fas fa-sync-alt mr-3"></i> -->
+                  <a href="{{ url_for('autoRenewMeal', meal_id=meal.meal_id.S) }}">
+                    {% if meal.auto_renew.BOOL %}
+                    <i class="fas fa-sync-alt mr-3" style="color:#5395ff;"></i>
+                    {% else %}
+                    <i class="fas fa-sync-alt mr-3" style="color:black"></i>
+                    {% endif %}
+                  </a>
                   <a onclick="favMeal('{{meal.meal_id.S}}')">
                     {% if meal.favorite.BOOL %}
                     <i class="star icon" style="color:#f7d305"></i>
@@ -137,7 +143,13 @@
               </div>
               <div class="extra content">
                 <span class="right floated">
-                  <!-- <i class="fas fa-sync-alt mr-3"></i> -->
+                  <a href="{{ url_for('autoRenewMeal', meal_id=meal.meal_id.S) }}">
+                    {% if meal.auto_renew.BOOL %}
+                    <i class="fas fa-sync-alt mr-3" style="color:#5395ff"></i>
+                    {% else %}
+                    <i class="fas fa-sync-alt mr-3" style="color:black"></i>
+                    {% endif %}
+                  </a>
                   <a onclick="favMeal('{{meal.meal_id.S}}')">
                     {% if meal.favorite.BOOL %}
                     <i class="star icon" style="color:#f7d305"></i>
