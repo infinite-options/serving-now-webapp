@@ -695,9 +695,6 @@ def postMeal():
     photo = request.files.get('photo')
     itemsData = request.form.get('items')
 
-    image = Image.open(photo)
-    image = image.resize((300,160),Image.ANTIALIAS)
-
     if name == None or price == None or photo == None or itemsData == None:
         print('Meal details missing')
         return
@@ -724,7 +721,7 @@ def postMeal():
 
     # try:
     photo_key = 'meals_imgs/{}_{}'.format(str(kitchen_id), str(meal_id))
-    photoPath = upload_s3_img(image.format, BUCKET_NAME, photo_key)
+    photoPath = upload_s3_img(photo, BUCKET_NAME, photo_key)
 
     if photoPath == None:
         raise BadRequest('Request failed. \
@@ -738,6 +735,7 @@ def postMeal():
               'description': {'L': description},
               'price': {'S': str(price)},
               'photo': {'S': photoPath},
+              'auto_renew': {'BOOL': False},
               'favorite': {'BOOL': False},
               'count_today': { 'N': '0' },
               'count_all': { 'N': '0' }
