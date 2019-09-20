@@ -417,7 +417,8 @@ def kitchen(id):
     allMeals = response.json().get('result')
     # print('\n\n kitchen id:' + str(id) + '\n\n')
     #
-    todays_date = datetime.now(tz=timezone('US/Pacific')).strftime('%Y-%m-%dT%H:%M:%S')
+    todays_date = datetime.now(tz=timezone('US/Pacific')).strftime('%Y-%m-%d')
+    todays_datetime = datetime.now(tz=timezone('US/Pacific')).strftime('%Y-%m-%dT%H:%M:%S')
 
     # allMeals = db.scan(
     #     TableName='meals',
@@ -438,7 +439,7 @@ def kitchen(id):
                                          Key={'meal_id': {'S': meal['meal_id']['S']}},
                                          UpdateExpression='SET created_at = :val',
                                          ExpressionAttributeValues={
-                                             ':val': {'S': todays_date}
+                                             ':val': {'S': todays_datetime}
                                          }
                                          )
         twelveHourTime = datetime.strptime(meal['created_at']['S'][11:16], '%H:%M')
@@ -885,16 +886,17 @@ def report():
     if 'kitchen_name' not in login_session:
         return redirect(url_for('index'))
 
-    todays_date = datetime.now(tz=timezone('US/Pacific')).strftime('%Y-%m-%d')
+    todays_date = datetime.now(tz=timezone('US/Pacific')).strftime('%Y-%m-%dT%H:%M:%S')
+
     orders = db.scan(TableName='meal_orders',
-        FilterExpression='kitchen_id = :value AND (contains(created_at, :x1))',
+        FilterExpression='kitchen_id = :value',
         ExpressionAttributeValues={
-            ':value': {'S': current_user.get_id()},
-            ':x1': {'S': todays_date}
+            ':value': {'S': current_user.get_id()}
         }
     )
 
-    todays_date = datetime.now(tz=timezone('US/Pacific')).strftime('%Y-%m-%d')
+    todays_date = datetime.now(tz=timezone('US/Pacific')).strftime('%Y-%m-%dT%H:%M:%S')
+
 
     allMeals = db.scan(
         TableName='meals',
@@ -910,10 +912,7 @@ def report():
     previousMealsItems = []
 
     for meal in allMeals['Items']:
-        if todays_date in meal['created_at']['S']:
-            mealItems.append(meal)
-        else:
-            previousMealsItems.append(meal)
+        mealItems.append(meal)
 
     meals['Items'] = mealItems
     previousMeals['Items'] = previousMealsItems
@@ -966,9 +965,12 @@ def report():
                                                )
 
         twelveHourTime = datetime.strptime(order['created_at']['S'][11:16], '%H:%M')
-        order['order_time'] = twelveHourTime.strftime('%I:%M %p')
 
-    sortedOrders = sorted(orders['Items'], key=itemgetter('order_time'), reverse=True)
+    sortedOrders = sorted(orders['Items'], key=lambda x: datetime.strptime(x['created_at']['S'], '%Y-%m-%dT%H:%M:%S'), reverse=True)
+
+
+    for order in sortedOrders:
+        order['order_time'] = datetime.strptime(order['created_at']['S'], '%Y-%m-%dT%H:%M:%S').strftime('%m/%d/%y %I:%M:%S%p')
 
         # order['created_at'] =
 
