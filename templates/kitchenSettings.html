@@ -1,260 +1,621 @@
-<!-- Written by Risako on 2019-07-12 @20:00 -->
-
-<html lang="en">
+{% extends "main.html" %} {% block content%}
 
   <head>
-      <!-- Required meta tags -->
-      <meta charset="utf-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-      <!-- jquery script -->
-      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-
-      <!-- JavaScript  -->
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js " integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1 " crossorigin="anonymous "></script>
-
-      <!-- Bootstrap CSS -->
-      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-      <link rel="stylesheet" href="{{ url_for('.static', filename='kitchenStyle.css') }}" >
-      <script src="{{ url_for('.static', filename='editKitchenSettings.js') }}"></script>
-      <title>Meal Ordering</title>
-
-      <!--  Pretty Radio Button template  -->
-      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretty-checkbox@3.0/dist/pretty-checkbox.min.css" >
-      <link rel="stylesheet" href="dist/pretty-checkbox.min.css" >
-
-      <script>
-        $(function () {
-          kitchen = JSON.parse($('<textarea />').html('{{kitchen}}').text());
-          $('#open_time').val(kitchen.open_time['S']);
-          $('#close_time').val(kitchen.close_time['S']);
-          // $('#delivery_open_time').val(kitchen.delivery_open_time['S']);
-          // $('#delivery_close_time').val(kitchen.delivery_close_time['S']);
-          // $('#pickup')
-          // $('#delivery')
-          // $('#can_cancel')
-          // $('#cannot_cancel')
-        })
-      </script>
+    <title>{{ kitchen_name }}</title>
+    <!-- style sheet -->
+    <link rel="stylesheet" href="{{ url_for('.static', filename='css/businessSettings.css') }}">
+    <!-- JS -->
+    <script src="{{ url_for('.static', filename='js/register.js') }}"></script>
   </head>
-
-<body class="backgroundSetting">
-    <!-- Kitchen Registration -->
-    <div class="container container-class">
-        <div class="header-conteiner">
-            <div class="logo-img">
-                <img src="{{ url_for('.static', filename='landing-logo.png') }}" style="width:100px">
-            </div>
-            <div class="Kitchen-Registration">
-                <font face="Rozha One" color="white"><h2>Kitchen Registration</h2></font>
-            </div>
-            <button class="button regbtn" onclick="updateRegistration('{{ id}}');">Update Registration</button>
+  <body>
+    <div class="content-section">
+      <nav class="navbar navbar-expand-lg navbar-light">
+      </nav>
+      <div class="ml-4 mr-4 pr-4 pl-4">
+        <div class="border-bottom mb-4 d-flex justify-content-between">  <!-- this is spacing below Join Today text -->
+          <span class="display-4">Update Business Settings</span>
         </div>
-            <div class= "center-wrapper">
-                <div class="row whole-view">
-                    <div class="col-4 login-class">
-                        <div class="form-group">
-                            <input type="text" class="form-control form-control-class"  id="username" style="height:51px; width:314" placeholder="Username" value="{{kitchen.username['S']}}"required>
-                        </div>
-                        <div class="form-group">
-                            <input type="password" class="form-control form-control-class" id="password" style="height:51px; width:314" placeholder="Create a Password" required>
-                        </div>
-                        <div class="form-group">
-                            <input type="password" class="form-control form-control-class" id="verify-password" style="height:51px; width:314" placeholder="Confirm Password" required>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Personal Information -->
-            <div class="header-conteiner">
-                <div class="logo-img">
-                    <img src="{{ url_for('.static', filename='ChefHatIcon.png') }}" style="width:100px">
-                </div>
-                <div class="Kitchen-Registration">
-                    <font face="Rozha One" color="white"><h2>Personal Information</h2></font>
-                </div>
-                <button class="button regbtn" onclick="updatePersonal('{{ id}}');">Update Personal</button>
-            </div>
-            <div class= "wrap">
-                <div class="option-container">
-                    <div class= "info1">
-                            <div class="row whole-view">
-                                <div class="col-4 login-class">
-                                        <div class="conteiner">
-                                            <div class="logo-img">
-                                                <img src="{{ url_for('.static', filename='PersonIcon.png') }}" style="width:50px">
-                                            </div>
-                                            <div class="form-group Kitchen-Registration">
-                                                <input type="text" class="form-control form-control-class" id="first_name" style="height:51px; width:390" placeholder="First Name" value="{{kitchen.first_name['S']}}" required>
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <input type="text" class="form-control form-control-class" id="last_name" style="margin-left:50px; height:51px; width:390" placeholder="Last Name" value="{{kitchen.last_name['S']}}" required>
-                                        </div>
-                                    <div class="conteiner">
-                                        <div class="logo-img">
-                                            <img src="{{ url_for('.static', filename='PhoneIcon.png') }}" style="width:50px">
-                                        </div>
-                                        <div class="form-group">
-                                            <input type="text" class="form-control form-control-class" id="phone_number" style="height:51px; width:390" placeholder="Phone Number" value="{{kitchen.phone_number['S']}}"required>
-                                        </div>
-                                    </div>
-                                    <div class="conteiner">
-                                        <div class="logo-img">
-                                            <img src="{{ url_for('.static', filename='MailIcon.png') }}" style="width:50px">
-                                        </div>
-                                        <div class="form-group">
-                                                <input type="text" class="form-control form-control-class" id="email" style="height:51px; width:390" placeholder="Email" value="{{kitchen.email['S']}}"required>
-                                            </div>
-                                    </div>
-                                </div>
-                            </div>
-                    </div>
-
-                    <div class= "info2">
-                            <div class="row whole-view">
-                                <div class="col-4 login-class">
-                                    <div class="conteiner">
-                                        <div class="logo-img">
-                                            <img src="{{ url_for('.static', filename='HomeIcon.png') }}" style="width:50px">
-                                        </div>
-                                        <div class="form-group">
-                                            <input type="text" class="form-control form-control-class" id="street" style="height:51px; width:390" placeholder="Address" value="{{kitchen.street['S']}}" required>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <input type="text" class="form-control form-control-class" id="city" style="margin-left:50px; height:51px; width:390" placeholder="City" value="{{kitchen.city['S']}}" required>
-                                    </div>
-                                    <div class="address-container">
-                                        <div class="form-group state">
-                                            <input type="text" class="form-control form-control-class" id="state" style="margin-left:50px; height:51px; width:189; display:inline" placeholder="State" value="{{kitchen.st['S']}}" required>
-                                        </div>
-                                        <div class="form-group zipCode">
-                                            <input type="text" class="form-control form-control-class" id="zip_code" style="margin-left:10px; height:51px; width:189" placeholder="ZipCode" value="{{kitchen.zipcode['S']}}" required>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                    </div>
-            </div>
-        </div>
-            <!-- Kitchen Information -->
-            <div class="header-conteiner">
-                <div class="logo-img">
-                    <img src="{{ url_for('.static', filename='UtensilIcon.png') }}" style="width:100px">
-                </div>
-                <div class="Kitchen-Registration">
-                    <font face="Rozha One" color="white"><h2>Kitchen Information</h2></font>
-                </div>
-                <button class="button regbtn" onclick="updateKitchen('{{ id }}');">Update Kitchen</button>
-            </div>
-            <div class= "wrap">
-            <div class="kitchen-info">
-                <div class="form-group" align="center">
-                    <input type="text" class="form-control form-control-class" id="kitchen_name" style="height:51px; width:314px" placeholder="Kitchen Name" value="{{kitchen.kitchen_name['S']}}"required>
-                </div>
-                <div class="form-group" align="center">
-                    <input type="text" class="form-control form-control-class" id="description" style="height:81px; width:680px" placeholder="Description" value="{{kitchen.description['S']}}" required>
-                </div>
-            </div>
-        </div>
-            <!-- Kitchen Options -->
-            <div class= "wrap">
-                <div class="hours">
-                    <div class="hours-item">
-                        Accept Orders:
-                        <input type="time" class="form-control form-control-class" id="open_time" value="{{kitchen.open_time['S']}}" style="margin-left:30px; height:41px; width:130px; display:inline" required>
-                        &nbsp until
-                        <input type="time" class="form-control form-control-class" id="close_time" value="{{kitchen.close_time['S']}}"style=" margin-left:30px; height:41px; width:130px; display:inline" required>
-                    </div>
-                </div>
-                <div class="hours">
-                    <div class="hours-item">
-                        Delivery Hours:
-                        <input type="time" class="form-control form-control-class" id="delivery_open_time" value="{{kitchen.delivery_open_time['S']}}" style="margin-left:20px; height:41px; width:130px; display:inline" required>
-                        &nbsp until
-                        <input type="time" class="form-control form-control-class" id="delivery_close_time" value="{{kitchen.delivery_close_time['S']}}" style="margin-left:30px; height:41px; width:130px; display:inline" required>
-                    </div>
-                    <br>
-                </div>
-                <div class= "wrap">
-                    <div class="option-container">
-                        <div class="option1">
-                            Delivery Options<br><br>
-                            <div class="pretty p-default p-round">
-                                {% if kitchen.pickup.BOOL %}
-                                  <input type="radio" name="radio1" id="pickup" checked>
-                                {% else %}
-                                  <input type="radio" name="radio1" id="pickup">
-                                {% endif %}
-                                <div class="state">
-                                    <label>Pickup</label>
-                                </div>
-                            </div>
-                            <br><br>
-                            <div class="pretty p-default p-round">
-                                {% if kitchen.delivery.BOOL %}
-                                  <input type="radio" name="radio1" id="delivery" checked>
-                                {% else %}
-                                  <input type="radio" name="radio1" id="delivery">
-                                {% endif %}
-                                <div class="state">
-                                    <label>Delivery</label>
-                                </div>
-                            </div>
-
-                        </div>
-                        <div class="option2">
-                            Container Options<br><br>
-                            <div class="pretty p-default p-round">
-                                {% if kitchen.reusable.BOOL %}
-                                  <input type="radio" name="radio2" id="reusable" checked>
-                                {% else %}
-                                  <input type="radio" name="radio2" id="reusable">
-                                {% endif %}
-                                <div class="state">
-                                    <label>with reusable container</label>
-                                </div>
-                            </div>
-                            <br><br>
-                            <div class="pretty p-default p-round">
-                                {% if kitchen.disposable.BOOL %}
-                                  <input type="radio" name="radio2" id="disposable" checked>
-                                {% else %}
-                                  <input type="radio" name="radio2" id="disposable">
-                                {% endif %}
-                                <div class="state">
-                                    <label>with disposable container</label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="option3">
-                            Cancellation Options<br><br>
-                            <div class="pretty p-default p-round">
-                                {% if kitchen.can_cancel.BOOL %}
-                                  <input type="radio" name="radio3" id="can_cancel" checked>
-                                {% else %}
-                                  <input type="radio" name="radio3" id="can_cancel">
-                                {% endif %}
-                                <div class="state">
-                                    <label>Cancel only within ordering hours</label>
-                                </div>
-                            </div>
-                            <br><br>
-                            <div class="pretty p-default p-round">
-                              {% if kitchen.can_cancel.BOOL %}
-                                <input type="radio" name="radio3" id="cannot_cancel">
-                              {% else %}
-                                <input type="radio" name="radio3" id="cannot_cancel" checked>
-                              {% endif %}
-                              <div class="state">
-                                  <label>Cancellations not allowed</label>
-                              </div>
-                          </div>
-                      </div>
+        <form method="POST" action="" enctype="multipart/form-data">
+          <div class="row">
+            <div class="col-sm"><label> When Customers Can Place Orders </label>
+              <div>{{ form.isAccepting24hr(id="accepting-24hr-box", class="mr-1") }}<label> {{ form.isAccepting24hr.label }} </label></div>
+              <span id="accepting-time">
+              <div class="mb-1">
+                <div class="d-flex justify-content-between time-input-field">
+                  <div>{{form.isAcceptingSunday(class="mr-1 mt-2")}}<label> Sun </label></div>
+                  <div class="d-flex">
+                    {{ form.hidden_tag() }}
+                    {% if form.acceptingOpenTimeSunday.errors %}
+                      {{ form.acceptingOpenTimeSunday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box is-invalid")}}
+                    {% else %}
+                      {{ form.acceptingOpenTimeSunday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box")}}
+                    {% endif %}
+                    <span class="mt-1 mr-1 ml-1">
+                      &mdash;
+                    </span>
+                    {{ form.hidden_tag() }}
+                    {% if form.acceptingCloseTimeSunday.errors %}
+                      {{ form.acceptingCloseTimeSunday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box is-invalid")}}
+                    {% else %}
+                      {{ form.acceptingCloseTimeSunday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box")}}
+                    {% endif %}
                   </div>
+                </div>
+                <div class="text-right d-block mt-0 invalid-feedback">
+                  {% for error in form.acceptingOpenTimeSunday.errors %}
+                    <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
               </div>
+              <div class="mb-1">
+                <div class="d-flex justify-content-between time-input-field">
+                  <div>{{form.isAcceptingMonday(class="mr-1 mt-2")}}<label> Mon </label></div>
+                  <div class="d-flex">
+                    {{ form.hidden_tag() }}
+                    {% if form.acceptingOpenTimeMonday.errors %}
+                      {{ form.acceptingOpenTimeMonday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box is-invalid")}}
+                    {% else %}
+                      {{ form.acceptingOpenTimeMonday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box")}}
+                    {% endif %}
+                    <span class="mt-1 mr-1 ml-1">
+                      &mdash;
+                    </span>
+                    {{ form.hidden_tag() }}
+                    {% if form.acceptingCloseTimeMonday.errors %}
+                      {{ form.acceptingCloseTimeMonday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box is-invalid")}}
+                    {% else %}
+                      {{ form.acceptingCloseTimeMonday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box")}}
+                    {% endif %}
+                  </div>
+                </div>
+                <div class="text-right d-block mt-0 invalid-feedback">
+                  {% for error in form.acceptingOpenTimeMonday.errors %}
+                    <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+              </div>
+              <div class="mb-1">
+                <div class="d-flex justify-content-between time-input-field">
+                  <div>{{form.isAcceptingTuesday(class="mr-1 mt-2")}}<label> Tues </label></div>
+                  <div class="d-flex">
+                    {{ form.hidden_tag() }}
+                    {% if form.acceptingOpenTimeTuesday.errors %}
+                      {{ form.acceptingOpenTimeTuesday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box is-invalid")}}
+                    {% else %}
+                      {{ form.acceptingOpenTimeTuesday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box")}}
+                    {% endif %}
+                    <span class="mt-1 mr-1 ml-1">
+                      &mdash;
+                    </span>
+                    {{ form.hidden_tag() }}
+                    {% if form.acceptingCloseTimeTuesday.errors %}
+                      {{ form.acceptingCloseTimeTuesday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box is-invalid")}}
+                    {% else %}
+                      {{ form.acceptingCloseTimeTuesday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box")}}
+                    {% endif %}
+                  </div>
+                </div>
+                <div class="text-right d-block mt-0 invalid-feedback">
+                  {% for error in form.acceptingOpenTimeTuesday.errors %}
+                    <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+              </div>
+              <div class="mb-1">
+                <div class="d-flex justify-content-between time-input-field">
+                  <div>{{form.isAcceptingWednesday(class="mr-1 mt-2")}}<label> Wed </label></div>
+                  <div class="d-flex">
+                    {{ form.hidden_tag() }}
+                    {% if form.acceptingOpenTimeWednesday.errors %}
+                      {{ form.acceptingOpenTimeWednesday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box is-invalid")}}
+                    {% else %}
+                      {{ form.acceptingOpenTimeWednesday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box")}}
+                    {% endif %}
+                    <span class="mt-1 mr-1 ml-1">
+                      &mdash;
+                    </span>
+                    {{ form.hidden_tag() }}
+                    {% if form.acceptingCloseTimeWednesday.errors %}
+                      {{ form.acceptingCloseTimeWednesday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box is-invalid")}}
+                    {% else %}
+                      {{ form.acceptingCloseTimeWednesday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box")}}
+                    {% endif %}
+                  </div>
+                </div>
+                <div class="text-right d-block mt-0 invalid-feedback">
+                  {% for error in form.acceptingOpenTimeWednesday.errors %}
+                    <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+              </div>
+              <div class="mb-1">
+                <div class="d-flex justify-content-between time-input-field">
+                  <div>{{form.isAcceptingThursday(class="mr-1 mt-2")}}<label> Thur </label></div>
+                  <div class="d-flex">
+                    {{ form.hidden_tag() }}
+                    {% if form.acceptingOpenTimeThursday.errors %}
+                      {{ form.acceptingOpenTimeThursday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box is-invalid")}}
+                    {% else %}
+                      {{ form.acceptingOpenTimeThursday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box")}}
+                    {% endif %}
+                    <span class="mt-1 mr-1 ml-1">
+                      &mdash;
+                    </span>
+                    {{ form.hidden_tag() }}
+                    {% if form.acceptingCloseTimeThursday.errors %}
+                      {{ form.acceptingCloseTimeThursday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box is-invalid")}}
+                    {% else %}
+                      {{ form.acceptingCloseTimeThursday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box")}}
+                    {% endif %}
+                  </div>
+                </div>
+                <div class="text-right d-block mt-0 invalid-feedback">
+                  {% for error in form.acceptingOpenTimeThursday.errors %}
+                    <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+              </div>
+              <div class="mb-1">
+                <div class="d-flex justify-content-between time-input-field">
+                  <div>{{form.isAcceptingFriday(class="mr-1 mt-2")}}<label> Fri </label></div>
+                  <div class="d-flex">
+                    {{ form.hidden_tag() }}
+                    {% if form.acceptingOpenTimeFriday.errors %}
+                      {{ form.acceptingOpenTimeFriday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box is-invalid")}}
+                    {% else %}
+                      {{ form.acceptingOpenTimeFriday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box")}}
+                    {% endif %}
+                    <span class="mt-1 mr-1 ml-1">
+                      &mdash;
+                    </span>
+                    {{ form.hidden_tag() }}
+                    {% if form.acceptingCloseTimeFriday.errors %}
+                      {{ form.acceptingCloseTimeFriday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box is-invalid")}}
+                    {% else %}
+                      {{ form.acceptingCloseTimeFriday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box")}}
+                    {% endif %}
+                  </div>
+                </div>
+                <div class="text-right d-block mt-0 invalid-feedback">
+                  {% for error in form.acceptingOpenTimeFriday.errors %}
+                    <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+              </div>
+              <div class="mb-1">
+                <div class="d-flex justify-content-between time-input-field">
+                  <div>{{form.isAcceptingSaturday(class="mr-1 mt-2")}}<label> Sat</label></div>
+                  <div class="d-flex">
+                    {{ form.hidden_tag() }}
+                    {% if form.acceptingOpenTimeSaturday.errors %}
+                      {{ form.acceptingOpenTimeSaturday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box is-invalid")}}
+                    {% else %}
+                      {{ form.acceptingOpenTimeSaturday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box")}}
+                    {% endif %}
+                    <span class="mt-1 mr-1 ml-1">
+                      &mdash;
+                    </span>
+                    {{ form.hidden_tag() }}
+                    {% if form.acceptingCloseTimeSaturday.errors %}
+                      {{ form.acceptingCloseTimeSaturday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box is-invalid")}}
+                    {% else %}
+                      {{ form.acceptingCloseTimeSaturday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box")}}
+                    {% endif %}
+                  </div>
+                </div>
+                <div class="text-right d-block mt-0 invalid-feedback">
+                  {% for error in form.acceptingOpenTimeSaturday.errors %}
+                    <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+              </div>
+            </span>
+              <label class="mt-4"> Delivery Hours </label>
+              <div class="mb-1">
+                <div class="d-flex justify-content-between time-input-field">
+                  <div>{{form.isDeliveringSunday(class="mr-1 mt-2")}}<label> Sun </label></div>
+                  <div class="d-flex">
+                    {{ form.hidden_tag() }}
+                    {% if form.deliveryOpenTimeSunday.errors %}
+                      {{ form.deliveryOpenTimeSunday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box is-invalid")}}
+                    {% else %}
+                      {{ form.deliveryOpenTimeSunday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box")}}
+                    {% endif %}
+                    <span class="mt-1 mr-1 ml-1">
+                      &mdash;
+                    </span>
+                    {{ form.hidden_tag() }}
+                    {% if form.deliveryCloseTimeSunday.errors %}
+                      {{ form.deliveryCloseTimeSunday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box is-invalid")}}
+                    {% else %}
+                      {{ form.deliveryCloseTimeSunday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box")}}
+                    {% endif %}
+                  </div>
+                </div>
+                <div class="text-right d-block mt-0 invalid-feedback">
+                  {% for error in form.deliveryOpenTimeSunday.errors %}
+                    <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+              </div>
+              <div class="mb-1">
+                <div class="d-flex justify-content-between time-input-field">
+                  <div>{{form.isDeliveringMonday(class="mr-1 mt-2")}}<label> Mon </label></div>
+                  <div class="d-flex">
+                    {{ form.hidden_tag() }}
+                    {% if form.deliveryOpenTimeMonday.errors %}
+                      {{ form.deliveryOpenTimeMonday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box is-invalid")}}
+                    {% else %}
+                      {{ form.deliveryOpenTimeMonday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box")}}
+                    {% endif %}
+                    <span class="mt-1 mr-1 ml-1">
+                      &mdash;
+                    </span>
+                    {{ form.hidden_tag() }}
+                    {% if form.deliveryCloseTimeMonday.errors %}
+                      {{ form.deliveryCloseTimeMonday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box is-invalid")}}
+                    {% else %}
+                      {{ form.deliveryCloseTimeMonday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box")}}
+                    {% endif %}
+                  </div>
+                </div>
+                <div class="text-right d-block mt-0 invalid-feedback">
+                  {% for error in form.deliveryOpenTimeMonday.errors %}
+                    <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+              </div>
+              <div class="mb-1">
+                <div class="d-flex justify-content-between time-input-field">
+                  <div>{{form.isDeliveringTuesday(class="mr-1 mt-2")}}<label> Tues </label></div>
+                  <div class="d-flex">
+                    {{ form.hidden_tag() }}
+                    {% if form.deliveryOpenTimeTuesday.errors %}
+                      {{ form.deliveryOpenTimeTuesday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box is-invalid")}}
+                    {% else %}
+                      {{ form.deliveryOpenTimeTuesday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box")}}
+                    {% endif %}
+                    <span class="mt-1 mr-1 ml-1">
+                      &mdash;
+                    </span>
+                    {{ form.hidden_tag() }}
+                    {% if form.deliveryCloseTimeTuesday.errors %}
+                      {{ form.deliveryCloseTimeTuesday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box is-invalid")}}
+                    {% else %}
+                      {{ form.deliveryCloseTimeTuesday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box")}}
+                    {% endif %}
+                  </div>
+                </div>
+                <div class="text-right d-block mt-0 invalid-feedback">
+                  {% for error in form.deliveryOpenTimeTuesday.errors %}
+                    <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+              </div>
+              <div class="mb-1">
+                <div class="d-flex justify-content-between time-input-field">
+                  <div>{{form.isDeliveringWednesday(class="mr-1 mt-2")}}<label> Wed </label></div>
+                  <div class="d-flex">
+                    {{ form.hidden_tag() }}
+                    {% if form.deliveryOpenTimeWednesday.errors %}
+                      {{ form.deliveryOpenTimeWednesday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box is-invalid")}}
+                    {% else %}
+                      {{ form.deliveryOpenTimeWednesday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box")}}
+                    {% endif %}
+                    <span class="mt-1 mr-1 ml-1">
+                      &mdash;
+                    </span>
+                    {{ form.hidden_tag() }}
+                    {% if form.deliveryCloseTimeWednesday.errors %}
+                      {{ form.deliveryCloseTimeWednesday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box is-invalid")}}
+                    {% else %}
+                      {{ form.deliveryCloseTimeWednesday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box")}}
+                    {% endif %}
+                  </div>
+                </div>
+                <div class="text-right d-block mt-0 invalid-feedback">
+                  {% for error in form.deliveryOpenTimeWednesday.errors %}
+                    <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+              </div>
+              <div class="mb-1">
+                <div class="d-flex justify-content-between time-input-field">
+                  <div>{{form.isDeliveringThursday(class="mr-1 mt-2")}}<label> Thur </label></div>
+                  <div class="d-flex">
+                    {{ form.hidden_tag() }}
+                    {% if form.deliveryOpenTimeThursday.errors %}
+                      {{ form.deliveryOpenTimeThursday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box is-invalid")}}
+                    {% else %}
+                      {{ form.deliveryOpenTimeThursday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box")}}
+                    {% endif %}
+                    <span class="mt-1 mr-1 ml-1">
+                      &mdash;
+                    </span>
+                    {{ form.hidden_tag() }}
+                    {% if form.deliveryCloseTimeThursday.errors %}
+                      {{ form.deliveryCloseTimeThursday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box is-invalid")}}
+                    {% else %}
+                      {{ form.deliveryCloseTimeThursday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box")}}
+                    {% endif %}
+                  </div>
+                </div>
+                <div class="text-right d-block mt-0 invalid-feedback">
+                  {% for error in form.deliveryOpenTimeThursday.errors %}
+                    <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+              </div>
+              <div class="mb-1">
+                <div class="d-flex justify-content-between time-input-field">
+                  <div>{{form.isDeliveringFriday(class="mr-1 mt-2")}}<label> Fri </label></div>
+                  <div class="d-flex">
+                    {{ form.hidden_tag() }}
+                    {% if form.deliveryOpenTimeFriday.errors %}
+                      {{ form.deliveryOpenTimeFriday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box is-invalid")}}
+                    {% else %}
+                      {{ form.deliveryOpenTimeFriday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box")}}
+                    {% endif %}
+                    <span class="mt-1 mr-1 ml-1">
+                      &mdash;
+                    </span>
+                    {{ form.hidden_tag() }}
+                    {% if form.deliveryCloseTimeFriday.errors %}
+                      {{ form.deliveryCloseTimeFriday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box is-invalid")}}
+                    {% else %}
+                      {{ form.deliveryCloseTimeFriday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box")}}
+                    {% endif %}
+                  </div>
+                </div>
+                <div class="text-right d-block mt-0 invalid-feedback">
+                  {% for error in form.deliveryOpenTimeFriday.errors %}
+                    <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+              </div>
+              <div class="mb-1">
+                <div class="d-flex justify-content-between time-input-field">
+                  <div>{{form.isDeliveringSaturday(class="mr-1 mt-2")}}<label> Sat</label></div>
+                  <div class="d-flex">
+                    {{ form.hidden_tag() }}
+                    {% if form.deliveryOpenTimeSaturday.errors %}
+                      {{ form.deliveryOpenTimeSaturday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box is-invalid")}}
+                    {% else %}
+                      {{ form.deliveryOpenTimeSaturday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box")}}
+                    {% endif %}
+                    <span class="mt-1 mr-1 ml-1">
+                      &mdash;
+                    </span>
+                    {{ form.hidden_tag() }}
+                    {% if form.deliveryCloseTimeSaturday.errors %}
+                      {{ form.deliveryCloseTimeSaturday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box is-invalid")}}
+                    {% else %}
+                      {{ form.deliveryCloseTimeSaturday(type="time", class="pr-0 pl-1 form-control form-control-lg time-input-box")}}
+                    {% endif %}
+                  </div>
+                </div>
+                <div class="text-right d-block mt-0 invalid-feedback">
+                  {% for error in form.deliveryOpenTimeSaturday.errors %}
+                    <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+            <div class="col-sm">
+              <div class="form-group">
+                {{ form.kitchenName.label(class="form-control-label") }}
+
+                {% if form.kitchenName.errors %}
+                  {{ form.kitchenName(class="form-control form-control-lg is-invalid") }}
+                  <div class="invalid-feedback">
+                    {% for error in form.kitchenName.errors %}
+                      <span>{{ error }}</span>
+                    {% endfor %}
+                  </div>
+                {% else %}
+                  {{ form.kitchenName(class="form-control form-control-lg") }}
+                {% endif %}
+              </div>
+              <div class="form-group">   <!-- form group where we use the fields from the form we passed in -->
+                {{ form.description.label(class="form-control-label") }}  <!-- prints out the label from the username field.  Pass in form argument-->
+
+                {% if form.description.errors %}
+                  {{ form.description(cols="40", rows="5", class="description-input-box input-lg form-control form-control-lg is-invalid") }}
+                  <div class="invalid-feedback">
+                    {% for error in form.description.errors %}
+                      <span>{{ error }}</span>
+                    {% endfor %}
+                  </div>
+                {% else %}
+                  {{ form.description(cols="40", rows="5", class="description-input-box form-control form-control-lg") }}  <!-- passes in the username -->
+                {% endif %}
+              </div>
+              <div class="form-group">
+                {{ form.transport.label() }}
+                {% if form.transport.errors %}
+                  {{ form.transport(class="pl-0", style="list-style: none;") }}
+                  <div style="display: block;" class="invalid-feedback">
+                    {% for error in form.transport.errors %}
+                      {% if loop.index != 1 %}
+                        <span>{{ error }}</span>
+                      {% endif %}
+                    {% endfor %}
+                  </div>
+                {% else %}
+                  {{ form.transport(class="pl-0", style="list-style: none;") }}
+                {% endif %}
+              </div>
+              <div class="form-group">
+                {{ form.storage.label() }}
+                {% if form.storage.errors %}
+                  {{ form.storage(class="pl-0", style="list-style: none;") }}
+                  <div style="display: block;" class="invalid-feedback">
+                    {% for error in form.storage.errors %}
+                      {% if loop.index != 1 %}
+                        <span>{{ error }}</span>
+                      {% endif %}
+                    {% endfor %}
+                  </div>
+                {% else %}
+                  {{ form.storage(class="pl-0", style="list-style: none;") }}
+                {% endif %}
+              </div>
+              <div class="form-group">
+                {{ form.cancellation.label() }}
+                {% if form.cancellation.errors %}
+                  {{ form.cancellation(class="pl-0 is-invalid", style="list-style: none;") }}
+                  <div style="display: block;" class="invalid-feedback">
+                    {% for error in form.cancellation.errors %}
+                      {% if loop.index != 1 %}
+                        <span>{{ error }}</span>
+                      {% endif %}
+                    {% endfor %}
+                  </div>
+                {% else %}
+                  {{ form.cancellation(class="pl-0", style="list-style: none;") }}
+                {% endif %}
+              </div>
+            </div>
+            <div class="col-sm">        <!-- posts the information to the same route in came in on -->
+              {{ form.hidden_tag() }}            <!-- for security reasons -->
+              <fieldset class="form-group">      <!-- adding other form fields.  This is Bootstrap -->
+                <div class="form-group">   <!-- form group where we use the fields from the form we passed in -->
+                  {{ form.firstName.label(class="form-control-label") }}  <!-- prints out the label from the username field.  Pass in form argument-->
+
+                  {% if form.firstName.errors %}
+                    {{ form.firstName(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                      {% for error in form.firstName.errors %}
+                        <span>{{ error }}</span>
+                      {% endfor %}
+                    </div>
+                  {% else %}
+                    {{ form.firstName(class="form-control form-control-lg") }}  <!-- passes in the username -->
+                  {% endif %}
+                </div>
+                <div class="form-group">
+                  {{ form.lastName.label(class="form-control-label") }}
+
+                  {% if form.lastName.errors %}
+                    {{ form.lastName(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                      {% for error in form.lastName.errors %}
+                        <span>{{ error }}</span>
+                      {% endfor %}
+                    </div>
+                  {% else %}
+                    {{ form.lastName(class="form-control form-control-lg") }}
+                  {% endif %}
+
+                </div>
+                <div class="form-group">
+                  {{ form.phoneNumber.label(class="form-control-label") }}
+                  {% if form.phoneNumber.errors %}
+                    {{ form.phoneNumber(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                      {% for error in form.phoneNumber.errors %}
+                        <span>{{ error }}</span>
+                      {% endfor %}
+                    </div>
+                  {% else %}
+                    {{ form.phoneNumber(class="form-control form-control-lg") }}
+                  {% endif %}
+                </div>
+                <div class="form-group">
+                  {{ form.street.label(class="form-control-label") }}
+                  {% if form.street.errors %}
+                    {{ form.street(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                      {% for error in form.street.errors %}
+                        <span>{{ error }}</span>
+                      {% endfor %}
+                    </div>
+                  {% else %}
+                    {{ form.street(class="form-control form-control-lg") }}
+                  {% endif %}
+                </div>
+                <div class="form-group">
+                  {{ form.city.label(class="form-control-label") }}
+                  {% if form.city.errors %}
+                    {{ form.city(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                      {% for error in form.city.errors %}
+                        <span>{{ error }}</span>
+                      {% endfor %}
+                    </div>
+                  {% else %}
+                    {{ form.city(class="form-control form-control-lg") }}
+                  {% endif %}
+                </div>
+                <div class="row">
+                  <div class="col-5">
+                    <div class="form-group">
+                      {{ form.state.label(class="form-control-label") }}
+                      {% if form.state.errors %}
+                        {{ form.state(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                          {% for error in form.state.errors %}
+                            <span>{{ error }}</span>
+                          {% endfor %}
+                        </div>
+                      {% else %}
+                        {{ form.state(class="form-control form-control-lg") }}
+                      {% endif %}
+                    </div>
+                  </div>
+                  <div class="col-7">
+                    <div class="form-group">
+                      {{ form.zipcode.label(class="form-control-label") }}
+                      {% if form.zipcode.errors %}
+                        {{ form.zipcode(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                          {% for error in form.zipcode.errors %}
+                            <span>{{ error }}</span>
+                          {% endfor %}
+                        </div>
+                      {% else %}
+                        {{ form.zipcode(class="form-control form-control-lg") }}
+                      {% endif %}
+                    </div>
+                  </div>
+                </div>
+              </fieldset>
+            </div>
+            <div class="col-sm">                  <!-- this is a style section in main.css -->
+              {{ form.hidden_tag() }}           <!-- for security reasons -->
+              <fieldset class="form-group">
+                <div class="form-group">
+                  {{ form.kitchenImage.label }}
+                  {{ form.kitchenImage(class="form-control-file") }}
+                  {% if form.kitchenImage.errors %}
+                    {% for error in form.kitchenImage.errors %}
+                      <span class="text-danger">{{ error }}</span><br>
+                    {% endfor %}
+                  {% endif %}
+                </div>
+                <div class="form-group">
+                  {{ form.email.label(class="form-control-label") }}
+
+                  {% if form.email.errors %}
+                    {{ form.email(class="form-control form-control-lg is-invalid") }}
+                      <div class="invalid-feedback">
+                        {% for error in form.email.errors %}
+                          <span>{{ error }}</span>
+                        {% endfor %}
+                      </div>
+                  {% else %}
+                  {{ form.email(class="form-control form-control-lg") }}
+                  {% endif %}
+
+                </div>
+              </fieldset>
+              <div class="mt-2 float-right form-group">
+                {{ form.submit(class="btn btn-info") }}
+              </div>
+            </div>
           </div>
+        </form>
       </div>
+    </div>
   </body>
-</html>
+{% endblock %}

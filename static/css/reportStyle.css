@@ -4,11 +4,20 @@
 * @Last Modified by:   Japan Parikh
 * @Last Modified time: 2019-05-29 17:09:41
 */
-
+.item-title {
+  font-size: 31px !important;
+}
+.display-4 {
+  font-size: 35px;
+}
 .table-borderless td,
 .table-borderless th {
   border: 0;
-  border-top: 0 ! important;
+  border-top: 0 !important;
+}
+
+.page-header-title {
+  color: #8a8a8a !important;
 }
 
 .border-gray {

@@ -1,0 +1,61 @@
+
+<!DOCTYPE html>
+
+<head>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <!-- new-bootstrap-js -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+  <!-- jquery script -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+  <link href="{{ url_for('.static', filename='css/payment.css') }}" rel="stylesheet" />
+
+  <!-- Add meta tags for mobile and IE -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+</head>
+
+<body>
+  <!-- Set up a container element for the button -->
+  <div id="paypal-button-container" class="d-flex justify-content-center"></div>
+
+  <!-- Include the PayPal JavaScript SDK -->
+  <script src="https://www.paypal.com/sdk/js?client-id=AcdLTOGLYhJB3Sq7y__bAvwU0iH8DY1-zCVtQrT9h4JRZm7-sg8KIBKvdBPfgBecdqi_CgoRhQYMp8Yi"></script>
+
+  <script>
+  // Render the PayPal button into #paypal-button-container
+  console.log({{ total }});
+  paypal.Buttons({
+
+    // Set up the transaction
+    createOrder: function(data, actions) {
+      return actions.order.create({
+        purchase_units: [{
+          amount: {
+            value: {{ total }}
+          }
+        }]
+      });
+    },
+
+    // Finalize the transaction
+    onApprove: function(data, actions) {
+      return actions.order.capture().then(function(details) {
+        // Show a success message to the buyer
+        alert('Transaction completed by ' + details.payer.name.given_name + '!');
+        window.location.replace("https://servingnow.me/paymentComplete")
+      });
+    }
+
+  }).render('#paypal-button-container');
+  </script>
+  <div class="text-dark d-flex justify-content-center text-center">
+    Need Support? &nbsp; (925) 400-7469
+  </div>
+  <a class="text-dark d-flex justify-content-center" href="{{ url_for('paymentCancelled', order_id=order_id) }}">
+    <div id="cancelBtn">
+      Cancel Order
+    </div>
+  </a>
+</body>

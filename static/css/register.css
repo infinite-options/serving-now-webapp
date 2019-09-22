@@ -1,0 +1,42 @@
+/* created by Jeremy Manalo on July 29 2019 at 3:35:55 */
+
+.display-4 {
+  font-size: 35px;
+}
+.description-input-box {
+  height: 108px;
+}
+
+.time-input-box {
+  width: 105px;
+  height: 28px;
+  margin-bottom: 5px;
+}
+
+.time-input-field {
+  height: 27px
+}
+
+.form-control-lg {
+  font-size: 1rem;
+}
+
+.box-message {
+  border-radius: 5px;
+  padding: 5px;
+}
+
+body {
+ color: #00000080;
+}
+
+.border {
+    border: 1px solid #ced4da!important;
+}
+
+label {
+    display: inline-block;
+    max-width: 100%;
+    margin-bottom: 5px;
+    font-weight: normal;
+}
