@@ -501,7 +501,6 @@ def kitchenSettings(id):
                           ':value': {'S': current_user.get_id()},
                       }
     )['Items'][0]
-    print(form.errors)
     form.validate_on_submit()
     if form.validate_on_submit():
         delivery = False
@@ -624,6 +623,12 @@ def kitchenSettings(id):
                            ':z': {'S': form.zipcode.data},
                        }
                        )
+
+        login_session['kitchen_name'] = form.kitchenName.data
+        login_session['email'] = form.email.data.lower()
+
+        print(login_session['kitchen_name'])
+        print(form.kitchenName.data)
         flash('Your account has been updated!', 'success')
         return redirect(url_for('kitchenSettings', id=current_user.get_id()))
     elif request.method == 'GET':
@@ -772,7 +777,7 @@ def postMeal():
 @login_required
 def renewPastMeals():
 
-    todays_date = datetime.now(tz=timezone('US/Pacific')).strftime('%Y-%m-%dT%H:%M:%S')
+    todays_datetime = datetime.now(tz=timezone('US/Pacific')).strftime('%Y-%m-%dT%H:%M:%S')
 
     allMeals = db.scan(
         TableName='meals',
@@ -788,7 +793,7 @@ def renewPastMeals():
                                      Key={'meal_id': {'S': str(meal['meal_id']['S'])}},
                                      UpdateExpression='SET created_at = :val',
                                      ExpressionAttributeValues={
-                                        ':val': {'S':todays_date}}
+                                        ':val': {'S':todays_datetime}}
                                      )
 
     return redirect(url_for('kitchen', id=login_session['user_id']))
@@ -797,7 +802,7 @@ def renewPastMeals():
 @login_required
 def renewIndvPastMeal(id):
 
-    todays_date = datetime.now(tz=timezone('US/Pacific')).strftime('%Y-%m-%dT%H:%M:%S')
+    todays_datetime = datetime.now(tz=timezone('US/Pacific')).strftime('%Y-%m-%dT%H:%M:%S')
     print (str(id))
 
     try:
@@ -806,7 +811,7 @@ def renewIndvPastMeal(id):
                                      UpdateExpression='SET created_at = :ca, \
                                                            count_today = :ct',
                                      ExpressionAttributeValues={
-                                         ':ca': {'S': todays_date},
+                                         ':ca': {'S': todays_datetime},
                                          ':ct': {'N': '0'}
 
                                      }
@@ -886,7 +891,7 @@ def report():
     if 'kitchen_name' not in login_session:
         return redirect(url_for('index'))
 
-    todays_date = datetime.now(tz=timezone('US/Pacific')).strftime('%Y-%m-%dT%H:%M:%S')
+    todays_date = datetime.now(tz=timezone('US/Pacific')).strftime('%Y-%m-%d')
 
     orders = db.scan(TableName='meal_orders',
         FilterExpression='kitchen_id = :value',
@@ -894,9 +899,6 @@ def report():
             ':value': {'S': current_user.get_id()}
         }
     )
-
-    todays_date = datetime.now(tz=timezone('US/Pacific')).strftime('%Y-%m-%dT%H:%M:%S')
-
 
     allMeals = db.scan(
         TableName='meals',

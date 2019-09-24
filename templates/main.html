@@ -21,48 +21,47 @@
 </head>
 
 <body>
-  <div class="container-fluid">
-    <!-- Navigation Bar -->
-    <nav style="margin-left: 40px; margin-right: 40px;" class="navbar navbar-expand-lg navbar-light bg-light">
-      <a class="navbar-brand" href="{{ url_for('kitchen', id=id) }}">{{ kitchenName }}</a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarText">
-        <ul class="navbar-nav mr-auto">
-          <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('kitchen', id=id) }}">Home <span class="sr-only">(current)</span></a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('report') }}">Report</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('kitchenSettings', id=id) }}">Settings</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
-          </li>
-        </ul>
-        <span class="navbar-text">
-          Need Support? &nbsp; (925) 400-7469
-        </span>
-      </div>
-    </nav>
-    <div class="row pr-3 pl-3 mr-2 ml-2">
-      <div class="col-md-12">
-        {% with messages = get_flashed_messages(with_categories=true) %}
-          {% if messages %}
-            {% for category, message in messages %}
-              <div class="alert alert-{{ category }}">
-                {{ message }}
-              </div>
-            {% endfor %}
-          {% endif %}
-        {% endwith %}
-      </div>
+  <!-- Navigation Bar -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <img src="{{ url_for('.static', filename='images/landing-logo.png') }}" width="30" height="30" class="d-inline-block align-top" alt="">
+    <a class="navbar-brand" href="{{ url_for('kitchen', id=id) }}">{{ kitchenName }}</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarText">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('kitchen', id=id) }}">Home <span class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('report') }}">Report</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('kitchenSettings', id=id) }}">Settings</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+        </li>
+      </ul>
+      <span class="navbar-text">
+        Need Support? &nbsp; (925) 400-7469
+      </span>
     </div>
-    {% block content %} {% endblock %}
+  </nav>
+  <div class="row">
+    <div class="col-md-12">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="alert alert-{{ category }} text-center">
+              {{ message }}
+            </div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+    </div>
   </div>
+  {% block content %} {% endblock %}
 </body>
 
 </html>
