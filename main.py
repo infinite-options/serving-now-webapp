@@ -434,14 +434,6 @@ def kitchen(id):
     previousMealsItems = []
 
     for meal in allMeals:
-        if meal['auto_renew']['BOOL']:
-            update_meal = db.update_item(TableName='meals',
-                                         Key={'meal_id': {'S': meal['meal_id']['S']}},
-                                         UpdateExpression='SET created_at = :val',
-                                         ExpressionAttributeValues={
-                                             ':val': {'S': todays_datetime}
-                                         }
-                                         )
         twelveHourTime = datetime.strptime(meal['created_at']['S'][11:16], '%H:%M')
         meal['order_time'] = twelveHourTime.strftime('%I:%M %p')
         meal['price']['S'] = locale.currency(float(meal['price']['S']))[1:]
