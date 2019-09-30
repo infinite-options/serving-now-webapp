@@ -40,62 +40,64 @@
       {% endwith %}
     </div>
   </div>
-  <div class="login-box">
-    <form method = "POST" action="">        <!-- posts the information to the same route in came in on -->
-      {{ form.hidden_tag() }}            <!-- for security reasons -->
-      <fieldset class="form-group">      <!-- adding other form fields.  This is Bootstrap -->
+  <div class="container-fluid d-flex justify-content-center in-middle">
+    <div class="login-box col-md-4">
+      <form method = "POST" action="">        <!-- posts the information to the same route in came in on -->
+        {{ form.hidden_tag() }}            <!-- for security reasons -->
+        <fieldset class="form-group">      <!-- adding other form fields.  This is Bootstrap -->
 
-        <img src="{{ url_for('.static', filename='images/landing-logo.png') }}" class="center-block" width="150px" height="150px">
-        <div class="form-group">
-          {{ form.email.label(class="form-control-label") }}
+          <img src="{{ url_for('.static', filename='images/landing-logo.png') }}" class="center-block" width="150px" height="150px">
+          <div class="form-group">
+            {{ form.email.label(class="form-control-label") }}
 
-          {% if form.email.errors %}
-          {{ form.email(class="form-control form-control-lg is-invalid") }}
-          <div class="invalid-feedback">
-            {% for error in form.email.errors %}
-            <span>{{ error }}</span>
-            {% endfor %}
+            {% if form.email.errors %}
+            {{ form.email(class="form-control form-control-lg is-invalid") }}
+            <div class="invalid-feedback">
+              {% for error in form.email.errors %}
+              <span>{{ error }}</span>
+              {% endfor %}
+            </div>
+            {% else %}
+            {{ form.email(class="form-control form-control-lg") }}
+            {% endif %}
+
           </div>
-          {% else %}
-          {{ form.email(class="form-control form-control-lg") }}
-          {% endif %}
-
+          <div class="form-group">
+            <div class="d-flex">
+              {{ form.password.label(class="form-control-label") }}
+              <small class="text-muted ml-auto mt-1 hidden">
+                <a href="#">Forgot Password?</a>  <!-- this is a link that goes nowhere for now -->
+              </small>
+            </div>
+            {% if form.password.errors %}
+            {{ form.password(class="form-control form-control-lg is-invalid") }}
+            <div class="invalid-feedback">
+              {% for error in form.password.errors %}
+              <span>{{ error }}</span>
+              {% endfor %}
+            </div>
+            {% else %}
+            {{ form.password(class="form-control form-control-lg") }}
+            {% endif %}
+          </div>
+        </fieldset>
+        <div class="form-group d-flex">
+          {{ form.submit(class="btn btn-info") }}
+          <span class="ml-auto"> Need Support? <br> (925) 400-7469 </span>
         </div>
-        <div class="form-group">
-          <div class="d-flex">
-            {{ form.password.label(class="form-control-label") }}
-            <small class="text-muted ml-auto mt-1 hidden">
-              <a href="#">Forgot Password?</a>  <!-- this is a link that goes nowhere for now -->
-            </small>
-          </div>
-          {% if form.password.errors %}
-          {{ form.password(class="form-control form-control-lg is-invalid") }}
-          <div class="invalid-feedback">
-            {% for error in form.password.errors %}
-            <span>{{ error }}</span>
-            {% endfor %}
-          </div>
-          {% else %}
-          {{ form.password(class="form-control form-control-lg") }}
-          {% endif %}
-        </div>
-      </fieldset>
-      <div class="form-group d-flex">
-        {{ form.submit(class="btn btn-info") }}
-        <span class="ml-auto"> Need Support? <br> (925) 400-7469 </span>
+      </form>
+      <div class="pt-3 d-flex">
+        <small class="test-muted">
+          New Vendor?
+          <br>
+          <a href="{{ url_for('register') }}">Create Account Here</a>  <!--pass in name of function -->
+        </small>
+        <small class="test-muted ml-auto text-right">
+          <span > New Customer? </span>
+          <br>
+          <a class="mr-2"href="{{ url_for('registerCustomer') }}">Sign Up Here</a>  <!--pass in name of function -->
+        </small>
       </div>
-    </form>
-    <div class="pt-3 d-flex">
-      <small class="test-muted">
-        New Vendor?
-        <br>
-        <a href="{{ url_for('register') }}">Create Account Here</a>  <!--pass in name of function -->
-      </small>
-      <small class="test-muted ml-auto text-right">
-        <span > New Customer? </span>
-        <br>
-        <a class="mr-2"href="{{ url_for('registerCustomer') }}">Sign Up Here</a>  <!--pass in name of function -->
-      </small>
     </div>
   </div>
 </body>
