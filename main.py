@@ -159,7 +159,7 @@ def unauthorized_callback():
 
 @app.route('/')
 def index():
-    return redirect(url_for('login'))
+    return redirect(url_for('home'))
 
 @app.route('/payment/<string:order_id>/<string:total>')
 def payment(order_id, total):
@@ -196,6 +196,10 @@ def logout():
     logout_user()
     return redirect(url_for('index'))
 
+@app.route('/home', methods=['GET', 'POST'])
+def home():
+
+    return render_template('home.html', title='Home')
 
 @app.route('/accounts', methods=['GET', 'POST'])
 @app.route('/accounts/login', methods=['GET', 'POST'])
