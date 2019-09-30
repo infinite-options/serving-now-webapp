@@ -928,8 +928,8 @@ def report():
     if todaysMenu == None:
       todaysMenu = []
 
-    totalPotentialRevenue = 0.0;
-    totalDeliveredRevenue = 0.0;
+    totalPotentialRevenue = 0.0
+    totalDeliveredRevenue = 0.0
     totalPotentialQuantity = {}
     totalDeliveredQuantity = {}
     for order in orders['Items']:
@@ -960,27 +960,27 @@ def report():
                     totalDeliveredRevenue += float(item['revenue'])
                 #totalRevenue += item['revenue']
                 item['revenue'] = locale.currency(item['revenue'], grouping=True)
-                if item['qty'] > 0:
-                    if order['status']['S'] == 'open':
-                        if order_id_str in totalPotentialQuantity:
-                            totalPotentialQuantity[order_id_str] += item['qty']
-                        else:
-                            totalPotentialQuantity[order_id_str] = item['qty']
-                        item['name'] = mealDescrip['title']['S']
+                if order['status']['S'] == 'open' and item['qty'] > 0:
+                    if order_id_str in totalPotentialQuantity:
+                        totalPotentialQuantity[order_id_str] += item['qty']
+                    else:
+                        totalPotentialQuantity[order_id_str] = item['qty']
+                    item['name'] = mealInfo['meal_name']['S']
                 if order['status']['S'] == 'delivered':
                     if order_id_str in totalDeliveredQuantity:
                         totalDeliveredQuantity[order_id_str] += item['qty']
                     else:
-                        if item['qty'] > 0:
-                            item['name'] = mealDescrip['title']['S']
                         totalDeliveredQuantity[order_id_str] = item['qty']
-                        update_meal = db.update_item(TableName='meals',
-                                                     Key={'meal_id': {'S': order_id}},
-                                                     UpdateExpression='SET count_today = :ct',
-                                                     ExpressionAttributeValues={
-                                                         ':ct': {'N': str(totalDeliveredQuantity[order_id_str])},
-                                                         }
-                                                    )
+                    if item['qty'] > 0:
+                        item['name'] = mealInfo['meal_name']['S']
+                    update_meal = db.update_item(TableName='meals',
+                                                 Key={'meal_id': {'S': order_id}},
+                                                 UpdateExpression='SET count_today = :ct',
+                                                 ExpressionAttributeValues={
+                                                     ':ct': {'N': str(totalDeliveredQuantity[order_id_str])},
+                                                     }
+                                                )
+                print(item)
 
         twelveHourTime = datetime.strptime(order['created_at']['S'][11:16], '%H:%M')
 
