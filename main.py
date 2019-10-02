@@ -198,7 +198,6 @@ def logout():
 
 @app.route('/home', methods=['GET', 'POST'])
 def home():
-
     return render_template('home.html', title='Home')
 
 @app.route('/accounts', methods=['GET', 'POST'])
@@ -409,7 +408,7 @@ def registerCustomer():
                 )
         flash(form.email.data + ' is now registered as a customer for Serving Now.', 'success') # python 3 format.
         print('Account for ' + form.email.data + ' has been created')
-        return redirect(url_for('login'))
+        return redirect(url_for('home'))
     if login_session.get('representative'):
         form.representative.data = login_session['representative']
     return render_template('registerCustomer.html', title='registerCustomer', form=form) #  This is what happens if the submit is unsuccessful with errors highlighted

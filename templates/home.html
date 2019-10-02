@@ -36,23 +36,43 @@
       {% endwith %}
     </div>
   </div>
-  <div class="container-fluid">
-    <div class="row d-flex justify-content-center">
-      <h4>
+  <div width="700" class="container-fluid">
+    <div class="row d-flex justify-content-center home-text">
+      <h4 class="font-weight-light text-center">
         FARM TO YOUR DOORSTEP
       </h4>
     </div>
-    <div class="row d-flex justify-content-center">
-      <h1>
+    <div class="row d-flex justify-content-center home-text">
+      <h1 class="mt-0 text-center" style="font-size:60px; font-weight:bolder">
         SERVING NOW
       </h1>
     </div>
-    <div class="row d-flex justify-content-center">
-      <h4>
-        Shop Local, Eat Local
+    <div class="row d-flex justify-content-center home-text">
+      <img src="{{ url_for('.static', filename='images/SLEL.png') }}" class="center-block" width="300px" height="60px">
+    </div>
+    <div class="row justify-content-md-center">
+      <div style="width:710px" class="d-flex justify-content-between">
+        <a href="{{ url_for('login') }}"><button type="button" name="button" class="btn btn-info">Farmers</button></a>
+        <a href="{{ url_for('registerCustomer') }}"><button type="button" name="button" class="btn btn-info">Customers</button></a>
+        <a href="https://www.infiniteoptions.com/servingnow"><button type="button" name="button" class="btn btn-info">More Info</button></a>
+      </div>
+    </div>
+    <div class="row d-flex justify-content-center mt-4">
+      <div id="SN-video" class="pl-2 pt-2 pr-2 mb-0">
+        <iframe width="700" height="500" src="https://www.youtube.com/embed/fWkqKrIgAmk" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      </div>
+    </div>
+    <div class="row d-flex justify-content-center home-text mt-4 mb-4">
+      <h4 class="text-center">
+        Download our app today and place an order!
       </h4>
     </div>
-  </div>
+    <div class="row d-flex justify-content-center mt-4">
+      <a href="https://apps.apple.com/us/app/serving-now/id1467700794?mt=8" style="display:inline-block;overflow:hidden;background:url(https://linkmaker.itunes.apple.com/en-us/badge-lrg.svg?releaseDate=2019-09-26&kind=iossoftware&bubble=ios_apps) no-repeat;width:135px;height:40px;"></a>
+    </div>
+    <div class="row d-flex justify-content-center mb-4">
+      <a href='https://play.google.com/store/apps/details?id=com.infiniteoptions.tiffen.InfiniteMeals&hl=en_US&pcampaignid=MKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png' style="display:inline-block;overflow:hidden;width:156px;height:58px;"/></a>
+    </div>
 </body>
 
 </html>
