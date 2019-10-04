@@ -16,12 +16,12 @@
         <div class="row">
           <div class="col-md-8">
             <div class="border-bottom mb-4 ml-4 d-flex justify-content-between">  <!-- this is spacing below Join Today text -->
-              <span class="display-4 page-header-title">Orders Report</span>
+              <span class="display-4 page-header-title">Open Orders</span>
             </div>
-            {% if not orders %}
+            {% if not openOrders %}
               <p class="lead text-secondary ml-4">You currently have no orders placed.</p>
             {% endif %}
-            {% for order in orders %}
+            {% for order in openOrders %}
               {% set outer_loop = loop %}
               {% if outer_loop.index == 1%}
               <div class="border-top border-bottom ml-4 p-2 mb-1 mt-1" >
@@ -40,7 +40,7 @@
                       </td>
                       <td class="phone-col align-middle table-borderless" >{{ order.phone.S }}</td>
                       <td class="orderbtn-col align-middle">
-                        <button class="btn btn-primary btn-sm float-right" type=x"button" data-toggle="collapse" data-target="#collapseExample{{loop.index}}" aria-expanded="false" aria-controls="collapseExample">
+                        <button class="btn btn-primary btn-sm float-right" type=x"button" data-toggle="collapse" data-target="#openCollapse{{loop.index}}" aria-expanded="false" aria-controls="collapseExample">
                           Orders
                         </button>
                       </td>
@@ -48,7 +48,7 @@
                   </tbody>
                 </table>
                 <div class="order-details">
-                  <div class="collapse" id="collapseExample{{outer_loop.index}}">
+                  <div class="collapse" id="openCollapse{{outer_loop.index}}">
                     {% for item in order.order_items.L %}
                       {% if item.name %}
                         <div class="border border-gray mb-2 mt-2 order-item-box">
@@ -79,13 +79,112 @@
           <div class="col-md-4 pr-4">
             <div class="content-section pr-4">
               <div class="border-bottom mb-4 d-flex justify-content-between">  <!-- this is spacing below Join Today text -->
-                <span class="display-4 page-header-title">Current Statistics</span>
+                <span class="display-4 page-header-title">Open Order Statistics</span>
+              </div>
+              <table class="table table-borderless">
+                <tbody>
+                  <tr>
+                    <th> Total Potential Revenue: </th>
+                    <th class="text-center"> {{ totalPotentialRevenue }} </th>
+                  </tr>
+                </tbody>
+                <tbody>
+                  <tr class="table-active">
+                    <th> Item </th>
+                    <th class="text-center" > Item Quantities Needed </th>
+                  </tr>
+                </tbody>
+                {% for meal in todaysMeals %}
+                  <tbody>
+                    <tr>
+                      <td class="text-muted"> {{ meal.meal_name.S }} </td>
+                      {% if totalPotentialQuantity[meal.meal_id.S] %}
+                        <td class="text-center text-muted"> {{ totalPotentialQuantity[meal.meal_id.S] }} </td>
+                      {% else %}
+                        <td class="text-center text-muted"> 0 </td>
+                      {% endif %}
+                    </tr>
+                  </tbody>
+                {% endfor %}
+              </table>
+              {% if not todaysMeals %}
+                <h4 class="text-secondary">You currently have no produce available.</h4>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-8">
+            <div class="border-bottom mb-4 ml-4 d-flex justify-content-between">  <!-- this is spacing below Join Today text -->
+              <span class="display-4 page-header-title">Delivered Orders</span>
+            </div>
+            {% if not deliveredOrders %}
+              <p class="lead text-secondary ml-4">You currently have no orders that have been delievered.</p>
+            {% endif %}
+            {% for order in deliveredOrders %}
+              {% set outer_loop = loop %}
+              {% if outer_loop.index == 1%}
+              <div class="border-top border-bottom ml-4 p-2 mb-1 mt-1" >
+              {% else %}
+              <div class="border-bottom ml-4 p-2 mb-1 mt-1" >
+              {% endif %}
+                <table class='table table-borderless mb-0'>
+                  <tbody>
+                    <tr>
+                      <td class="time-col align-middle table-borderless" scope="col">{{ order.order_time }}</td>
+                      <th class="name-col align-middle table-borderless" scope="col">{{ order.name.S }}</th>
+                      <td class="address-col align-middle table-borderless" >
+                        <div> {{ order.street.S }} </div>
+                        <div> {{ order.city.S }}, {{ order.state.S }} {{ order.zipCode.N }} </div>
+                      </td>
+                      <td class="phone-col align-middle table-borderless" >{{ order.phone.S }}</td>
+                      <td class="orderbtn-col align-middle">
+                        <button class="btn btn-primary btn-sm float-right" type=x"button" data-toggle="collapse" data-target="#deliveryCollapse{{loop.index}}" aria-expanded="false" aria-controls="deliveryCollapse{{loop.index}}">
+                          Orders
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div class="order-details">
+                  <div class="collapse" id="deliveryCollapse{{outer_loop.index}}">
+                    {% for item in order.order_items.L %}
+                      {% if item.name %}
+                        <div class="border border-gray mb-2 mt-2 order-item-box">
+                          <img src={{item.photo.S}} class="card-img-top float-left" style="max-width:190px; height:120px">
+                            <span class="align-top list-inline-item float-left ml-2">
+                              <p class="item-title display-4"> {{ item.price }} {{ item.name }} </p>
+                              <p class="text-left"> Quantity: {{ item.qty }} </p>
+                              <p class="text-left"> Revenue: {{ item.revenue }} </p>
+                            </span>
+                            <!-- <div class="form-group align-middle float-right m-1">
+                              <textarea class="form-control notes-box" rows="7" id="order_notes"></textarea>
+                            </div> -->
+                        </div>
+                      {% else %}
+                        {% if not item.photo %}
+                          <div class="alert alert-danger mb-0" role="alert">
+                            <p> Meal with id: <strong>{{item.M.meal_id.S}}</strong> is no longer available or has been removed. </p>
+                          </div>
+                        {% endif %}
+                      {% endif %}
+                    {% endfor %}
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+
+          <div class="col-md-4 pr-4">
+            <div class="content-section pr-4">
+              <div class="border-bottom mb-4 d-flex justify-content-between">  <!-- this is spacing below Join Today text -->
+                <span class="display-4 page-header-title">Delivered Order Statistics</span>
               </div>
               <table class="table table-borderless">
                 <tbody>
                   <tr>
                     <th> Total Revenue: </th>
-                    <th class="text-center"> {{ totalRevenue }} </th>
+                    <th class="text-center"> {{ totalDeliveredRevenue }} </th>
                   </tr>
                 </tbody>
                 <tbody>
@@ -98,8 +197,8 @@
                   <tbody>
                     <tr>
                       <td class="text-muted"> {{ meal.meal_name.S }} </td>
-                      {% if totalMealQuantity[meal.meal_id.S] %}
-                        <td class="text-center text-muted"> {{ totalMealQuantity[meal.meal_id.S] }} </td>
+                      {% if totalDeliveredQuantity[meal.meal_id.S] %}
+                        <td class="text-center text-muted"> {{ totalDeliveredQuantity[meal.meal_id.S] }} </td>
                       {% else %}
                         <td class="text-center text-muted"> 0 </td>
                       {% endif %}
@@ -108,7 +207,7 @@
                 {% endfor %}
               </table>
               {% if not todaysMeals %}
-                <h4 class="text-secondary">You currently have no meals made.</h4>
+                <h4 class="text-secondary">You currently have no produce available.</h4>
               {% endif %}
             </div>
           </div>

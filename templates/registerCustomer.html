@@ -40,124 +40,126 @@
       {% endwith %}
     </div>
   </div>
-  <div class="login-box">
-    <form method = "POST" action="">        <!-- posts the information to the same route in came in on -->
-      {{ form.hidden_tag() }}            <!-- for security reasons -->
-      <fieldset class="form-group">      <!-- adding other form fields.  This is Bootstrap -->
+  <div class="container-fluid d-flex justify-content-center in-middle">
+    <div class="login-box">
+      <form method = "POST" action="">        <!-- posts the information to the same route in came in on -->
+        {{ form.hidden_tag() }}            <!-- for security reasons -->
+        <fieldset class="form-group">      <!-- adding other form fields.  This is Bootstrap -->
 
-        <img src="{{ url_for('.static', filename='images/landing-logo.png') }}" class="center-block" width="150px" height="150px">
-        <div class="form-group">
-          *{{ form.firstName.label(class="form-control-label") }}
+          <img src="{{ url_for('.static', filename='images/landing-logo.png') }}" class="center-block" width="150px" height="150px">
+          <div class="form-group">
+            *{{ form.firstName.label(class="form-control-label") }}
 
-          {% if form.firstName.errors %}
-            {{ form.firstName(class="form-control form-control-lg is-invalid") }}
-            <div class="invalid-feedback">
-              {% for error in form.firstName.errors %}
-                <span>{{ error }}</span>
-              {% endfor %}
-            </div>
-          {% else %}
-            {{ form.firstName(class="form-control form-control-lg") }}
-          {% endif %}
-        </div>
-        <div class="form-group">
-          *{{ form.lastName.label(class="form-control-label") }}
-
-          {% if form.lastName.errors %}
-            {{ form.lastName(class="form-control form-control-lg is-invalid") }}
-            <div class="invalid-feedback">
-              {% for error in form.lastName.errors %}
-                <span>{{ error }}</span>
-              {% endfor %}
-            </div>
-          {% else %}
-            {{ form.lastName(class="form-control form-control-lg") }}
-          {% endif %}
-        </div>
-        <div class="form-group">
-          *{{ form.email.label(class="form-control-label") }}
-
-          {% if form.email.errors %}
-            {{ form.email(class="form-control form-control-lg is-invalid") }}
-            <div class="invalid-feedback">
-              {% for error in form.email.errors %}
-                <span>{{ error }}</span>
-              {% endfor %}
-            </div>
-          {% else %}
-            {{ form.email(class="form-control form-control-lg") }}
-          {% endif %}
-        </div>
-        <div class="form-group">
-          *{{ form.phoneNumber.label(class="form-control-label") }}
-
-          {% if form.phoneNumber.errors %}
-            {{ form.phoneNumber(class="form-control form-control-lg is-invalid") }}
-            <div class="invalid-feedback">
-              {% for error in form.phoneNumber.errors %}
-                <span>{{ error }}</span>
-              {% endfor %}
-            </div>
-          {% else %}
-            {{ form.phoneNumber(class="form-control form-control-lg") }}
-          {% endif %}
-        </div>
-        <div class="form-group">
-          *{{ form.betaTester.label() }}
-          {% if form.betaTester.errors %}
-            {{ form.betaTester(class="pl-0", style="list-style: none;") }}
-            <div style="display: block;" class="invalid-feedback">
-              {% for error in form.betaTester.errors %}
-                {% if loop.index != 1 %}
+            {% if form.firstName.errors %}
+              {{ form.firstName(class="form-control form-control-lg is-invalid") }}
+              <div class="invalid-feedback">
+                {% for error in form.firstName.errors %}
                   <span>{{ error }}</span>
-                {% endif %}
-              {% endfor %}
-            </div>
-          {% else %}
-            {{ form.betaTester(class="pl-0", style="list-style: none;") }}
-          {% endif %}
-        </div>
-        <div class="form-group">
-          *{{ form.futureCustomer.label() }}
-          {% if form.futureCustomer.errors %}
-            {{ form.futureCustomer(class="pl-0", style="list-style: none;") }}
-            <div style="display: block;" class="invalid-feedback">
-              {% for error in form.futureCustomer.errors %}
-                {% if loop.index != 1 %}
-                  <span>{{ error }}</span>
-                {% endif %}
-              {% endfor %}
-            </div>
-          {% else %}
-            {{ form.futureCustomer(class="pl-0", style="list-style: none;") }}
-          {% endif %}
-        </div>
-      </fieldset>
-      <p>
-        *By clicking Submit you are agreeing to recieve emails and text messages from Serving Now.
-      </p>
-      <div class="form-group">
-        {{ form.submit(class="btn btn-info") }}
-      </div>
-      <div class="form-group">
-        {{ form.representative.label(class="form-control-label") }}
-        *Not required if by self
-        {% if form.representative.errors %}
-          {{ form.representative(class="form-control form-control-lg is-invalid") }}
-          <div class="invalid-feedback">
-            {% for error in form.representative.errors %}
-              <span>{{ error }}</span>
-            {% endfor %}
+                {% endfor %}
+              </div>
+            {% else %}
+              {{ form.firstName(class="form-control form-control-lg") }}
+            {% endif %}
           </div>
-        {% else %}
-          {{ form.representative(class="form-control form-control-lg") }}
-        {% endif %}
+          <div class="form-group">
+            *{{ form.lastName.label(class="form-control-label") }}
+
+            {% if form.lastName.errors %}
+              {{ form.lastName(class="form-control form-control-lg is-invalid") }}
+              <div class="invalid-feedback">
+                {% for error in form.lastName.errors %}
+                  <span>{{ error }}</span>
+                {% endfor %}
+              </div>
+            {% else %}
+              {{ form.lastName(class="form-control form-control-lg") }}
+            {% endif %}
+          </div>
+          <div class="form-group">
+            *{{ form.email.label(class="form-control-label") }}
+
+            {% if form.email.errors %}
+              {{ form.email(class="form-control form-control-lg is-invalid") }}
+              <div class="invalid-feedback">
+                {% for error in form.email.errors %}
+                  <span>{{ error }}</span>
+                {% endfor %}
+              </div>
+            {% else %}
+              {{ form.email(class="form-control form-control-lg") }}
+            {% endif %}
+          </div>
+          <div class="form-group">
+            *{{ form.phoneNumber.label(class="form-control-label") }}
+
+            {% if form.phoneNumber.errors %}
+              {{ form.phoneNumber(class="form-control form-control-lg is-invalid") }}
+              <div class="invalid-feedback">
+                {% for error in form.phoneNumber.errors %}
+                  <span>{{ error }}</span>
+                {% endfor %}
+              </div>
+            {% else %}
+              {{ form.phoneNumber(class="form-control form-control-lg") }}
+            {% endif %}
+          </div>
+          <div class="form-group">
+            *{{ form.betaTester.label() }}
+            {% if form.betaTester.errors %}
+              {{ form.betaTester(class="pl-0", style="list-style: none;") }}
+              <div style="display: block;" class="invalid-feedback">
+                {% for error in form.betaTester.errors %}
+                  {% if loop.index != 1 %}
+                    <span>{{ error }}</span>
+                  {% endif %}
+                {% endfor %}
+              </div>
+            {% else %}
+              {{ form.betaTester(class="pl-0", style="list-style: none;") }}
+            {% endif %}
+          </div>
+          <div class="form-group">
+            *{{ form.futureCustomer.label() }}
+            {% if form.futureCustomer.errors %}
+              {{ form.futureCustomer(class="pl-0", style="list-style: none;") }}
+              <div style="display: block;" class="invalid-feedback">
+                {% for error in form.futureCustomer.errors %}
+                  {% if loop.index != 1 %}
+                    <span>{{ error }}</span>
+                  {% endif %}
+                {% endfor %}
+              </div>
+            {% else %}
+              {{ form.futureCustomer(class="pl-0", style="list-style: none;") }}
+            {% endif %}
+          </div>
+        </fieldset>
+        <p>
+          *By clicking Submit you are agreeing to recieve emails and text messages from Serving Now.
+        </p>
+        <div class="form-group">
+          {{ form.submit(class="btn btn-info") }}
+        </div>
+        <div class="form-group">
+          {{ form.representative.label(class="form-control-label") }}
+          *Not required if by self
+          {% if form.representative.errors %}
+            {{ form.representative(class="form-control form-control-lg is-invalid") }}
+            <div class="invalid-feedback">
+              {% for error in form.representative.errors %}
+                <span>{{ error }}</span>
+              {% endfor %}
+            </div>
+          {% else %}
+            {{ form.representative(class="form-control form-control-lg") }}
+          {% endif %}
+        </div>
+      </form>
+      <div class="border-top pt-3">
+        <small class="test-muted">
+          Need to Go Back? <a class="ml-2" href="{{ url_for('home') }}"> Return to Home Page</a>  <!--pass in name of function -->
+        </small>
       </div>
-    </form>
-    <div class="border-top pt-3">
-      <small class="test-muted">
-        Already a Registered Customer? <a class="ml-2" href="{{ url_for('login') }}"> Return to Login Page.</a>  <!--pass in name of function -->
-      </small>
     </div>
   </div>
 </body>

@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <!-- jquery script -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <!-- JavaScript  -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js " integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1 " crossorigin="anonymous ">
+  </script>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <!-- new-bootstrap-js -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+  <!-- new-bootstrap-css -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+  <!-- local css -->
+  <link href="{{ url_for('.static', filename='css/home.css') }}" rel="stylesheet" />
+
+  <title>Meal Ordering</title>
+</head>
+
+<body>
+  <div class="login-flash">
+    <div class="col-md-12">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">
+              {{ message }}
+            </div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+    </div>
+  </div>
+  <div width="700" class="container-fluid">
+    <div class="row d-flex justify-content-center">
+      <h4 class="font-weight-light text-center home-text">
+        FROM FARM TO YOUR DOORSTEP
+      </h4>
+    </div>
+    <div class="row d-flex justify-content-center">
+      <h1 class="mt-0 text-center home-text" style="font-size:60px; font-weight:bolder">
+        SERVING NOW
+      </h1>
+    </div>
+    <div class="row d-flex justify-content-center">
+      <img src="{{ url_for('.static', filename='images/SLEL.png') }}" class="center-block" width="350px" height="60px">
+    </div>
+    <div class="row justify-content-md-center">
+      <div style="width:710px" class="d-flex justify-content-between">
+        <a href="{{ url_for('login') }}"><button type="button" name="button" class="btn btn-info">Farmers</button></a>
+        <a href="{{ url_for('registerCustomer') }}"><button type="button" name="button" class="btn btn-info">Customers</button></a>
+        <a target="_blank" href="https://www.infiniteoptions.com/servingnow"><button type="button" name="button" class="btn btn-info">More Info</button></a>
+      </div>
+    </div>
+    <div class="row d-flex justify-content-center mt-4">
+      <div id="SN-video" class="pl-2 pt-2 pr-2 mb-0">
+        <iframe width="700" height="500" src="https://www.youtube.com/embed/fWkqKrIgAmk" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      </div>
+    </div>
+    <div class="row d-flex justify-content-center mt-4 mb-4">
+      <h4 class="text-center home-text">
+        Download our app today and place an order!
+      </h4>
+    </div>
+    <div class="row d-flex justify-content-center mt-4">
+      <a target="_blank" href="https://apps.apple.com/us/app/serving-now/id1467700794?mt=8" style="display:inline-block;overflow:hidden;background:url(https://linkmaker.itunes.apple.com/en-us/badge-lrg.svg?releaseDate=2019-09-26&kind=iossoftware&bubble=ios_apps) no-repeat;width:135px;height:40px;"></a>
+    </div>
+    <div class="row d-flex justify-content-center mb-4">
+      <a target="_blank" href='https://play.google.com/store/apps/details?id=com.infiniteoptions.tiffen.InfiniteMeals&hl=en_US&pcampaignid=MKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png' style="display:inline-block;overflow:hidden;width:156px;height:58px;"/></a>
+    </div>
+</body>
+
+</html>

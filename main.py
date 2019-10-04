@@ -154,10 +154,13 @@ class User(UserMixin):
 def _login_manager_load_user(user_id):
     return User.get(user_id)
 
+@login_manager.unauthorized_handler
+def unauthorized_callback():
+    return redirect(url_for('login'))
 
 @app.route('/')
 def index():
-    return redirect(url_for('login'))
+    return redirect(url_for('home'))
 
 @app.route('/payment/<string:order_id>/<string:total>')
 def payment(order_id, total):
@@ -170,12 +173,20 @@ def paymentComplete():
 @app.route('/order/<string:order_id>/paymentCancelled')
 def paymentCancelled(order_id):
     message = ''
-    deleted_order = db.delete_item(TableName='meal_orders',
-                                  Key={'order_id': {'S': order_id}})
+    deleted_order = db.scan(TableName='meal_orders',
+                            FilterExpression='order_id = :value',
+                            ExpressionAttributeValues={
+                                ':value': {'S': order_id},
+                                }
+                            )
     if deleted_order.get('Items') != []:
-        message = 'Your order has been cancelled.'
+        if deleted_order['Items'][0]['status']['S'] == 'delivered':
+            message = 'Sorry, your order has been delivered and cannot be cancelled.'
+        else:
+            db.delete_item(TableName='meal_orders', Key={'order_id': {'S': order_id}})
+            message = 'Your order has been cancelled.'
     else:
-        message = 'Your order has been cancelled.'
+        message = 'The order you are trying to delete does not exist.'
     return render_template('paymentCancelled.html', message=message)
 
 @app.route('/accounts/logout')
@@ -186,6 +197,9 @@ def logout():
     logout_user()
     return redirect(url_for('index'))
 
+@app.route('/home', methods=['GET', 'POST'])
+def home():
+    return render_template('home.html', title='Home')
 
 @app.route('/accounts', methods=['GET', 'POST'])
 @app.route('/accounts/login', methods=['GET', 'POST'])
@@ -395,7 +409,7 @@ def registerCustomer():
                 )
         flash(form.email.data + ' is now registered as a customer for Serving Now.', 'success') # python 3 format.
         print('Account for ' + form.email.data + ' has been created')
-        return redirect(url_for('login'))
+        return redirect(url_for('home'))
     if login_session.get('representative'):
         form.representative.data = login_session['representative']
     return render_template('registerCustomer.html', title='registerCustomer', form=form) #  This is what happens if the submit is unsuccessful with errors highlighted
@@ -1139,8 +1153,10 @@ def report():
     if todaysMenu == None:
       todaysMenu = []
 
-    totalRevenue = 0.0
-    totalMealQuantity = {}
+    totalPotentialRevenue = 0.0
+    totalDeliveredRevenue = 0.0
+    totalPotentialQuantity = {}
+    totalDeliveredQuantity = {}
     for order in orders['Items']:
         for item in order['order_items']['L']:
             order_id = item['M']['meal_id']['S']
@@ -1163,43 +1179,58 @@ def report():
                 item['qty'] = int(item['M']['qty']['N'])
                 item['revenue'] = float(mealInfo['price']['S']) * item['qty']
                 item['price'] = locale.currency(float(mealInfo['price']['S']), grouping=True)
-                totalRevenue += float(item['revenue'])
+                if order['status']['S'] == 'open':
+                    totalPotentialRevenue += float(item['revenue'])
+                if order['status']['S'] == 'delivered':
+                    totalDeliveredRevenue += float(item['revenue'])
                 #totalRevenue += item['revenue']
                 item['revenue'] = locale.currency(item['revenue'], grouping=True)
-                if order_id_str in totalMealQuantity:
-                    totalMealQuantity[order_id_str] += item['qty']
-                else:
-                    totalMealQuantity[order_id_str] = item['qty']
-                if item['qty'] > 0:
-                  item['name'] = mealDescrip['title']['S']
-                  update_meal = db.update_item(TableName='meals',
-                                               Key={'meal_id': {'S': order_id}},
-                                               UpdateExpression='SET count_today = :ct',
-                                               ExpressionAttributeValues={
-                                                   ':ct': {'N': str(totalMealQuantity[order_id_str])},
-                                               }
-                                               )
+                if order['status']['S'] == 'open' and item['qty'] > 0:
+                    if order_id_str in totalPotentialQuantity:
+                        totalPotentialQuantity[order_id_str] += item['qty']
+                    else:
+                        totalPotentialQuantity[order_id_str] = item['qty']
+                    item['name'] = mealInfo['meal_name']['S']
+                if order['status']['S'] == 'delivered':
+                    if order_id_str in totalDeliveredQuantity:
+                        totalDeliveredQuantity[order_id_str] += item['qty']
+                    else:
+                        totalDeliveredQuantity[order_id_str] = item['qty']
+                    if item['qty'] > 0:
+                        item['name'] = mealInfo['meal_name']['S']
+                    update_meal = db.update_item(TableName='meals',
+                                                 Key={'meal_id': {'S': order_id}},
+                                                 UpdateExpression='SET count_today = :ct',
+                                                 ExpressionAttributeValues={
+                                                     ':ct': {'N': str(totalDeliveredQuantity[order_id_str])},
+                                                     }
+                                                )
+                print(item)
 
         twelveHourTime = datetime.strptime(order['created_at']['S'][11:16], '%H:%M')
 
     sortedOrders = sorted(orders['Items'], key=lambda x: datetime.strptime(x['created_at']['S'], '%Y-%m-%dT%H:%M:%S'), reverse=True)
 
-
+    openOrders = []
+    deliveredOrders = []
     for order in sortedOrders:
         order['order_time'] = datetime.strptime(order['created_at']['S'], '%Y-%m-%dT%H:%M:%S').strftime('%m/%d/%y %I:%M:%S%p')
-
-        # order['created_at'] =
-
-    # print(str(orders) + '\n\n')
-
+        if order['status']['S'] == 'open':
+            openOrders.append(order)
+        if order['status']['S'] == 'delivered':
+            deliveredOrders.append(order)
 
     return render_template('report.html',
                             kitchenName=login_session['kitchen_name'],
                             id=login_session['user_id'],
-                            orders=sortedOrders,
-                            totalRevenue = locale.currency(totalRevenue),
+                            openOrders=openOrders,
+                            deliveredOrders=deliveredOrders,
+                            totalPotentialRevenue = locale.currency(totalPotentialRevenue),
+                            totalDeliveredRevenue = locale.currency(totalDeliveredRevenue),
                             todaysMeals = todaysMenu,
-                            totalMealQuantity = totalMealQuantity)
+                            totalPotentialQuantity = totalPotentialQuantity,
+                            totalDeliveredQuantity = totalDeliveredQuantity,
+                            )
 
 
 def closeKitchen(kitchen_id):
