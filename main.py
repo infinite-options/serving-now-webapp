@@ -407,7 +407,7 @@ def registerCustomer():
                           'future_customer': {'BOOL': strToBool(form.futureCustomer.data)},
                     }
                 )
-        flash("Thank you "form.firstName.data + ' is now registered as a customer for Serving Now.', 'success') # python 3 format.
+        flash("Thank you " + form.firstName.data + ' is now registered as a customer for Serving Now.', 'success') # python 3 format.
         print('Account for ' + form.email.data + ' has been created')
         return redirect(url_for('home'))
     if login_session.get('representative'):
