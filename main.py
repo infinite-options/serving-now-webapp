@@ -407,7 +407,7 @@ def registerCustomer():
                           'future_customer': {'BOOL': strToBool(form.futureCustomer.data)},
                     }
                 )
-        flash(form.email.data + ' is now registered as a customer for Serving Now.', 'success') # python 3 format.
+        flash("Thank you "form.firstName.data + ' is now registered as a customer for Serving Now.', 'success') # python 3 format.
         print('Account for ' + form.email.data + ' has been created')
         return redirect(url_for('home'))
     if login_session.get('representative'):
@@ -548,7 +548,7 @@ def kitchenSettings(id):
                                   'open_time': {'S':form.acceptingOpenTimeSaturday.data.strftime('%H:%M')},
                                   'close_time': {'S':form.acceptingCloseTimeSaturday.data.strftime('%H:%M')}}}]
 
-        deliveryHours =   [{'M': {'is_delivering': {'BOOL':form.isAcceptingSunday.data},
+        deliveryHours =   [{'M': {'is_delivering': {'BOOL':form.isDeliveringSunday.data},
                                   'open_time': {'S':form.deliveryOpenTimeSunday.data.strftime('%H:%M')},
                                   'close_time': {'S':form.deliveryCloseTimeSunday.data.strftime('%H:%M')}}},
                            {'M': {'is_delivering': {'BOOL':form.isDeliveringMonday.data},
@@ -899,7 +899,7 @@ def changeOrderStatus(meal_id):
 @app.route('/adminreport/<int:sort>')
 @login_required
 def adminreportFilter(sort):
-    
+
     dataFilter = sort
 
     if 'kitchen_name' not in login_session:
