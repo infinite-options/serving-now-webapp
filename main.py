@@ -1341,6 +1341,10 @@ def favorite(meal_id):
     response['message'] = 'Request successful'
     return response, 200
 
+@app.route('/email_test')
+def emailTest():
+    return render_template("businessEmailTemplate.html")
+
 
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port='8080', debug=True)
