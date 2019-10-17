@@ -422,7 +422,8 @@ def kitchen(id):
     # if 'name' not in login_session:
     #     return redirect(url_for('index'))
     #
-    apiURL = API_BASE_URL +'/api/v1/meals/' + current_user.get_id()
+    kitchen_id = current_user.get_id()
+    apiURL = API_BASE_URL +'/api/v1/meals/' + kitchen_id
     # apiURL = 'http://localhost:5000/api/v1/meals/' + current_user.get_id()
 
     # print('API URL: ' + str(apiURL))
@@ -447,6 +448,17 @@ def kitchen(id):
     previousMeals = {}
     mealItems = []
     previousMealsItems = []
+
+    # Close the business if 0 meals
+    if allMeals == []:
+        db.update_item(TableName='kitchens',
+            Key={'kitchen_id': {'S': str(kitchen_id)}},
+            UpdateExpression='SET isOpen = :val',
+            ExpressionAttributeValues={
+                ':val': {'BOOL': False}
+            }
+        )
+        print("set isOpen to false")
 
     for meal in allMeals:
         twelveHourTime = datetime.strptime(meal['created_at']['S'][11:16], '%H:%M')
