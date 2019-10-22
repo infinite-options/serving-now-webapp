@@ -10,7 +10,7 @@ import requests
 import locale
 import sys
 
-from datetime import datetime, time
+from datetime import datetime, time, timedelta
 from pytz import timezone
 from operator import itemgetter
 
@@ -115,6 +115,36 @@ def strToBool(str):
         return True
     return False
 
+def withinDeliveryRange(startTime, endTime, checkTime):
+    if startTime < checkTime and checkTime < endTime:
+        return True
+    else:
+        return False
+
+def getDateIdx(date):
+    if date.weekday() == 0:
+        return 1;
+    if date.weekday() == 1:
+        return 2;
+    if date.weekday() == 2:
+        return 3;
+    if date.weekday() == 3:
+        return 4;
+    if date.weekday() == 4:
+        return 5;
+    if date.weekday() == 5:
+        return 6;
+    if date.weekday() == 6:
+        return 0;
+
+def getPrevDeliveryDelta(hours, checkTimeIdx):
+    result = 0;
+    for i in range(0,7):
+        checkTimeIdx = checkTimeIdx - 1
+        result = result + 1
+        if hours[checkTimeIdx % 7]['M']['is_delivering']['BOOL']:
+            return result
+    return result;
 
 def allowed_file(filename):
     '''Checks if the file is allowed to upload'''
@@ -896,110 +926,116 @@ def editMeal(meal_id):
 def changeOrderStatus(meal_id):
     print("hey " + meal_id)
 
-@app.route('/adminreport/<int:sort>')
+@app.route('/adminreport/customer_of_farmer')
 @login_required
-def adminreportFilter(sort):
-
-    dataFilter = sort
+def adminreportFilter():
 
     if 'kitchen_name' not in login_session:
         return redirect(url_for('index'))
 
-    todays_date = datetime.now(tz=timezone('US/Pacific')).strftime('%Y-%m-%d')
+    todays_date = datetime.now()
 
     orders = db.scan(
         TableName='meal_orders'
     )
 
-    allMeals = db.scan(
-        TableName='meals'
-    )
-
-    kitchen_names = db.scan(
-        TableName="kitchens"
-    )
-
-    meals = {}
-    previousMeals = {}
-    mealItems = []
-    previousMealsItems = []
-
-    for meal in allMeals['Items']:
-        mealItems.append(meal)
-
-    meals['Items'] = mealItems
-    previousMeals['Items'] = previousMealsItems
-
-    todaysMenu = meals['Items']
-    pastMenu = previousMeals['Items']
-
-    if todaysMenu == None:
-      todaysMenu = []
-
     totalRevenue = 0.0
     totalMealQuantity = {}
+    meals = {}
+    farmers = []
+    farmerIndexOf = {}
+    farmerIdx = 0
     for order in orders['Items']:
-        for item in order['order_items']['L']:
-            order_id = item['M']['meal_id']['S']
-            order_id_str = str(order_id)
+        farmer = db.get_item(TableName='kitchens',
+            Key={'kitchen_id': {'S': order['kitchen_id']['S']}},
+            ProjectionExpression='kitchen_name, delivery_hours'
+        )
+        farmerName = farmer['Item']['kitchen_name']['S']
+        farmerDeliveryHours = farmer['Item']['delivery_hours']['L']
+        customerName = order['name']['S']
 
-            meal = db.scan(TableName='meals',
-                           FilterExpression='meal_id = :value',
-                           ExpressionAttributeValues={
-                               ':value': {'S':order_id
-                               }
-                           })
+        order['order_time'] = datetime.strptime(order['created_at']['S'], '%Y-%m-%dT%H:%M:%S')
+        prevDeliveryDelta = getPrevDeliveryDelta(farmerDeliveryHours, getDateIdx(todays_date))
+        prevDeliveryDate = datetime.today() - timedelta(days=prevDeliveryDelta)
+        # if True:
+        if withinDeliveryRange(prevDeliveryDate, todays_date, order['order_time']):
 
-            if meal['Items']:
-                mealInfo = meal['Items'][0]
-                mealDescrip = mealInfo['description']['L'][0]['M']
+            if not farmerName in farmerIndexOf:
+                farmerIndexOf[farmerName] = {}
+                farmerIndexOf[farmerName]['index'] = farmerIdx
+                farmerIndexOf[farmerName]['customer_size'] = 0
+                farmers.append({})
+                farmers[farmerIndexOf[farmerName]['index']]['customers'] = []
+                farmers[farmerIndexOf[farmerName]['index']]['name'] = farmerName
+                farmerIdx += 1
 
-                #print('\n\n' + str(item) + '\n\n')
-                # TODO add meal specific price
-                item['photo'] = mealInfo['photo']
-                item['qty'] = int(item['M']['qty']['N'])
-                item['revenue'] = float(mealInfo['price']['S']) * item['qty']
-                item['price'] = locale.currency(float(mealInfo['price']['S']), grouping=True)
-                totalRevenue += float(item['revenue'])
-                #totalRevenue += item['revenue']
-                item['revenue'] = locale.currency(item['revenue'], grouping=True)
-                if order_id_str in totalMealQuantity:
-                    totalMealQuantity[order_id_str] += item['qty']
+            if not customerName in farmerIndexOf[farmerName]:
+                farmerIndexOf[farmerName][customerName] = {}
+                farmerIndexOf[farmerName][customerName]['index'] = farmerIndexOf[farmerName]['customer_size']
+                farmerIndexOf[farmerName][customerName]['item_size'] = 0
+                farmers[farmerIndexOf[farmerName]['index']]['customers'].append({})
+                farmers[farmerIndexOf[farmerName]['index']]['customers'][farmerIndexOf[farmerName][customerName]['index']]['items'] = []
+                farmers[farmerIndexOf[farmerName]['index']]['customers'][farmerIndexOf[farmerName][customerName]['index']]['name'] = customerName
+                farmerIndexOf[farmerName]['customer_size'] += 1
+            for item in order['order_items']['L']:
+                meal_id = item['M']['meal_id']['S']
+                meal = {}
+                if meal_id in meals:
+                    meal = meals[meal_id]
                 else:
-                    totalMealQuantity[order_id_str] = item['qty']
-                if item['qty'] > 0:
-                  item['name'] = mealDescrip['title']['S']
-                  update_meal = db.update_item(TableName='meals',
-                                               Key={'meal_id': {'S': order_id}},
-                                               UpdateExpression='SET count_today = :ct',
-                                               ExpressionAttributeValues={
-                                                   ':ct': {'N': str(totalMealQuantity[order_id_str])},
-                                               }
-                                               )
+                    meal = db.scan(TableName='meals',
+                               FilterExpression='meal_id = :value',
+                               ExpressionAttributeValues={
+                                   ':value': {'S':meal_id}
+                               })
+                    meals[meal_id] = meal
 
-        twelveHourTime = datetime.strptime(order['created_at']['S'][11:16], '%H:%M')
+                if meal['Items']:
+                    mealInfo = meal['Items'][0]
+                    mealDescrip = mealInfo['description']['L'][0]['M']
 
-    for order in orders['Items']:
-        for kitchen in kitchen_names['Items']:
-            if kitchen['kitchen_id']['S'] == order['kitchen_id']['S']:
-                order['kitchen_id']['S'] = kitchen['kitchen_name']['S']
+                    #print('\n\n' + str(item) + '\n\n')
+                    # TODO add meal specific price
+                    item['photo'] = mealInfo['photo']
+                    item['qty'] = int(item['M']['qty']['N'])
+                    item['revenue'] = float(mealInfo['price']['S']) * item['qty']
+                    item['price'] = locale.currency(float(mealInfo['price']['S']), grouping=True)
+                    totalRevenue += float(item['revenue'])
+                    #totalRevenue += item['revenue']
+                    item['revenue'] = locale.currency(item['revenue'], grouping=True)
+                    if meal_id in totalMealQuantity:
+                        totalMealQuantity[meal_id] += item['qty']
+                    else:
+                        totalMealQuantity[meal_id] = item['qty']
+                    if item['qty'] > 0:
+                        item['name'] = mealDescrip['title']['S']
+                        update_meal = db.update_item(TableName='meals',
+                                                   Key={'meal_id': {'S': meal_id}},
+                                                   UpdateExpression='SET count_today = :ct',
+                                                   ExpressionAttributeValues={
+                                                       ':ct': {'N': str(totalMealQuantity[meal_id])},
+                                                   }
+                                                   )
+                        if not item['name'] in farmerIndexOf[farmerName][customerName]:
+                            farmerIndexOf[farmerName][customerName][item['name']] = {}
+                            farmerIndexOf[farmerName][customerName][item['name']]['index'] = farmerIndexOf[farmerName][customerName]['item_size']
+                            farmers[farmerIndexOf[farmerName]['index']]['customers'][farmerIndexOf[farmerName][customerName]['index']]['items'].append(item)
+                            farmerIndexOf[farmerName][customerName]['item_size'] += 1
+                        else:
+                            farmers[farmerIndexOf[farmerName]['index']]['customers'][farmerIndexOf[farmerName][customerName]['index']]['items'][farmerIndexOf[farmerName][customerName][item['name']]['index']]['qty'] = totalMealQuantity[meal_id]
+            twelveHourTime = datetime.strptime(order['created_at']['S'][11:16], '%H:%M')
+    print(farmers)
 
-    if dataFilter == 1:
-        sortedOrders = sorted(orders['Items'], key=lambda x: x['kitchen_id']['S'])
-    elif dataFilter == 2:
-        sortedOrders = sorted(orders['Items'], key=lambda x: x['kitchen_id']['S'])
-    elif dataFilter == 3:
-        sortedOrders = sorted(orders['Items'], key=lambda x: x['name']['S'])
-    else:
-        sortedOrders = sorted(orders['Items'], key=lambda x: datetime.strptime(x['created_at']['S'], '%Y-%m-%dT%H:%M:%S'), reverse=True)
+    sortedOrders = sorted(orders['Items'], key=lambda x: datetime.strptime(x['created_at']['S'], '%Y-%m-%dT%H:%M:%S'), reverse=True)
 
     for order in sortedOrders:
         order['order_time'] = datetime.strptime(order['created_at']['S'], '%Y-%m-%dT%H:%M:%S').strftime('%m/%d/%y %I:%M:%S%p')
 
-    return render_template('adminreport.html',
+    return render_template('adminreportCustomerOfFarmer.html',
                             kitchenName=login_session['kitchen_name'],
                             id=login_session['user_id'],
                             orders=sortedOrders,
+                            farmers=farmers,
                             totalRevenue = locale.currency(totalRevenue),
                             #todaysMeals = todaysMenu)
                             totalMealQuantity = totalMealQuantity)
