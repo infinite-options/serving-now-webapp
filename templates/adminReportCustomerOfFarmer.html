@@ -50,31 +50,35 @@
             </table>
             </div>
             {% for farmer in farmers %}
-              <div class="display-4"> {{ farmer.name }} </div>
-              {% for customer in farmer.customers %}
-                <div > {{ customer.name }} </div>
-                {% for item in customer.get('items') %}
-                  {% if item.name %}
-                    <div class="border border-gray mb-2 mt-2 order-item-box">
-                      <img src={{item.photo.S}} class="card-img-top float-left" style="max-width:190px; height:120px">
-                        <span class="align-top list-inline-item float-left ml-2">
-                          <p class="item-title display-4"> {{ item.price }} {{ item.name }} </p>
-                          <p class="text-left"> Quantity: {{ item.qty }} </p>
-                          <p class="text-left"> Revenue: {{ item.revenue }} </p>
-                        </span>
-                        <!-- <div class="form-group align-middle float-right m-1">
-                          <textarea class="form-control notes-box" rows="7" id="order_notes"></textarea>
-                        </div> -->
-                    </div>
-                  {% else %}
-                    {% if not item.photo %}
-                      <div class="alert alert-danger mb-0" role="alert">
-                        <p> Meal with id: <strong>{{item.M.meal_id.S}}</strong> is no longer available or has been removed. </p>
-                      </div>
-                    {% endif %}
-                  {% endif %}
+              <div class="display-4"><strong> {{ farmer.name }} </strong></div>
+              <div class="ml-4">
+                {% for customer in farmer.customers %}
+                  <div class="display-4"> {{ customer.name }} - {{ customer.created_at }} </div>
+                  <div class="ml-4">
+                    {% for item in customer.get('items') %}
+                      {% if item.name %}
+                        <div class="border border-gray mb-2 mt-2 order-item-box">
+                          <img src={{item.photo.S}} class="card-img-top float-left" style="max-width:190px; height:120px">
+                            <span class="align-top list-inline-item float-left ml-2">
+                              <p class="item-title display-4"> {{ item.price }} {{ item.name }} </p>
+                              <p class="text-left"> Quantity: {{ item.qty }} </p>
+                              <p class="text-left"> Revenue: {{ item.revenue }} </p>
+                            </span>
+                            <!-- <div class="form-group align-middle float-right m-1">
+                              <textarea class="form-control notes-box" rows="7" id="order_notes"></textarea>
+                            </div> -->
+                        </div>
+                      {% else %}
+                        {% if not item.photo %}
+                          <div class="alert alert-danger mb-0" role="alert">
+                            <p> Meal with id: <strong>{{item.M.meal_id.S}}</strong> is no longer available or has been removed. </p>
+                          </div>
+                        {% endif %}
+                      {% endif %}
+                    {% endfor %}
+                  </div>
                 {% endfor %}
-              {% endfor %}
+              </div>
             {% endfor %}
 
             {% if not orders %}

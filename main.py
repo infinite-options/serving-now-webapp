@@ -140,11 +140,11 @@ def getDateIdx(date):
 def getPrevDeliveryDelta(hours, checkTimeIdx):
     result = 0;
     for i in range(0,7):
-        checkTimeIdx = checkTimeIdx - 1
-        result = result + 1
         if hours[checkTimeIdx % 7]['M']['is_delivering']['BOOL']:
             return result
-    return result;
+        checkTimeIdx = checkTimeIdx - 1
+        result = result + 1
+    return 0;
 
 def allowed_file(filename):
     '''Checks if the file is allowed to upload'''
@@ -957,6 +957,10 @@ def adminreportFilter():
         order['order_time'] = datetime.strptime(order['created_at']['S'], '%Y-%m-%dT%H:%M:%S')
         prevDeliveryDelta = getPrevDeliveryDelta(farmerDeliveryHours, getDateIdx(todays_date))
         prevDeliveryDate = datetime.today() - timedelta(days=prevDeliveryDelta)
+
+        print(order['order_time'])
+        print(todays_date)
+        print(prevDeliveryDate)
         # if True:
         if withinDeliveryRange(prevDeliveryDate, todays_date, order['order_time']):
 
@@ -976,6 +980,7 @@ def adminreportFilter():
                 farmers[farmerIndexOf[farmerName]['index']]['customers'].append({})
                 farmers[farmerIndexOf[farmerName]['index']]['customers'][farmerIndexOf[farmerName][customerName]['index']]['items'] = []
                 farmers[farmerIndexOf[farmerName]['index']]['customers'][farmerIndexOf[farmerName][customerName]['index']]['name'] = customerName
+                farmers[farmerIndexOf[farmerName]['index']]['customers'][farmerIndexOf[farmerName][customerName]['index']]['created_at'] = order['created_at']['S']
                 farmerIndexOf[farmerName]['customer_size'] += 1
             for item in order['order_items']['L']:
                 meal_id = item['M']['meal_id']['S']
