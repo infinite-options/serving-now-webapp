@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Farmer By Item</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script type=text/javascript>
+      
+    </script>
+  </head>
+  <body>
+
+    {% extends "main.html" %}
+
+    {% block content %}
+      <script src="ordermeal.js"></script>
+      <link rel="stylesheet" type="text/css" href="{{ url_for('.static', filename='css/reportStyle.css' )}}">
+
+      <main role="main" class="container-fluid">
+        <div class="row">
+          <div class="col-md-8">
+            <div class="border-bottom mb-4 ml-4 d-flex justify-content-between">  <!-- this is spacing below Join Today text -->
+              <span class="display-4 page-header-title">Farmer By Item</span>
+            </div>
+            
+            <div class="mb-4 ml-4 d-flex justify-content-between">  <!-- this is spacing below Join Today text -->
+              <span class="display-4 page-header-title">Filters: </span>
+              <button class="btn btn-default btn-sm " type="button" >
+                <a href="{{ url_for('adminreportFilter', sort='1') }}">Farmer by Item</a>
+              </button>
+              <button class="btn btn-defualt btn-sm " type="button">
+                <a href="{{ url_for('adminreportFilter', sort='2') }}">Farmer by Customer</a>
+              </button>
+              <button class="btn btn-defualt btn-sm " type="button">
+                <a href="{{ url_for('adminreportFilter', sort='3') }}">Customer by Item</a>
+              </button>
+            </div>
+            
+            <!--
+            <div class="border-top ml-4 p-2 mb-1 mt-1">
+            <table class='table table-borderless mb-0'>
+              <tbody>
+                <tr>
+                  <td class="time-col align-middle table-borderless" scope="col">order time</td>
+                  <td class="phone-col align-middle table-borderless" scope="col">kitchen_id</td>
+                  <th class="name-col align-middle table-borderless" scope="col">customer</th>
+                  <td class="address-col align-middle table-borderless" >address</td>
+                  <td class="phone-col align-middle table-borderless">number</td>
+                  <td class="phone-col align-middle table-borderless">order status</td>
+                </tr>
+              </tbody>
+            </table>
+            </div>
+            -->
+
+            {% if not orders %}
+              <p class="lead text-secondary ml-4">You currently have no orders placed.</p>
+            {% endif %}
+            {% for order in orders %}
+              {% set outer_loop = loop %}
+              {% if outer_loop.index == 1%}
+              <div class="border-top border-bottom ml-4 p-2 mb-1 mt-1" >
+              {% else %}
+              <div class="border-bottom ml-4 p-2 mb-1 mt-1" >
+              {% endif %}
+                <table class='table table-borderless mb-0'>
+                  <tbody>
+                    <tr>
+                      <td id="kitchen_id{{ outer_loop.index }}" class="phone-col align-middle table-borderless" scope="col">{{ order.kitchen_id.S }}</td>
+                      <td class="orderbtn-col align-middle">
+                        <button class="btn btn-primary btn-sm float-right" type="button" data-toggle="collapse" data-target="#collapseExample{{loop.index}}" aria-expanded="false" aria-controls="collapseExample">
+                          Items
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div class="order-details">
+                  <div class="collapse" id="collapseExample{{outer_loop.index}}">
+                    {% for item in order.order_items.L %}
+                      {% if item.M.meal_id and item.qty != 0 %}
+                        <div class="border border-gray mb-2 mt-2 order-item-box">
+                          <img src={{item.photo.S}} class="card-img-top float-left" style="max-width:190px; height:120px">
+                            <span class="align-top list-inline-item float-left ml-2">
+                              <p class="item-title display-4"> {{ item.M.meal_name.S }} </p>
+                              <p class="text-left"> Quantity: {{ item.qty }} </p>
+                            </span>
+                        </div>
+                      {% else %}
+                        {% if not item.photo %}
+                          <div class="alert alert-danger mb-0" role="alert">
+                            <p> Meal with id: <strong>{{item.M.meal_id.S}}</strong> is no longer available or has been removed. </p>
+                          </div>
+                        {% endif %}
+                      {% endif %}
+                    {% endfor %}
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+
+        </div>
+      </main>
+    {% endblock %}
+  </body>
+</html>

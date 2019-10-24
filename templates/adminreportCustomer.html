@@ -25,9 +25,6 @@
             <div class="mb-4 ml-4 d-flex justify-content-between">  <!-- this is spacing below Join Today text -->
               <span class="display-4 page-header-title">Filters: </span>
               <button class="btn btn-default btn-sm " type="button" >
-                <a href="{{ url_for('adminreport') }}">Admin Report</a>
-              </button>
-              <button class="btn btn-default btn-sm " type="button" >
                 <a href="{{ url_for('adminreportFilter', sort='1') }}">Farmer by Item</a>
               </button>
               <button class="btn btn-defualt btn-sm " type="button">
@@ -43,37 +40,20 @@
             {% endif %}
             {% for order in orders %}
               {% set outer_loop = loop %}
-              {% if outer_loop.index == 1 %}
+              {% if outer_loop.index == 1%}
               <div class="border-top border-bottom ml-4 p-2 mb-1 mt-1" >
-                <table class='table table-borderless mb-0'>
-                    <tbody>
-                      <tr>
-                        <td class="time-col align-middle table-borderless" scope="col">Order Time</td>
-                        <td id="kitchen_id{{ outer_loop.index }}" class="phone-col align-middle table-borderless" scope="col">Kitchen Name</td>
-                        <th class="name-col align-middle table-borderless" scope="col">Customer</th>
-                        <td class="address-col align-middle table-borderless">Address</td>
-                        <td class="phone-col align-middle table-borderless">Phone</td>
-                        <td id="status{{ outer_loop.index }}" class="status-col align-middle table-borderless">Status</td>
-                      </tr>
-                    </tbody>
-                </table>
-              </div>
-              <div class="border-bottom ml-4 p-2 mb-1 mt-1" >
               {% else %}
               <div class="border-bottom ml-4 p-2 mb-1 mt-1" >
               {% endif %}
                 <table class='table table-borderless mb-0'>
                   <tbody>
                     <tr>
-                      <td class="time-col align-middle table-borderless" scope="col">{{ order.order_time }}</td>
-                      <td id="kitchen_id{{ outer_loop.index }}" class="phone-col align-middle table-borderless" scope="col">{{ order.kitchen_id.S }}</td>
                       <th class="name-col align-middle table-borderless" scope="col">{{ order.name.S }}</th>
                       <td class="address-col align-middle table-borderless" >
                         <div> {{ order.street.S }} </div>
                         <div> {{ order.city.S }}, {{ order.state.S }} {{ order.zipCode.N }} </div>
                       </td>
                       <td class="phone-col align-middle table-borderless" >{{ order.phone.S }}</td>
-                      <td id="status{{ outer_loop.index }}" class="status-col align-middle table-borderless" >{{ order.status.S }}</td>
                       <td class="orderbtn-col align-middle">
                         <button class="btn btn-primary btn-sm float-right" type="button" data-toggle="collapse" data-target="#collapseExample{{loop.index}}" aria-expanded="false" aria-controls="collapseExample">
                           Order 
@@ -105,7 +85,6 @@
                         {% endif %}
                       {% endif %}
                     {% endfor %}
-                    <button class="btn btn-primary btn-sm"><a href="{{ url_for('adminreportFilterStatus', order_id=order.order_id.S, status=order.status.S) }}">Update Order Status</a></button>
                   </div>
                 </div>
               </div>
