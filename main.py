@@ -116,7 +116,7 @@ def strToBool(str):
     return False
 
 def withinDeliveryRange(startTime, endTime, checkTime):
-    if startTime < checkTime and checkTime < endTime:
+    if startTime < checkTime and checkTime <= endTime:
         return True
     else:
         return False
@@ -1043,15 +1043,9 @@ def adminreportFilter():
             twelveHourTime = datetime.strptime(order['created_at']['S'][11:16], '%H:%M')
     print(farmers)
 
-    sortedOrders = sorted(orders['Items'], key=lambda x: datetime.strptime(x['created_at']['S'], '%Y-%m-%dT%H:%M:%S'), reverse=True)
-
-    for order in sortedOrders:
-        order['order_time'] = datetime.strptime(order['created_at']['S'], '%Y-%m-%dT%H:%M:%S').strftime('%m/%d/%y %I:%M:%S%p')
-
     return render_template('adminreportCustomerOfFarmer.html',
                             kitchenName=login_session['kitchen_name'],
                             id=login_session['user_id'],
-                            orders=sortedOrders,
                             farmers=farmers,
                             totalRevenue = locale.currency(totalRevenue),
                             #todaysMeals = todaysMenu)
