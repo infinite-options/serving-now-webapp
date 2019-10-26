@@ -904,11 +904,47 @@ def editMeal(meal_id):
                                      }
                                      )
 
-@app.route('/adminreport/changestatus', methods=['PUT'])
-def changeOrderStatus(meal_id):
-    print("hey " + meal_id)
+@app.route('/adminreport/status/<string:order_id>/<string:status>')
+@login_required
+def adminreportFilterStatus(order_id, status):
 
-@app.route('/adminreport/<int:sort>')
+    """test = db.scan(
+        TableName='meal_orders',
+        FilterExpression='#order_id = :val1',
+        ExpressionAttributeValues={
+            ':val1': {'S': order_id}
+        },
+        ExpressionAttributeNames={
+            '#order_id': 'order_id'
+        }
+    )"""
+    
+    newStatus = ""
+    if status == "open":
+        newStatus = "delivered"
+    else:
+        newStatus = "open"
+
+    db.update_item(
+        TableName='meal_orders',
+        Key={
+            'order_id': {'S': order_id}
+        },
+        UpdateExpression='SET #attr1 = :val1',
+        ConditionExpression='order_id = :val2',
+        ExpressionAttributeNames={
+            '#attr1': 'status'
+        },
+        ExpressionAttributeValues={
+            ':val1': {'S': newStatus},
+            ':val2': {'S': order_id}
+        }
+    )
+    print (order_id)
+
+    return redirect(url_for('adminreport'))
+
+@app.route('/adminreport/<int:sort>', methods=['GET'])
 @login_required
 def adminreportFilter(sort):
 
@@ -919,8 +955,14 @@ def adminreportFilter(sort):
 
     todays_date = datetime.now(tz=timezone('US/Pacific')).strftime('%Y-%m-%d')
 
-    orders = db.scan(
-        TableName='meal_orders'
+    orders = db.scan(TableName='meal_orders',
+        FilterExpression='#order_status = :val1',
+        ExpressionAttributeValues={
+            ':val1': {'S': str('open')}
+        },
+        ExpressionAttributeNames={
+            '#order_status': 'status'
+        }
     )
 
     allMeals = db.scan(
@@ -958,8 +1000,7 @@ def adminreportFilter(sort):
             meal = db.scan(TableName='meals',
                            FilterExpression='meal_id = :value',
                            ExpressionAttributeValues={
-                               ':value': {'S':order_id
-                               }
+                               ':value': {'S':order_id }
                            })
 
             if meal['Items']:
@@ -992,21 +1033,128 @@ def adminreportFilter(sort):
         twelveHourTime = datetime.strptime(order['created_at']['S'][11:16], '%H:%M')
 
     for order in orders['Items']:
+        order['order_time'] = datetime.strptime(order['created_at']['S'], '%Y-%m-%dT%H:%M:%S').strftime('%m/%d/%y %I:%M:%S%p')
         for kitchen in kitchen_names['Items']:
             if kitchen['kitchen_id']['S'] == order['kitchen_id']['S']:
                 order['kitchen_id']['S'] = kitchen['kitchen_name']['S']
 
     if dataFilter == 1:
         sortedOrders = sorted(orders['Items'], key=lambda x: x['kitchen_id']['S'])
+        kitchens = []
+        currID = sortedOrders[0]['kitchen_id']['S']
+        kitchen = sortedOrders[0]
+        for order in sortedOrders:
+            if order == sortedOrders[0]:
+               pass 
+            elif order == sortedOrders[len(sortedOrders)-1]:
+                kitchens.append(kitchen)
+                kitchen = {}
+                kitchen = order
+                currID = order['kitchen_id']['S']
+            elif order['kitchen_id']['S'] == currID:
+                for item in order['order_items']['L']:
+                    if not any(i['M']['meal_id']['S'] == item['M']['meal_id']['S'] for i in kitchen['order_items']['L']):
+                        kitchen['order_items']['L'].append(item)
+                    else:
+                        for sameItem in kitchen['order_items']['L']:
+                            if sameItem['M']['meal_id']['S'] == item['M']['meal_id']['S']:
+                                sameItem['qty'] += item['qty']
+            else:
+                kitchens.append(kitchen)
+                kitchen = {}
+                kitchen = order
+                currID = order['kitchen_id']['S']
+
+#        print (json.dumps(kitchens[2], indent=1))
+
+        return render_template('adminreportFarmerItem.html',
+                            kitchenName=login_session['kitchen_name'],
+                            id=login_session['user_id'],
+                            orders=kitchens,
+                            totalRevenue = locale.currency(totalRevenue),
+                            totalMealQuantity = totalMealQuantity)
     elif dataFilter == 2:
-        sortedOrders = sorted(orders['Items'], key=lambda x: x['kitchen_id']['S'])
+        sortedOrders = sorted(orders['Items'], key=lambda x: (x['kitchen_id']['S'], x['name']['S']))
+
+        kitchens = []
+        currID = sortedOrders[0]['kitchen_id']['S']
+        kitchen = {
+            'kitchen_name': currID,
+            'orders': []
+        }
+        kitchen['orders'].append(sortedOrders[0])
+        for order in sortedOrders:
+            if order == sortedOrders[0]:
+               pass 
+            elif order == sortedOrders[len(sortedOrders)-1]:
+                if order['kitchen_id']['S'] != currID:
+                    kitchens.append(kitchen)
+                    currID = order['kitchen_id']['S']
+                    kitchen = {
+                        'kitchen_name': currID,
+                        'orders': []
+                    }
+                    kitchen['orders'].append(order)
+                    kitchens.append(kitchen)
+                else:
+                    kitchen['orders'].append(order)
+                    kitchens.append(kitchen)
+            elif order['kitchen_id']['S'] == currID:
+                kitchen['orders'].append(order)
+            else:
+                kitchens.append(kitchen)
+                currID = order['kitchen_id']['S']
+                kitchen = kitchen = {
+                    'kitchen_name': currID,
+                    'orders': []
+                }
+
+        return render_template('adminreportFarmerByCustomer.html',
+                            kitchenName=login_session['kitchen_name'],
+                            id=login_session['user_id'],
+                            orders=kitchens,
+                            totalRevenue = locale.currency(totalRevenue),
+                            totalMealQuantity = totalMealQuantity)
     elif dataFilter == 3:
         sortedOrders = sorted(orders['Items'], key=lambda x: x['name']['S'])
+
+        names = []
+        currID = sortedOrders[0]['name']['S']
+        name = sortedOrders[0]
+        for order in sortedOrders:
+            if order == sortedOrders[0]:
+               pass 
+            elif order == sortedOrders[len(sortedOrders)-1]:
+                names.append(name)
+                name = {}
+                name = order
+                currID = order['name']['S']
+            elif order['name']['S'] == currID:
+                for item in order['order_items']['L']:
+                    if not any(i['M']['meal_id']['S'] == item['M']['meal_id']['S'] for i in name['order_items']['L']):
+                        name['order_items']['L'].append(item)
+                    else:
+                        for sameItem in name['order_items']['L']:
+                            if sameItem['M']['meal_id']['S'] == item['M']['meal_id']['S']:
+                                sameItem['qty'] += item['qty']
+            else:
+                names.append(name)
+                name = {}
+                name = order
+                currID = order['name']['S']
+
+        return render_template('adminreportCustomerItem.html',
+                            kitchenName=login_session['kitchen_name'],
+                            id=login_session['user_id'],
+                            orders=names,
+                            totalRevenue = locale.currency(totalRevenue),
+                            totalMealQuantity = totalMealQuantity)
     else:
         sortedOrders = sorted(orders['Items'], key=lambda x: datetime.strptime(x['created_at']['S'], '%Y-%m-%dT%H:%M:%S'), reverse=True)
 
     for order in sortedOrders:
         order['order_time'] = datetime.strptime(order['created_at']['S'], '%Y-%m-%dT%H:%M:%S').strftime('%m/%d/%y %I:%M:%S%p')
+        order['order_items']['L'] = sorted(order['order_items']['L'], key=lambda x: x['M']['meal_name']['S'])
 
     return render_template('adminreport.html',
                             kitchenName=login_session['kitchen_name'],
@@ -1106,16 +1254,10 @@ def adminreport():
 
     for order in sortedOrders:
         order['order_time'] = datetime.strptime(order['created_at']['S'], '%Y-%m-%dT%H:%M:%S').strftime('%m/%d/%y %I:%M:%S%p')
+        order['order_items']['L'] = sorted(order['order_items']['L'], key=lambda x: x['M']['meal_name']['S'])
         for kitchen in kitchen_names['Items']:
             if kitchen['kitchen_id']['S'] == order['kitchen_id']['S']:
                 order['kitchen_id']['S'] = kitchen['kitchen_name']['S']
-        print(order['kitchen_id']['S'], file=sys.stderr)
-
-
-        # order['created_at'] =
-
-    # print(str(orders) + '\n\n')
-
 
     return render_template('adminreport.html',
                             kitchenName=login_session['kitchen_name'],
