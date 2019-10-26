@@ -4,7 +4,7 @@
     <title>Farmer By Item</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script type=text/javascript>
-      
+
     </script>
   </head>
   <body>
@@ -21,9 +21,12 @@
             <div class="border-bottom mb-4 ml-4 d-flex justify-content-between">  <!-- this is spacing below Join Today text -->
               <span class="display-4 page-header-title">Farmer By Item</span>
             </div>
-            
+
             <div class="mb-4 ml-4 d-flex justify-content-between">  <!-- this is spacing below Join Today text -->
               <span class="display-4 page-header-title">Filters: </span>
+              <button class="btn btn-default btn-sm " type="button" >
+                <a href="{{ url_for('adminreport') }}">Admin Report</a>
+              </button>
               <button class="btn btn-default btn-sm " type="button" >
                 <a href="{{ url_for('adminreportFilter', sort='1') }}">Farmer by Item</a>
               </button>
@@ -34,7 +37,7 @@
                 <a href="{{ url_for('adminreportFilter', sort='3') }}">Customer by Item</a>
               </button>
             </div>
-            
+
             <!--
             <div class="border-top ml-4 p-2 mb-1 mt-1">
             <table class='table table-borderless mb-0'>
