@@ -25,6 +25,9 @@
             <div class="mb-4 ml-4 d-flex justify-content-between">  <!-- this is spacing below Join Today text -->
               <span class="display-4 page-header-title">Filters: </span>
               <button class="btn btn-default btn-sm " type="button" >
+                <a href="{{ url_for('adminreport') }}">Admin Report</a>
+              </button>
+              <button class="btn btn-default btn-sm " type="button" >
                 <a href="{{ url_for('adminreportFilter', sort='1') }}">Farmer by Item</a>
               </button>
               <button class="btn btn-defualt btn-sm " type="button">

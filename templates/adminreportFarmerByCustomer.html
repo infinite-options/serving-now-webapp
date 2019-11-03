@@ -25,6 +25,9 @@
             <div class="mb-4 ml-4 d-flex justify-content-between">  <!-- this is spacing below Join Today text -->
               <span class="display-4 page-header-title">Filters: </span>
               <button class="btn btn-default btn-sm " type="button" >
+                <a href="{{ url_for('adminreport') }}">Admin Report</a>
+              </button>
+              <button class="btn btn-default btn-sm " type="button" >
                 <a href="{{ url_for('adminreportFilter', sort='1') }}">Farmer by Item</a>
               </button>
               <button class="btn btn-defualt btn-sm " type="button">
@@ -75,13 +78,9 @@
                               </td>
                               <td class="phone-col align-middle table-borderless" >{{ meal.phone.S }}</td>
                               <td class="orderbtn-row align-middle float-right">
-                                <button class="btn btn-primary btn-sm"><a style="color: white" href="{{ url_for('adminreportFilterStatus', order_id=meal.order_id.S, status=meal.status.S) }}">Close Order</a></button>
-                                <button class="btn btn-primary btn-sm float-right" type="button" data-toggle="collapse" data-target="#collapseExample{{ order_loop.index }}{{ loop.index }}" aria-expanded="false" aria-controls="collapseExample">
-<<<<<<< Updated upstream
-                                  Items 
-=======
+                                <button class="btn btn-primary btn-sm p-1 m-1"><a style="color: white" href="{{ url_for('adminreportFilterStatus', order_id=meal.order_id.S, status=meal.status.S) }}">Close Order</a></button>
+                                <button class="btn btn-primary btn-sm p-1 m-1 float-right" type="button" data-toggle="collapse" data-target="#collapseExample{{ order_loop.index }}{{ loop.index }}" aria-expanded="false" aria-controls="collapseExample">
                                   Open Items
->>>>>>> Stashed changes
                                 </button>
                               </td>
                             </tr>
