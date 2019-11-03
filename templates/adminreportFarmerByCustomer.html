@@ -74,9 +74,14 @@
                                 <div> {{ meal.city.S }}, {{ meal.state.S }} {{ meal.zipCode.N }} </div>
                               </td>
                               <td class="phone-col align-middle table-borderless" >{{ meal.phone.S }}</td>
-                              <td class="orderbtn-col align-middle">
+                              <td class="orderbtn-row align-middle float-right">
+                                <button class="btn btn-primary btn-sm"><a style="color: white" href="{{ url_for('adminreportFilterStatus', order_id=meal.order_id.S, status=meal.status.S) }}">Close Order</a></button>
                                 <button class="btn btn-primary btn-sm float-right" type="button" data-toggle="collapse" data-target="#collapseExample{{ order_loop.index }}{{ loop.index }}" aria-expanded="false" aria-controls="collapseExample">
+<<<<<<< Updated upstream
                                   Items 
+=======
+                                  Open Items
+>>>>>>> Stashed changes
                                 </button>
                               </td>
                             </tr>

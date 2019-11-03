@@ -79,10 +79,12 @@
                     {% for item in order.order_items.L %}
                       {% if item.M.meal_id and item.qty != 0 %}
                         <div class="border border-gray mb-2 mt-2 order-item-box">
-                          <img src={{item.photo.S}} class="card-img-top float-left" style="max-width:190px; height:120px">
+                            {% if item.photo %}
+                              <img src={{item.photo.S}} class="card-img-top float-left" style="max-width:120px; height:90px">
+                            {% endif %}
                             <span class="align-top list-inline-item float-left ml-2">
                               <p class="item-title display-4"> {{ item.M.meal_name.S }} </p>
-                              <p class="text-left"> Quantity: {{ item.qty }} </p>
+                              <p class="text-left"> Quantity: {{ item.M.qty.N }} </p>
                             </span>
                         </div>
                       {% else %}

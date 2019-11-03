@@ -1,5 +1,5 @@
 {
-    "python.pythonPath": "c:\\Users\\Stro\\source\\repos\\serving-now-webapp\\infiniteoptions\\Scripts\\python.exe",
+    "python.pythonPath": "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\Python37_64\\python.exe",
     "python.linting.enabled": true,
     "python.linting.pylintEnabled": true,
     "git.ignoreLimitWarning": true
