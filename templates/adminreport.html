@@ -4,7 +4,7 @@
     <title>Admin Order Report</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script type=text/javascript>
-
+      
     </script>
   </head>
   <body>
@@ -21,7 +21,7 @@
             <div class="border-bottom mb-4 ml-4 d-flex justify-content-between">  <!-- this is spacing below Join Today text -->
               <span class="display-4 page-header-title">Admin Order Report</span>
             </div>
-
+            
             <div class="mb-4 ml-4 d-flex justify-content-between">  <!-- this is spacing below Join Today text -->
               <span class="display-4 page-header-title">Filters: </span>
               <button class="btn btn-default btn-sm " type="button" >
@@ -74,10 +74,15 @@
                       </td>
                       <td class="phone-col align-middle table-borderless" >{{ order.phone.S }}</td>
                       <td id="status{{ outer_loop.index }}" class="status-col align-middle table-borderless" >{{ order.status.S }}</td>
-                      <td class="orderbtn-col align-middle">
-                        <button class="btn btn-primary btn-sm float-right" type="button" data-toggle="collapse" data-target="#collapseExample{{loop.index}}" aria-expanded="false" aria-controls="collapseExample">
-                          Order
-                        </button>
+                      <td>
+                        <td class="orderbtn-col float-right">
+                          <button class="btn btn-primary btn-sm p-1 m-1">
+                            <a style="color: white" href="{{ url_for('adminreportFilterStatus', order_id=order.order_id.S, status=order.status.S) }}">Change Status</a>
+                          </button>
+                          <button class="btn btn-primary btn-sm p-1 m-1" type="button" data-toggle="collapse" data-target="#collapseExample{{loop.index}}" aria-expanded="false" aria-controls="collapseExample">
+                            Order Details
+                          </button>
+                        </td>
                       </td>
                     </tr>
                   </tbody>
@@ -105,7 +110,7 @@
                         {% endif %}
                       {% endif %}
                     {% endfor %}
-                    <button class="btn btn-primary btn-sm"><a href="{{ url_for('adminreportFilterStatus', order_id=order.order_id.S, status=order.status.S) }}">Update Order Status</a></button>
+                    
                   </div>
                 </div>
               </div>
