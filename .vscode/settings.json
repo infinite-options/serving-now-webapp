@@ -1,6 +1,12 @@
 {
-    "python.pythonPath": "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\Python37_64\\python.exe",
+    "python.pythonPath": "C:\\Users\\Stro\\source\\repos\\infiniteoptions\\Scripts\\python.exe",
     "python.linting.enabled": true,
     "python.linting.pylintEnabled": true,
-    "git.ignoreLimitWarning": true
+    "git.ignoreLimitWarning": true,
+    "python.venvFolders": [
+        "C:\\Users\\Stro\\source\\repos\\infiniteoptions",
+        "C:\\Users\\Stro\\source\\repos"
+    ],
+    "python.envFile": "${workspaceFolder}/.env",
+    "python.venvPath": "C:\\Users\\Stro\\source\\repos"
 }

@@ -10,6 +10,9 @@ import requests
 import locale
 import sys
 
+import pandas
+import csv
+
 from boto3.dynamodb.conditions import Key, Attr
 
 from datetime import datetime, time
@@ -1482,3 +1485,8 @@ def favorite(meal_id):
 
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port='8080', debug=True)
+
+@app.route('/fb/up', methods=['GET'])
+def updateFoodBank():
+    pass
+    return render_template('uploadSpread.html')
