@@ -9,6 +9,7 @@ import uuid
 import requests
 import locale
 import sys
+import os
 
 import pandas
 import csv
@@ -32,7 +33,7 @@ from PIL import Image
 
 from forms import RegistrationForm, LoginForm, UpdateAccountForm, CustomerForm
 
-
+from werkzeug import secure_filename
 from werkzeug.exceptions import BadRequest, NotFound
 from werkzeug.security import (generate_password_hash,
     check_password_hash)
@@ -45,6 +46,9 @@ login_manager = LoginManager(app)
 
 secret_key = 'app_secret_key'
 
+UPLOAD_FOLDER = '/uploads'
+
+
 app.config['SECRET_KEY'] = secret_key
 app.config['MAIL_USERNAME'] = 'infiniteoptions.meals@gmail.com'
 app.config['MAIL_PASSWORD'] = 'annApurna'
@@ -54,6 +58,7 @@ app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 app.config['CACHE_TYPE'] = 'null'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 cache = Cache(app,config={'CACHE_TYPE': 'redis'})
 
 cache.init_app(app)
@@ -1373,6 +1378,51 @@ def report():
                             totalDeliveredQuantity = totalDeliveredQuantity,
                             )
 
+@app.route('/fb/up', methods=['GET', 'POST'])
+def updateFoodBank():
+
+    return render_template('uploadSpread.html')
+
+@app.route('/fb/dl', methods=['GET', 'POST'])
+def downloadFoodBank():
+
+    if request.method == 'POST':
+        f = request.files['file']
+
+        if f.filename != "": 
+            filename = secure_filename(f.filename)
+
+            f.save(filename)
+            csvReader = []
+
+            with open(filename, 'r') as csvFile:
+                csvReader = csv.DictReader(csvFile)
+
+                for line in csvReader:
+                    itemJSON = json.dumps(line, indent=1)
+                
+                    foodBank = request.form.get('foodbank')
+
+                    if os.path.exists(filename) and foodBank == "SecondHarvest" or "WestValley":
+                        item = json.loads(itemJSON)
+                        print(item)
+                        donationID = uuid.uuid4().hex
+
+                        # post each item from spreadsheet to database of choice from form
+                        db.put_item(
+                            TableName = foodBank,
+                            Item = {
+                                'DonationID' : {'S' : donationID},
+                                'Date' : {'S' : item['Date']},
+                                'Item' : {'S' : item['Item']},
+                                'Qty' : {'S' : item['Quantity']}
+                            }
+                        )
+            f.close()
+            os.remove(filename)
+            
+
+    return redirect(url_for('updateFoodBank'))
 
 def closeKitchen(kitchen_id):
     closeKitchen = db.update_item(TableName='kitchens',
@@ -1486,7 +1536,3 @@ def favorite(meal_id):
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port='8080', debug=True)
 
-@app.route('/fb/up', methods=['GET'])
-def updateFoodBank():
-    pass
-    return render_template('uploadSpread.html')

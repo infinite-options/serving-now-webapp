@@ -1,9 +1,12 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Job Application Form</title>
+    <title>Upload Spreadsheet</title>
+
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
     <style>
       html, body {
       min-height: 100%;
@@ -191,35 +194,18 @@
   </head>
   <body>
     <div class="testbox">
-      <form action="/">
+      <form action="http://127.0.0.1:8080/fb/dl" method="POST" enctype = "multipart/form-data">
         <div class="banner">
           <h1>Upload to ServingFree</h1>
         </div>
         <p class="top-info">This page is a form that will allow you to update the food avaible from your foodbank on ServingFree.</p>
-        <div class="item">
-          <p>Name<span class="required">*</span></p>
-          <div class="name-item">
-            <input type="text" name="name" placeholder="First" required/>
-            <input type="text" name="name" placeholder="Last" required/>
-          </div>
-        </div>
-        <div class="contact-item">
-          <div class="item">
-            <p>Email<span class="required">*</span></p>
-            <input type="text" name="name" required/>
-          </div>
-          <div class="item">
-            <p>Phone<span class="required">*</span></p>
-            <input type="text" name="name" required/>
-          </div>
-        </div>
 
         <div class="position-item">
           <div class="item">
             <p>What food bank are you uploading to?<span class="required">*</span></p>
-            <select required>
-              <option value="1">West Valley</option>
-              <option value="2">Second Harvest</option>
+            <select name="foodbank" required>
+              <option value="WestValley">West Valley</option>
+              <option value="SecondHarvest">Second Harvest</option>
             </select>
           </div>
         </div>
@@ -229,8 +215,8 @@
           <input type="file" name="file" accept="file/*">
         </div>
         
-        <div class="btn-block">
-          <button type="submit" href="/">Submit Spreadsheet</button>
+        <div>
+          <input type = "submit"/>
         </div>
 
       </form>
