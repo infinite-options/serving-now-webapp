@@ -1378,10 +1378,39 @@ def report():
                             totalDeliveredQuantity = totalDeliveredQuantity,
                             )
 
+@app.route('/preptoyourdoor/upload', methods=['GET', 'POST'])
+def updatePrepToYourDoor():
+
+    customersTableName = "PrepToYourDoor_Customers"
+    ordersTableName = "PrepToYourDoor_Orders"
+    dbItems = []
+
+    return render_template('uploadPrep.html',
+        items=dbItems
+    )
+
 @app.route('/fb/up', methods=['GET', 'POST'])
 def updateFoodBank():
 
-    return render_template('uploadSpread.html')
+    dbItems = []
+
+    return render_template('uploadSpread.html',
+        items=dbItems
+    )
+
+@app.route('/fb/up/<string:fbName>', methods=['GET', 'POST'])
+def updateFoodBankDisplay(fbName):
+
+    dbItems = []
+    if fbName == "SecondHarvest" or fbName == "WestValley":
+        dbItems = db.scan(
+                TableName=fbName
+            )
+    dbItems = dbItems['Items']
+
+    return render_template('uploadSpread.html',
+        items=dbItems
+    )
 
 @app.route('/fb/dl', methods=['GET', 'POST'])
 def downloadFoodBank():
@@ -1422,7 +1451,7 @@ def downloadFoodBank():
             os.remove(filename)
             
 
-    return redirect(url_for('updateFoodBank'))
+    return redirect(url_for('updateFoodBankDisplay', foodBank))
 
 def closeKitchen(kitchen_id):
     closeKitchen = db.update_item(TableName='kitchens',

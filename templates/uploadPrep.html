@@ -207,9 +207,9 @@
     <div class="testbox">
       <form action="http://127.0.0.1:8080/fb/dl" method="POST" enctype = "multipart/form-data">
         <div class="banner">
-          <h1>Upload to ServingFree</h1>
+          <h1>Upload to Prep To Your Door</h1>
         </div>
-        <p class="top-info">This page is a form that will allow you to update the food avaible from your foodbank on ServingFree.</p>
+        <p class="top-info">This page is a form that will allow you to update the cloud database for Prep To Your Door.</p>
       
         {% if items %}
         <div class="dbItems">
@@ -233,17 +233,25 @@
 
         <div class="position-item">
           <div class="item">
-            <p>What food bank are you uploading to?<span class="required">*</span></p>
-            <select name="foodbank" required>
-              <option value="WestValley">West Valley</option>
-              <option value="SecondHarvest">Second Harvest</option>
+            <p>What form are you uploading to?<span class="required">*</span></p>
+            <select name="business" required>
+              <option value="WestValley">Prep To Your Door</option>
             </select>
           </div>
         </div>
-        
-        <div class="item">
-          <p>Submit your available food items by providing a CSV file, which is avable for export from a Google Drive or Excel Spreadsheet:</p>
-          <input type="file" name="file" accept="file/*">
+
+        <div class="container row">
+
+          <div class="item col">
+            <p>Submit your <b>Customer</b> data by providing a CSV file, which is available for export from a Google or Excel Spreadsheet:</p>
+            <input type="file" name="customer" accept="file/*">
+          </div>
+
+          <div class="item col">
+            <p>Submit your <b>Order</b> data by providing a CSV file, which is available for export from a Google or Excel Spreadsheet:</p>
+            <input type="file" name="order" accept="file/*">
+          </div>
+
         </div>
         
         <div>
