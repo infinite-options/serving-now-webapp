@@ -1389,6 +1389,156 @@ def updatePrepToYourDoor():
         items=dbItems
     )
 
+@app.route('/preptoyourdoor/download', methods=['GET', 'POST'])
+def downloadPrepSpread():
+
+    if request.method == 'POST':
+
+        f = request.files['customer']
+
+        if f.filename != "": 
+            filename = secure_filename(f.filename)
+
+            f.save(filename)
+            csvReader = []
+
+            with open(filename, 'r') as csvFile:
+                csvReader = csv.DictReader(csvFile)
+                print()
+
+                for line in csvReader:
+                    itemJSON = json.dumps(line, indent=1)
+                
+                    tableName = request.form.get('business')
+
+                    if os.path.exists(filename) and tableName == "PrepToYourDoor":
+                        item = json.loads(itemJSON)
+                        # print(json.dumps(item, indent=1))
+
+                        # post item attributes
+                        userID = item['USER ID']
+
+                        lastName = item['Last Name']
+                        if lastName == "" or lastName == None or (len(lastName) == 0):
+                            lastName = "None"
+
+                        firstName = item['First Name']
+                        if (firstName == "") or (firstName == None) or (len(firstName) == 0):
+                            print("the heck brosef")
+                            firstName = "None"
+
+                        email = item['Email']
+                        if email == "" or email == None:
+                            email = "None"
+
+                        phoneNumber = item['Phone Number']
+                        if phoneNumber == "" or phoneNumber == None:
+                            phoneNumber = "None"
+
+                        subscription = item['Subscription']
+                        if subscription == "" or subscription == None:
+                            subscription = "None"
+
+                        deliveryTime = item['Delivery Time']
+                        if deliveryTime == "" or deliveryTime == None:
+                            deliveryTime = "None"
+
+                        # construct post item
+                        postItem = {
+                                'CustomerID' : {'S' : userID},
+                                'Last Name' : {'S' : lastName},
+                                'First Name' : {'S' : firstName},
+                                'Email' : {'S' : email},
+                                'Phone Number' : {'S' : phoneNumber},
+                                'Subscription' : {'S' : subscription},
+                                'Delivery Time' : {'S' : deliveryTime}
+                            }
+
+                        # print(json.dumps(postItem, indent=1))
+
+                        # post each item from spreadsheet to database
+                        try:
+                            db.put_item(
+                                TableName = 'PrepToYourDoor_Customers',
+                                Item = postItem
+                            )
+                        except:
+                            print(json.dumps(postItem, indent=1))
+                            print(isinstance(postItem['First Name']['S'], str))
+                            print(len(firstName))
+            f.close()
+            os.remove(filename)
+
+        f = request.files['order']
+
+        if f.filename != "": 
+            filename = secure_filename(f.filename)
+
+            f.save(filename)
+            csvReader = []
+
+            with open(filename, 'r') as csvFile:
+                csvReader = csv.DictReader(csvFile)
+                print()
+
+                i = 2
+                for line in csvReader:
+
+                    itemJSON = json.dumps(line, indent=1)
+                
+                    tableName = request.form.get('business')
+
+                    if os.path.exists(filename) and tableName == "PrepToYourDoor":
+                        item = json.loads(itemJSON)
+
+                        # post item attributes
+                        mealID = uuid.uuid4().hex
+
+                        ###print(json.dumps(item, indent=1))
+
+                        # construct post item
+                        try:
+
+                            s4 = item['S4: Seasonal Smoothie'].split()[-1]
+
+                            postItem = {
+                                    'OrderID' : {'S' : mealID},
+                                    'Name' : {'S' : item['Name']},
+                                    'Total Meals' : {'S' : item['Total Meals']},
+                                    'Name' : {'S' : item['Name']},
+                                    'No. of Bags' : {'S' : item['No. of Bags']},
+                                    'Delivery' : {'S' : item['Delivery']},
+                                    'WKLY SPCL 1: Saag' : {'S' : item['WKLY SPCL 1: Saag '].split()[-1]},
+                                    'WKLY SPCL 2: Rainbow Chopped Salad w/ Red Curry Dressing': {'S' : item['WKLY SPCL 2: Rainbow Chopped Salad w/ Red Curry Dressing'].split()[-1]},
+                                    'WKLY SPCL 3: Veggie Medley Soup': {'S' : item['WKLY SPCL 3: Veggie Medley Soup'].split()[-1]},
+                                    'SEAS FAVE 1: ROASTED CAULIFLOWER CURRY': {'S' : item['SEAS FAVE 1: ROASTED CAULIFLOWER CURRY'].split()[-1]},
+                                    'SEAS FAVE 2: Holiday Salad w/ Poppyseed Dressing ': {'S' : item['SEAS FAVE 2: Holiday Salad w/ Poppyseed Dressing '].split()[-1]},
+                                    'SEAS FAVE 3: Gingerbread Oats ': {'S' : item['SEAS FAVE 3: Gingerbread Oats '].split()[-1]},
+                                    'S1: Original Smoothie': {'S' : item['S1: Original Smoothie'].split()[-1]},
+                                    'S2: Almond Butter Smoothie': {'S' : item['S2: Almond Butter Smoothie'].split()[-1]},
+                                    'S3: Energizer Smoothie': {'S' : item['S3: Energizer Smoothie'].split()[-1]},
+                                    'S4: Seasonal Smoothie': {'S' : s4}
+
+                                }
+                            #rint(json.dumps(postItem, indent=1))
+                        except:
+                            print(json.dumps(item, indent=1))
+
+                        # post each item from spreadsheet to database
+                        try:
+                            db.put_item(
+                                TableName = 'PrepToYourDoor_Orders',
+                                Item = postItem
+                            )
+                        except:
+                            print(json.dumps(postItem, indent=1))
+
+            f.close()
+            os.remove(filename)
+            
+
+    return redirect(url_for('updatePrepToYourDoor'))
+
 @app.route('/fb/up', methods=['GET', 'POST'])
 def updateFoodBank():
 
