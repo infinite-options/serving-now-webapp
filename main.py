@@ -409,7 +409,7 @@ def registerCustomer():
                           'future_customer': {'BOOL': strToBool(form.futureCustomer.data)},
                     }
                 )
-        flash(form.email.data + ' is now registered as a customer for Serving Now.', 'success') # python 3 format.
+        flash("Thank you " + form.firstName.data + ' is now registered as a customer for Serving Now.', 'success') # python 3 format.
         print('Account for ' + form.email.data + ' has been created')
         return redirect(url_for('home'))
     if login_session.get('representative'):
@@ -424,7 +424,8 @@ def kitchen(id):
     # if 'name' not in login_session:
     #     return redirect(url_for('index'))
     #
-    apiURL = API_BASE_URL +'/api/v1/meals/' + current_user.get_id()
+    kitchen_id = current_user.get_id()
+    apiURL = API_BASE_URL +'/api/v1/meals/' + kitchen_id
     # apiURL = 'http://localhost:5000/api/v1/meals/' + current_user.get_id()
 
     # print('API URL: ' + str(apiURL))
@@ -449,6 +450,17 @@ def kitchen(id):
     previousMeals = {}
     mealItems = []
     previousMealsItems = []
+
+    # Close the business if 0 meals
+    if allMeals == []:
+        db.update_item(TableName='kitchens',
+            Key={'kitchen_id': {'S': str(kitchen_id)}},
+            UpdateExpression='SET isOpen = :val',
+            ExpressionAttributeValues={
+                ':val': {'BOOL': False}
+            }
+        )
+        print("set isOpen to false")
 
     for meal in allMeals:
         twelveHourTime = datetime.strptime(meal['created_at']['S'][11:16], '%H:%M')
@@ -550,7 +562,7 @@ def kitchenSettings(id):
                                   'open_time': {'S':form.acceptingOpenTimeSaturday.data.strftime('%H:%M')},
                                   'close_time': {'S':form.acceptingCloseTimeSaturday.data.strftime('%H:%M')}}}]
 
-        deliveryHours =   [{'M': {'is_delivering': {'BOOL':form.isAcceptingSunday.data},
+        deliveryHours =   [{'M': {'is_delivering': {'BOOL':form.isDeliveringSunday.data},
                                   'open_time': {'S':form.deliveryOpenTimeSunday.data.strftime('%H:%M')},
                                   'close_time': {'S':form.deliveryCloseTimeSunday.data.strftime('%H:%M')}}},
                            {'M': {'is_delivering': {'BOOL':form.isDeliveringMonday.data},
@@ -897,17 +909,6 @@ def editMeal(meal_id):
 @app.route('/adminreport/status/<string:order_id>/<string:status>')
 @login_required
 def adminreportFilterStatus(order_id, status):
-
-    """test = db.scan(
-        TableName='meal_orders',
-        FilterExpression='#order_id = :val1',
-        ExpressionAttributeValues={
-            ':val1': {'S': order_id}
-        },
-        ExpressionAttributeNames={
-            '#order_id': 'order_id'
-        }
-    )"""
     
     newStatus = ""
     if status == "open":
@@ -1478,6 +1479,10 @@ def favorite(meal_id):
 
     response['message'] = 'Request successful'
     return response, 200
+
+@app.route('/email_test')
+def emailTest():
+    return render_template("businessEmailTemplate.html")
 
 
 if __name__ == '__main__':
